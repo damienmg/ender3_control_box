@@ -168,15 +168,7 @@ module WholeBox() {
             translate([27.5, 0, 4.2])
                 cube([18, WALL_THICKNESS, 15]);
             translate([45, 0, 4.2])
-                cube([37, WALL_THICKNESS, 18]); 
-            // Place for M3 nuts in the extrusion.
-            // see https://www.thingiverse.com/thing:3050607
-            translate([0, BOX_DIMENSIONS.y/2, 10])
-                rotate([0, 90, 0])
-                    cylinder(d=3, h=WALL_THICKNESS*2, $fn=100);
-            translate([0, BOX_DIMENSIONS.y/2, 30])
-                rotate([0, 90, 0])
-                    cylinder(d=3, h=WALL_THICKNESS*2, $fn=100);
+                cube([37, WALL_THICKNESS, 18]);
         }
         // Raspberry Pi 3B
         translate([26.5,22,WALL_THICKNESS])
@@ -213,13 +205,11 @@ module WholeBox() {
             Screw(BOX_DIMENSIONS.z-2*WALL_THICKNESS);
         
         // Extrusion slider
-        translate([0, 0, 10]) {
-            translate([0, BOX_DIMENSIONS.y*4/9, 0]) AluminiumExtrusionSlider(BOX_DIMENSIONS.y/3);
-            translate([0, BOX_DIMENSIONS.y*8/9, 0]) AluminiumExtrusionSlider(BOX_DIMENSIONS.y/3);
+        translate([0, BOX_DIMENSIONS.y, 10]) {
+            AluminiumExtrusionSlider(BOX_DIMENSIONS.y-40);
         }
-        translate([0, 0, 30]) {
-            translate([0, BOX_DIMENSIONS.y*4/9, 0]) AluminiumExtrusionSlider(BOX_DIMENSIONS.y/3);
-            translate([0, BOX_DIMENSIONS.y*8/9, 0]) AluminiumExtrusionSlider(BOX_DIMENSIONS.y/3);
+        translate([0, BOX_DIMENSIONS.y, 30]) {
+            AluminiumExtrusionSlider(BOX_DIMENSIONS.y-50);
         }
     }
 }

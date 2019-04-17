@@ -165,9 +165,9 @@ module WholeBox() {
                     BOX_DIMENSIONS.y - 2*WALL_THICKNESS,
                     BOX_DIMENSIONS.z - 2*WALL_THICKNESS]);
             // Raspberry Pi 3B ports
-            translate([27.5, 0, 4.2])
+            translate([27.5, 0, 5])
                 cube([18, WALL_THICKNESS, 15]);
-            translate([45, 0, 4.2])
+            translate([45, 0, 5])
                 cube([37, WALL_THICKNESS, 18]);
         }
         // Raspberry Pi 3B

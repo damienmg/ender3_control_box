@@ -4,6 +4,8 @@ use <control_box_components.scad>
 include <control_box_component_positions.scad>
 
 $fn=50;
+// TODO: (in the slicer): removing support make the endcap shape break. Better to reduce the amount of support so there is none from the build plate.
+// TODO: (slicer): add supports for endcap shape, narrow for extrusion slider and for frame clips.
 
 // TODO: Check box does not block Z axis.
 // TODO: If those values are correct, then we can do simple function rather than
@@ -24,9 +26,9 @@ function screw_diameter(d) = select_insert(d)[2]+1;
 
 M2_INSERT_DIAMETER=insert_diameter(2);
 BOX_WIDTH = 102;
-BOX_HEIGHT = 95; //80;
+BOX_HEIGHT = 90; //80;
 LCD_SMALL_HEIGHT = 48; //44 + 2 + 2 for top
-LCD_LENGTH = 105; //108;
+LCD_LENGTH = 100.5; //108;
 // LCD_LENGTH^2 + (BOX_HEIGHT-LCD_SMALL_HEIGHT)^2 = 113^2?
 // 
 BOX_LENGTH = 295;
@@ -358,7 +360,7 @@ module ScreenBoxFront(length=FRONT_LENGTH) {
                     cube([BOX_WIDTH, WALL_THICKNESS, LCD_SMALL_HEIGHT]);
                     cube([43, 10, 43]);
                 }
-            translate([BOX_WIDTH, -WALL_THICKNESS, 0]) 40ExtrusionEndcap();
+            translate([BOX_WIDTH+40+WALL_THICKNESS, WALL_THICKNESS, 0]) rotate([0,0,180]) 40ExtrusionEndcap();
             // Housing frame for Speaker
             translate([0, length-WALL_THICKNESS, 0]) {
                 difference() {
@@ -387,8 +389,8 @@ module ScreenBoxFront(length=FRONT_LENGTH) {
                 translate([2*BOX_WIDTH/3-2, 0, 0]) mirror([0, 1, 0]) InsertWithFillet();
             }
             // Assembly: frame screws
-            translate([BOX_WIDTH-10, 143, 95]) ScrewInsertForFrameAssembly();
-            translate([10, 143, 95]) mirror([1,0,0]) ScrewInsertForFrameAssembly();
+            translate([BOX_WIDTH-10, 143, BOX_HEIGHT]) ScrewInsertForFrameAssembly();
+            translate([10, 143, BOX_HEIGHT]) mirror([1,0,0]) ScrewInsertForFrameAssembly();
 
             // Assembly: Support for upper level
             translate([BOX_WIDTH-WALL_THICKNESS, length-WALL_THICKNESS, LEVEL_HEIGHT-WALL_THICKNESS]) {
@@ -401,10 +403,10 @@ module ScreenBoxFront(length=FRONT_LENGTH) {
                 mirror([1,0,0]) UpperLevelBlocker(depth=7, height=18);
             // Assembly: Slider for 40x40 aluminium extrusion.
             // Note this part needs support.
-            translate([BOX_WIDTH, 130, 30]) {
+            translate([BOX_WIDTH, 132, 30]) {
                 mirror([1, 0, 0]) AluminiumExtrusionSlider(130);
             }
-            translate([BOX_WIDTH, 130, 10]) {
+            translate([BOX_WIDTH, 132, 10]) {
                 mirror([1, 0, 0]) AluminiumExtrusionSlider(130);
             }
         }
@@ -467,28 +469,31 @@ module UpperLevelBlockerWithM3Insert(width = 8,
 }
 
 module ScrewInsertForFrameAssembly(width = 8, height = 12) {
+    h = 13;
+    p = 16;
+    angle = 40;
     difference() {
         translate([-0.2, 0, 0]) union() {
             rotate([0, 90, 0])  {
                 linear_extrude(width + 0.2) polygon([
                     [0, 0],
-                    [18, 0],
-                    [18, 16],
+                    [h, 0],
+                    [h, p],
                     [width, height],
                     [0, height],
                 ]);
-                translate([0, 0,-WALL_THICKNESS]) cube([18, 16, WALL_THICKNESS]);
+                translate([0, 0,-WALL_THICKNESS]) cube([h, p, WALL_THICKNESS]);
             }
         }
         //  Chamfer to avoid support.
-        translate([-WALL_THICKNESS, 16, -18]) rotate([90, 0, 0]) linear_extrude(16) {
+        translate([-WALL_THICKNESS, p, -h]) rotate([90, 0, 0]) linear_extrude(p) {
             polygon([
                 [-0.4, 0],
-                [-0.4, 13],
+                [-0.4, width * tan(angle)],
                 [width+WALL_THICKNESS, 0],
             ]);
         }
-        translate([width/2,16, -height+width]) rotate([90, 0, 0]) cylinder(d=insert_diameter(3), h=16);
+        translate([width/2, p, -height+width]) rotate([90, 0, 0]) cylinder(d=insert_diameter(3), h=p);
     }
 }
 
@@ -644,8 +649,8 @@ module ScreenBoxTop(logo=0) {
                         translate([0, 5.1, 0]) PCBSnapFit();
                     }
                     // Cooling: tunnel for the 5015 fan
-                    translate([55, 30, -18]) difference() {
-                        cylinder(d=40+2*WALL_THICKNESS, h=18);
+                    translate([55, 30, -BOX_HEIGHT+LEVEL_HEIGHT+32]) difference() {
+                        cylinder(d=40+2*WALL_THICKNESS, h=BOX_HEIGHT-LEVEL_HEIGHT-32);
                         cylinder(d=40, h=18);
                     }
                 }

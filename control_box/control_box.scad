@@ -7,24 +7,26 @@ $fn=50;
 // TODO: (in the slicer): removing support make the endcap shape break. Better to reduce the amount of support so there is none from the build plate.
 // TODO: (slicer): add supports for endcap shape, narrow for extrusion slider and for frame clips.
 
-// TODO: Check box does not block Z axis.
-// TODO: If those values are correct, then we can do simple function rather than
-// a map
 M_DIAMETERS = [
-    // M size, insert diameter, screw in diameter
-    [2, 3, 1.5], // M2
-    [3, 4, 2.5], // M3, TODO: double check
-    [4, 5, 3.5], // M4, TODO: double check
-    [5, 6, 4.5], // M5, TODO: double check
+    // M size, insert diameter, insert length, screw in diameter
+    [2, 2.8, 3, 1.5], // M2
+    [2.5, 3, 5, 2], // M2.5
+    [3, 4.8, 6, 2.5], // M3
+    [4, 4.5, 8, 3.5], // M4
+    [5, 6, 8, 4.5], // M5
+    [6, 7.5, 10, 3.5], // M6
+    [8, 9.5, 12, 4.5], // M8
+    [10, 11.6, 12, 4.5], // M10
 ];
 USE_INSERT = 1;
 
 // Note: this function will crash if searching for a non existant diameter.
 function select_insert(d, x=0) = M_DIAMETERS[x][0] == d ? M_DIAMETERS[x] : select_insert(d, x+1);
 function insert_diameter(d) = select_insert(d)[USE_INSERT == 1 ? 1 : 2];
-function screw_diameter(d) = select_insert(d)[2]+1;
+function screw_insert_depth(d) = select_insert(d)[2];
+function screwin_diameter(d) = select_insert(d)[3];
+function screw_hole_diameter(d) = screwin_diameter()+1;
 
-M2_INSERT_DIAMETER=insert_diameter(2);
 BOX_WIDTH = 102;
 BOX_HEIGHT = 90; //80;
 LCD_SMALL_HEIGHT = 48; //44 + 2 + 2 for top
@@ -52,7 +54,8 @@ module Foot(d1=6, d2=2, h=3, pos=[0,0,0], direction=[0,0,1]) {
     }
 }
 
-module MFoot(d=2, h=3, pos = [0,0,0], direction=[0,0,1]) {
+module MFoot(d=2, h=0, pos = [0,0,0], direction=[0,0,1]) {
+    h = h > 0 ? h : screw_insert_depth(d);
     d = insert_diameter(d);
     // TODO: Check height is correct for all insert.
     // TODO: Check d1 is fine.
@@ -271,8 +274,8 @@ module UpperLevel() {
             }
             // Frame assembly part: 2 holes for screwing to the bottom
             translate([0, 122, -WALL_THICKNESS]) {
-                translate([6,0,0]) cylinder(d=screw_diameter(3), h=WALL_THICKNESS);
-                translate([BOX_WIDTH-WALL_THICKNESS-6,0,0]) cylinder(d=screw_diameter(3), h=WALL_THICKNESS);
+                translate([6,0,0]) cylinder(d=screw_hole_diameter(3), h=WALL_THICKNESS);
+                translate([BOX_WIDTH-WALL_THICKNESS-6,0,0]) cylinder(d=screw_hole_diameter(3), h=WALL_THICKNESS);
             }
         }
 }
@@ -462,8 +465,8 @@ module UpperLevelBlockerWithM3Insert(width = 8,
         UpperLevelBlocker(width, height, depth, insert_depth);
         // Insert for the screw head.
         translate([0, 0, width]) rotate([0, 90, -90]) translate([-height+width/2, width/2, 0]) {
-            cylinder(d=2*screw_diameter(3), h=3.5);
-            cylinder(d=screw_diameter(3), h=insert_depth+depth);
+            cylinder(d=2*screw_hole_diameter(3), h=3.5);
+            cylinder(d=screw_hole_diameter(3), h=insert_depth+depth);
         }
     }
 }
@@ -609,8 +612,8 @@ module ScreenBoxBack(front_length=FRONT_LENGTH) {
             translate([21.8, -10, 0]) cube([WALL_THICKNESS, 10, 40]);
             translate([64.2, -10, 0]) cube([WALL_THICKNESS, 10, 40]);
             // Mounting hole for the fan
-            translate([28, 0, 6.5]) rotate([90, 0, 0]) Foot(d1=5.4, d2=select_insert(3)[2], h=3);
-            translate([60, 0, 38.5]) rotate([90, 0, 0]) Foot(d1=5.4, d2=select_insert(3)[2], h=3);
+            translate([28, 0, 6.5]) rotate([90, 0, 0]) Foot(d1=5.4, d2=select_insert(3)[3], h=3);
+            translate([60, 0, 38.5]) rotate([90, 0, 0]) Foot(d1=5.4, d2=select_insert(3)[3], h=3);
         }
     }
 }
@@ -664,8 +667,8 @@ module ScreenBoxTop(logo=0) {
                 translate([55, 30, 0]) CircleAirVentPattern(h=2*WALL_THICKNESS, d=40);
                 // Assembly: screw hole for the bottom
                 translate([70.6, BOX_LENGTH-LCD_LENGTH-8.4, 0]) {
-                    cylinder(d=screw_diameter(3), h=WALL_THICKNESS);
-                    translate([0, 0, WALL_THICKNESS]) cylinder(d=2*screw_diameter(3), h=WALL_THICKNESS);
+                    cylinder(d=screw_hole_diameter(3), h=WALL_THICKNESS);
+                    translate([0, 0, WALL_THICKNESS]) cylinder(d=2*screw_hole_diameter(3), h=WALL_THICKNESS);
                 }
                 Ender3Logo();
             }

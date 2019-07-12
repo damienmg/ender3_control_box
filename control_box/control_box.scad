@@ -41,7 +41,6 @@ WALL_THICKNESS=2;
 
 // TODO: Parameters: - AIY on/off, USB main board on/off, Insert vs screw in
 // TODO: Ender 3 melzi board.
-// TODO: Check height of mx inserts
 
 module Foot(d1=6, d2=2, h=3, pos=[0,0,0], direction=[0,0,1]) {
     difference() {
@@ -57,7 +56,6 @@ module Foot(d1=6, d2=2, h=3, pos=[0,0,0], direction=[0,0,1]) {
 module MFoot(d=2, h=0, pos = [0,0,0], direction=[0,0,1]) {
     h = h > 0 ? h : screw_insert_depth(d);
     d = insert_diameter(d);
-    // TODO: Check height is correct for all insert.
     // TODO: Check d1 is fine.
     Foot(d1=d+5, d2=d, h=h, pos=pos, direction=direction) {
         for (c = [0:1:$children-1])
@@ -269,7 +267,7 @@ module UpperLevel() {
             }
 
             // Cooling for the MOSFET under the board (place for heat sink)
-            translate([22, 82.5, -WALL_THICKNESS]) {
+            translate([22, 90, -WALL_THICKNESS]) {
                 cube([34.5, 12, WALL_THICKNESS]);
             }
             // Frame assembly part: 2 holes for screwing to the bottom

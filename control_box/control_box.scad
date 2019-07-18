@@ -411,6 +411,8 @@ module ScreenBoxFront(length=FRONT_LENGTH) {
                 mirror([1, 0, 0]) AluminiumExtrusionSlider(120);
             }
         }
+        // Clearance for the upper level.
+        translate([BOX_WIDTH-WALL_THICKNESS, length-55, LEVEL_HEIGHT-WALL_THICKNESS]) cube([0.4, 55, WALL_THICKNESS]);
         // Speaker holes
         translate([0, 118, 40]) rotate([0,90,0]) union() {
             cylinder(d=15, h=WALL_THICKNESS);
@@ -535,12 +537,27 @@ module ScreenBoxBack(front_length=FRONT_LENGTH) {
                 translate([0, -27, 0])
                     cube([WALL_THICKNESS, 37, 18]);
             }
+            sd_card_y = 52;
             // Main board ports
             translate([0, MAINBOARD_POSITION[1], LEVEL_HEIGHT+4.5]) {
                 // SD-card slot
-                translate([0, 52, 0]) cube([WALL_THICKNESS, 15.5, 3]);
+                translate([0, sd_card_y, 0]) cube([WALL_THICKNESS, 15.5, 3]);
                 // USB port
                 translate([0, 73, 0]) cube([WALL_THICKNESS, 12.5, 11]);
+            }
+            // Clearance for the upper level.
+            translate([BOX_WIDTH-WALL_THICKNESS, front_length, LEVEL_HEIGHT-WALL_THICKNESS]) cube([0.4, BOX_LENGTH-front_length, WALL_THICKNESS]);
+            translate([WALL_THICKNESS-0.4, front_length, LEVEL_HEIGHT-WALL_THICKNESS]) cube([0.4, BOX_LENGTH-front_length, WALL_THICKNESS]);
+            // Clearance for the SD-card reader
+            translate([WALL_THICKNESS-1, MAINBOARD_POSITION[1]+sd_card_y, LEVEL_HEIGHT+4.5]) {
+                rotate([-90,0,0]) linear_extrude(BOX_LENGTH-MAINBOARD_POSITION[1]-sd_card_y) {
+                    polygon([
+                        [0,0],
+                        [1,0],
+                        [1,-4],
+                        [0,-3],
+                    ]);
+                }
             }
         }
         // Buck converter feet (x2)

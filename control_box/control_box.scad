@@ -405,10 +405,10 @@ module ScreenBoxFront(length=FRONT_LENGTH) {
             // Assembly: Slider for 40x40 aluminium extrusion.
             // Note this part needs support.
             translate([BOX_WIDTH, 132, 30]) {
-                mirror([1, 0, 0]) AluminiumExtrusionSlider(130);
+                mirror([1, 0, 0]) AluminiumExtrusionSlider(120);
             }
             translate([BOX_WIDTH, 132, 10]) {
-                mirror([1, 0, 0]) AluminiumExtrusionSlider(130);
+                mirror([1, 0, 0]) AluminiumExtrusionSlider(120);
             }
         }
         // Speaker holes
@@ -580,11 +580,11 @@ module ScreenBoxBack(front_length=FRONT_LENGTH) {
         
         // Assembly: Slider for 40x40 aluminium extrusion.
         // Note this part needs support.
-        translate([BOX_WIDTH, BOX_LENGTH-WALL_THICKNESS, 30]) {
-            mirror([1, 0, 0]) AluminiumExtrusionSlider(130);
+        translate([BOX_WIDTH, BOX_LENGTH-WALL_THICKNESS-10, 30]) {
+            mirror([1, 0, 0]) AluminiumExtrusionSlider(120);
         }
-        translate([BOX_WIDTH, BOX_LENGTH-WALL_THICKNESS, 10]) {
-            mirror([1, 0, 0]) AluminiumExtrusionSlider(130);
+        translate([BOX_WIDTH, BOX_LENGTH-WALL_THICKNESS-10, 10]) {
+            mirror([1, 0, 0]) AluminiumExtrusionSlider(120);
         }
 
         // Assembly: frame clips

@@ -156,7 +156,7 @@ function cumulate(a, i=1) =
 
 function rev(arr) = [for (j = [len(arr)-1:-1:0]) arr[j]];
 
-module CableBracket(h=30, w=20, depth=WALL_THICKNESS) {
+module CableBracket(h=30, w=20, depth=3) {
     angles = [30, 45, 60, 75];
     cosines = [for (i = angles) cos(i)];
     sines = [for (i = angles) sin(i)];

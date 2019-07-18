@@ -6,6 +6,7 @@ include <control_box_component_positions.scad>
 $fn=50;
 // TODO: (in the slicer): removing support make the endcap shape break. Better to reduce the amount of support so there is none from the build plate.
 // TODO: (slicer): add supports for endcap shape, narrow for extrusion slider and for frame clips.
+// TODO: (slicer): no support on the border of the endcap.
 
 M_DIAMETERS = [
     // M size, insert diameter, insert length, screw in diameter
@@ -53,11 +54,10 @@ module Foot(d1=6, d2=2, h=3, pos=[0,0,0], direction=[0,0,1]) {
     }
 }
 
-module MFoot(d=2, h=0, pos = [0,0,0], direction=[0,0,1]) {
+module MFoot(d=2, thickness=5, h=0, pos = [0,0,0], direction=[0,0,1]) {
     h = h > 0 ? h : screw_insert_depth(d);
     d = insert_diameter(d);
-    // TODO: Check d1 is fine.
-    Foot(d1=d+5, d2=d, h=h, pos=pos, direction=direction) {
+    Foot(d1=d+thickness, d2=d, h=h, pos=pos, direction=direction) {
         for (c = [0:1:$children-1])
             children(c);
     }
@@ -536,11 +536,11 @@ module ScreenBoxBack(front_length=FRONT_LENGTH) {
                     cube([WALL_THICKNESS, 37, 18]);
             }
             // Main board ports
-            translate([0, MAINBOARD_POSITION[1], LEVEL_HEIGHT]) {
+            translate([0, MAINBOARD_POSITION[1], LEVEL_HEIGHT+4.5]) {
                 // SD-card slot
-                translate([0, 52, 1.5]) cube([WALL_THICKNESS, 15.5, 3]);
+                translate([0, 52, 0]) cube([WALL_THICKNESS, 15.5, 3]);
                 // USB port
-                translate([0, 73, 1.5]) cube([WALL_THICKNESS, 12.5, 11]);
+                translate([0, 73, 0]) cube([WALL_THICKNESS, 12.5, 11]);
             }
         }
         // Buck converter feet (x2)
@@ -567,10 +567,11 @@ module ScreenBoxBack(front_length=FRONT_LENGTH) {
         }
         // Assembly: Support for upper level
         translate([WALL_THICKNESS, front_length, LEVEL_HEIGHT-WALL_THICKNESS])
-            MFoot(3, pos=[4,BOX_LENGTH-front_length-8,-3])
+            MFoot(3, thickness=0, pos=[4,BOX_LENGTH-front_length-8,-screw_insert_depth(3)])
                 LevelSupport(BOX_LENGTH-front_length);
         translate([BOX_WIDTH-WALL_THICKNESS, BOX_LENGTH, LEVEL_HEIGHT-WALL_THICKNESS])
-            rotate([0,0,180]) MFoot(3, pos=[6, 8, -3]) LevelSupport(BOX_LENGTH-front_length);
+            rotate([0,0,180]) MFoot(3, thickness=0, pos=[6, 8, -screw_insert_depth(3)])
+                LevelSupport(BOX_LENGTH-front_length);
         // Assembly: slider for upper level, containing also screw insert for the frame.
         translate([WALL_THICKNESS, front_length+7, LEVEL_HEIGHT])
             UpperLevelBlockerWithM3Insert(depth=7, insert_depth=5, height=BOX_HEIGHT-LEVEL_HEIGHT-8);

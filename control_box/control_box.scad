@@ -316,10 +316,10 @@ module ScreenBorder(length = BOX_LENGTH) {
                         [LCD_SMALL_HEIGHT, 0]]);
 }
 
-module Endcap(height=10, h=2) {
+module Endcap(height=10, h=2, clearance=0) {
     rotate([-90, 0,0]) translate([21,-21,h]) {
         d=2;
-        off = 20-d/2;
+        off = 20-d/2-clearance;
         union() {
             hull() {
                 translate([-off, -off, 0]) cylinder(d=d, h=h);
@@ -328,11 +328,11 @@ module Endcap(height=10, h=2) {
                 translate([-off, off, 0]) cylinder(d=d, h=h);
             }
             translate([0,0,-height+h]) {
-                length = 17.6;
-                width = 5.6;
-                small_width = 3;
-                small_length = 1.5;
-                medium_length = 6;
+                length = 17.6-clearance;
+                width = 5.6-clearance;
+                small_width = 3-clearance;
+                small_length = 1.5-clearance;
+                medium_length = 6-clearance;
                 five_points = [
                     [-width, width],
                     [-width, length-medium_length],
@@ -361,7 +361,7 @@ module 40ExtrusionEndcap() {
     difference() {
         cube([40+WALL_THICKNESS,WALL_THICKNESS*2,40+WALL_THICKNESS]);
         // insert for endcap
-        Endcap();
+        Endcap(clearance=-0.4);
     }
 }
 

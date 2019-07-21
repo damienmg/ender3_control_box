@@ -90,7 +90,7 @@ module RaspberryPiFeet() {
 module BuckConverterFeet() {
     union() {
         // Feet with M2 insert
-        translate([1.5,6,0]) MFoot();
+        translate([2.5,7,0]) MFoot();
         translate([18,37,0]) MFoot();
     }
 }

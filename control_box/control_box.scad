@@ -316,23 +316,42 @@ module ScreenBorder(length = BOX_LENGTH) {
                         [LCD_SMALL_HEIGHT, 0]]);
 }
 
-module Endcap() {
-    union() {
-        intersection() {
-            translate([21, WALL_THICKNESS, 21]) rotate([-90, 0,0])
-                    Ender34040Endcap();
-            translate([3, 10, 3]) hull() {
-                rotate([90, 0, 0]) cylinder(r=1, h=100);
-                translate([36, 0, 36]) rotate([90, 0, 0]) cylinder(r=1, h=100);
-                translate([0, 0, 36]) rotate([90, 0, 0]) cylinder(r=1, h=100);
-                translate([36, 0, 0]) rotate([90, 0, 0]) cylinder(r=1, h=100);
+module Endcap(height=10, h=2) {
+    rotate([-90, 0,0]) translate([21,-21,h]) {
+        d=2;
+        off = 20-d/2;
+        union() {
+            hull() {
+                translate([-off, -off, 0]) cylinder(d=d, h=h);
+                translate([off, -off, 0]) cylinder(d=d, h=h);
+                translate([off, off, 0]) cylinder(d=d, h=h);
+                translate([-off, off, 0]) cylinder(d=d, h=h);
             }
-        }
-        translate([21, WALL_THICKNESS-4, 21]) {
-            intersection() {
-                rotate([-90, 0,0])
-                    Ender34040Endcap();
-                translate([-25, -10.2, -25]) cube([50, 10, 50]);
+            translate([0,0,-height+h]) {
+                length = 17.6;
+                width = 5.6;
+                small_width = 3;
+                small_length = 1.5;
+                medium_length = 6;
+                five_points = [
+                    [-width, width],
+                    [-width, length-medium_length],
+                    [-small_width, length-small_length],
+                    [-small_width, length],
+                    [small_width, length],
+                    [small_width, length-small_length],
+                    [width, length-medium_length],
+                    [width, width],
+                ];
+                rotation = [[0, 1], [-1, 0]];
+                poly =concat(
+                            five_points,
+                            five_points*rotation,
+                            five_points*rotation*rotation,
+                            five_points*rotation*rotation*rotation
+                        );
+                linear_extrude(height)
+                    polygon(poly);
             }
         }
     }

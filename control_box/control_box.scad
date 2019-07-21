@@ -244,6 +244,8 @@ module UpperLevel() {
                         translate([-11.3, -6.4, 0]) cube([22.6,12.8, BOX_HEIGHT-LEVEL_HEIGHT-WALL_THICKNESS-33]);
                     }
             }
+            // Some feet support are getting out of the board surface, cut that part out.
+            translate([-10.005+WALL_THICKNESS, 0, -WALL_THICKNESS]) cube([10, length, 100]);
             // Air vent for the stepper motor cooling.
             Orientate(direction=[0,1,0], position=[59.3+WALL_THICKNESS, length-WALL_THICKNESS, 13.5], rotation=-90)
                 SquareAirVentPattern();

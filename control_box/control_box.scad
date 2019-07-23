@@ -33,7 +33,7 @@ BOX_HEIGHT = 90; //80;
 LCD_SMALL_HEIGHT = 48; //44 + 2 + 2 for top
 LCD_LENGTH = 100.5; //108;
 // LCD_LENGTH^2 + (BOX_HEIGHT-LCD_SMALL_HEIGHT)^2 = 113^2?
-// 
+
 BOX_LENGTH = 295;
 LCD_THICKNESS = 2;
 LEVEL_HEIGHT = 45;
@@ -79,30 +79,66 @@ module RaspberryPiStandoff(h=12, d1=6, d2=2, d3=1.7, h1=3) {
     }
 }
 
-module RaspberryPiFeet() {
-    translate([3.5,61.5,0]) Foot();
-    translate([52.5,3.5,0]) Foot();
-    // 2 feet with M2 insert
-    translate([52.5,61.5,0]) MFoot();
-    translate([3.5,3.5,0]) MFoot();
+function rotation_matrix(direction, angle) = (
+    let(c = cos(angle))
+    let(s = sin(angle))
+    let(ux = direction[0]/norm(direction))
+    let(uy = direction[1]/norm(direction))
+    let(uz = direction[2]/norm(direction))
+    let(P=[
+        [ux*ux, ux*uy, ux*uz],
+        [uy*ux, uy*uy, uy*uz],
+        [uz*ux, uz*uy, uz*uz],
+    ])
+    let(I=[
+        [1,0,0],
+        [0,1,0],
+        [0,0,1],
+    ])
+    let(Q=[
+        [0, -uz, uy],
+        [uz, 0, -ux],
+        [-uy, ux, 0],
+    ])
+    P+c*(I-P)+s*Q
+);
+
+module RaspberryPiFeet(direction=[0,0,1], pos=[0,0,0], angle=0) {
+    // 2 feet with M2 insert & 2 PCB pin feet.
+    m=rotation_matrix(direction, angle);
+    MFoot(pos=pos+m*[3.5,3.5,-WALL_THICKNESS], direction=direction, h=screw_insert_depth(2)+WALL_THICKNESS)
+        MFoot(pos=pos+m*[52.5,61.5,-WALL_THICKNESS], direction=direction, h=screw_insert_depth(2)+WALL_THICKNESS) {
+            Orientate(direction=direction, position=pos, rotation=angle) {
+                translate([3.5,61.5,0]) Foot();
+                translate([52.5,3.5,0]) Foot();
+            }
+            for (c = [0:1:$children-1])
+                children(c);
+        }
 }
 
-module BuckConverterFeet() {
-    union() {
-        // Feet with M2 insert
-        translate([2.5,7,0]) MFoot();
-        translate([18,37,0]) MFoot();
-    }
+module BuckConverterFeet(direction=[0,0,1], pos=[0,0,0], angle=0) {
+    m=rotation_matrix(direction, angle);
+    // Feet with M2 insert
+    MFoot(pos=[2.5,7,-WALL_THICKNESS]*m+pos, h=screw_insert_depth(2)+WALL_THICKNESS)
+        MFoot(pos=[18,37,-WALL_THICKNESS]*m+pos, h=screw_insert_depth(2)+WALL_THICKNESS) {
+            for (c = [0:1:$children-1])
+                children(c);
+        }
 }
 
-module RelaySwitchFeet() {
-    union() {
-        translate([23.2,2.2,0]) Foot();
-        translate([2.2,31.2,0]) Foot();
-        // 2 Feet with M2 insert
-        translate([2.2,2.2,0]) MFoot();
-        translate([23.2,31.2,0]) MFoot();
-    }
+module RelaySwitchFeet(direction=[0,0,1], pos=[0,0,0], angle=0) {
+    m=rotation_matrix(direction, angle);
+    // 2 feet with M2 insert & 2 PCB pin feet.
+    MFoot(pos=[2.2,2.2,-WALL_THICKNESS]*m+pos, h=screw_insert_depth(2)+WALL_THICKNESS)
+        MFoot(pos=[23.2,31.2,-WALL_THICKNESS]*m+pos, h=screw_insert_depth(2)+WALL_THICKNESS) {
+            Orientate(position=pos, rotation=-angle, direction=direction) {
+                translate([2.2,31.2,0]) Foot();
+                translate([23.2,2.2,0]) Foot();
+            }
+            for (c = [0:1:$children-1])
+                children(c);
+        }
 }
 
 module AluminiumExtrusionSlider(length=10) {
@@ -239,7 +275,7 @@ module UpperLevel() {
                     translate([0, 96, 0]) CableBracket(h=25, w=11, depth=2*WALL_THICKNESS);
                 }
                 // Frame assembly: screw for the cover over the air vent
-                translate([70.6,121.6,33]) 
+                translate([70.6,121.6,33])
                     MFoot(3, h=BOX_HEIGHT-LEVEL_HEIGHT-WALL_THICKNESS-33) {
                         translate([-11.3, -6.4, 0]) cube([22.6,12.8, BOX_HEIGHT-LEVEL_HEIGHT-WALL_THICKNESS-33]);
                     }
@@ -296,7 +332,7 @@ module Orientate(position=[0,0,0], direction=[0,0,-1], rotation=0, original_dire
                     children(c);
 }
 
-module SupportAlongLine(p1, p2, width=3, angle=45, height=4) { 
+module SupportAlongLine(p1, p2, width=3, angle=45, height=4) {
     hprime = width * tan(angle);
     Orientate(p1, p2-p1, rotation=-90)
         linear_extrude(norm(p1-p2))
@@ -369,7 +405,10 @@ module 40ExtrusionEndcap() {
 
 module ScreenBoxFront(length=FRONT_LENGTH) {
     difference() {
-        union() {
+        // Relay switch feet (x3)
+        RelaySwitchFeet(pos=[82.25, 124.5, WALL_THICKNESS], angle=-90)
+        RelaySwitchFeet(pos=[82.25, 94.5, WALL_THICKNESS], angle=-90)
+        RelaySwitchFeet(pos=[82.25, 64.5, WALL_THICKNESS], angle=-90) {
             // Left
             ScreenBorder(length);
             // Right
@@ -401,10 +440,6 @@ module ScreenBoxFront(length=FRONT_LENGTH) {
                     }
                 }
             }
-            // Relay switch feet (x3)
-            translate([82.25, 124.5, WALL_THICKNESS]) rotate([0, 0, 90]) RelaySwitchFeet();
-            translate([82.25, 94.5, WALL_THICKNESS]) rotate([0, 0, 90]) RelaySwitchFeet();
-            translate([82.25, 64.5, WALL_THICKNESS]) rotate([0, 0, 90]) RelaySwitchFeet();
             // Assembly: frame clips
             translate([0, length+4, WALL_THICKNESS]) {
                 translate([BOX_WIDTH/3-2, 0, 0]) mirror([0, 1, 0]) InsertWithFillet();
@@ -538,7 +573,11 @@ module InsertWithFillet() {
 }
 
 module ScreenBoxBack(front_length=FRONT_LENGTH) {
-    union() {
+    // Buck converter feet (x2)
+    BuckConverterFeet(pos=[65, 227.5, WALL_THICKNESS], angle=-90)
+    BuckConverterFeet(pos=[65, 253.5, WALL_THICKNESS], angle=-90)
+    // Raspberry pi feet
+    RaspberryPiFeet(pos=RASPBERRY_PI_POSITION + [-10.5, 28, WALL_THICKNESS], angle=-90) {
         difference() {
             translate([0, front_length, 0]) {
                 // Left
@@ -581,24 +620,16 @@ module ScreenBoxBack(front_length=FRONT_LENGTH) {
                 }
             }
         }
-        // Buck converter feet (x2)
-        translate([65, 227.5, WALL_THICKNESS]) rotate([0,0,90]) {
-            BuckConverterFeet();
-            translate([26, 0, 0]) BuckConverterFeet();
-        }
-        // Raspberry pi feet
-        translate(RASPBERRY_PI_POSITION + [-10.5, 28, WALL_THICKNESS])
-            rotate([0, 0, -90]) RaspberryPiFeet();
         // Cable management: bracket
         cable_bracket_width = 10;
         cable_bracket_height = 15;
         cable_clearance = 5;
-        translate([BOX_WIDTH-WALL_THICKNESS-cable_bracket_width-cable_clearance, 223, WALL_THICKNESS]) { 
+        translate([BOX_WIDTH-WALL_THICKNESS-cable_bracket_width-cable_clearance, 223, WALL_THICKNESS]) {
             for (i = [0:26:53]) {
                 translate([0, i, 0]) CableBracket(w=cable_bracket_width, h=cable_bracket_height);
             }
         }
-        translate([WALL_THICKNESS+cable_clearance+cable_bracket_width, 276, WALL_THICKNESS]) rotate([0,0,180]) { 
+        translate([WALL_THICKNESS+cable_clearance+cable_bracket_width, 276, WALL_THICKNESS]) rotate([0,0,180]) {
             for (i = [0:26:53]) {
                 translate([0, i, 0]) CableBracket(w=cable_bracket_width, h=cable_bracket_height);
             }
@@ -615,7 +646,7 @@ module ScreenBoxBack(front_length=FRONT_LENGTH) {
             UpperLevelBlockerWithM3Insert(depth=7, insert_depth=5, height=BOX_HEIGHT-LEVEL_HEIGHT-8);
         translate([BOX_WIDTH-WALL_THICKNESS, front_length+7, LEVEL_HEIGHT])
             mirror([1,0,0]) UpperLevelBlockerWithM3Insert(depth=7, insert_depth=5, height=BOX_HEIGHT-LEVEL_HEIGHT-8);
-        
+
         // Assembly: Slider for 40x40 aluminium extrusion.
         // Note this part needs support.
         translate([BOX_WIDTH, BOX_LENGTH-WALL_THICKNESS-10, 30]) {
@@ -633,24 +664,26 @@ module ScreenBoxBack(front_length=FRONT_LENGTH) {
         }
         // Back
         translate([0, BOX_LENGTH-WALL_THICKNESS, 0]) {
-            difference() {
-                cube([BOX_WIDTH, WALL_THICKNESS, LEVEL_HEIGHT-WALL_THICKNESS]);
-                translate([42.2+WALL_THICKNESS, 0, 20.7+WALL_THICKNESS]) rotate([-90,0,0]) CircleAirVentPattern(d=39,h=WALL_THICKNESS);
-                // Cable management: hole for 24V line in
-                translate([BOX_WIDTH-5, WALL_THICKNESS, 0]) rotate([90, 0, 0]) hull() {
-                    cylinder(d=10, h=WALL_THICKNESS);
-                    translate([0, 5, 0]) cylinder(d=10, h=WALL_THICKNESS);
-                    translate([5, 5, 0]) cylinder(d=10, h=WALL_THICKNESS);
-                    translate([5, 0, 0]) cylinder(d=10, h=WALL_THICKNESS);
-                }        
-            }
-            translate([BOX_WIDTH, 0, 0]) 40ExtrusionEndcap();
             // Frame for the fan
             translate([21.8, -10, 0]) cube([WALL_THICKNESS, 10, 40]);
             translate([64.2, -10, 0]) cube([WALL_THICKNESS, 10, 40]);
             // Mounting hole for the fan
-            translate([28, 0, 6.5]) rotate([90, 0, 0]) Foot(d1=5.4, d2=select_insert(3)[3], h=3);
-            translate([60, 0, 38.5]) rotate([90, 0, 0]) Foot(d1=5.4, d2=select_insert(3)[3], h=3);
+            Foot(pos=[28, WALL_THICKNESS, 6.5], d1=5.4, d2=select_insert(3)[3], h=3+WALL_THICKNESS, direction=[0,-1,0])
+            Foot(pos=[60, WALL_THICKNESS, 38.5], d1=5.4, d2=select_insert(3)[3], h=3+WALL_THICKNESS, direction=[0,-1,0])
+                difference() {
+                    // Back panel
+                    cube([BOX_WIDTH, WALL_THICKNESS, LEVEL_HEIGHT-WALL_THICKNESS]);
+                    translate([42.2+WALL_THICKNESS, 0, 20.7+WALL_THICKNESS]) rotate([-90,0,0]) CircleAirVentPattern(d=39,h=WALL_THICKNESS);
+                    // Cable management: hole for 24V line in
+                    translate([BOX_WIDTH-5, WALL_THICKNESS, 0]) rotate([90, 0, 0]) hull() {
+                        cylinder(d=10, h=WALL_THICKNESS);
+                        translate([0, 5, 0]) cylinder(d=10, h=WALL_THICKNESS);
+                        translate([5, 5, 0]) cylinder(d=10, h=WALL_THICKNESS);
+                        translate([5, 0, 0]) cylinder(d=10, h=WALL_THICKNESS);
+                    }
+                }
+            // 40x40 Extrusion side
+            translate([BOX_WIDTH, 0, 0]) 40ExtrusionEndcap();
         }
     }
 }

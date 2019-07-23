@@ -57,7 +57,7 @@ module LowerLevelComponents() {
                 rotate([90, 0, 0])
                     BuckConverter();
             }
-            // Relay for the fan, connected on the Rpi 24V input 
+            // Relay for the fan, connected on the Rpi 24V input
             translate([70, 95, 0]) {
                 rotate([0,0,90]) RelaySwitch();
             }
@@ -70,7 +70,7 @@ module LowerLevelComponents() {
                 rotate([0,0,90]) RelaySwitch();
             }
         }
-}         
+}
 
 module HigherLevelComponents(level_height) {
     translate([12,0,3.5])
@@ -98,7 +98,7 @@ module SideComponents(height) {
             // AIY Speaker
             translate([17.5,119,37])
                 rotate([0, -90, 0]) Speaker3Inch();
-            
+
             // AIY microphone
             translate([-25, 165, height-6]) VoiceHatMic();
         }

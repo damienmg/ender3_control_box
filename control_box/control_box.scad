@@ -599,7 +599,7 @@ module ScreenBoxBack(front_length=FRONT_LENGTH) {
             }
             sd_card_y = 52;
             // Main board ports
-            translate([0, MAINBOARD_POSITION[1], LEVEL_HEIGHT+4.5]) {
+            translate([0, MAINBOARD_POSITION[1], LEVEL_HEIGHT+5.5]) {
                 // SD-card slot
                 translate([0, sd_card_y, 0]) cube([WALL_THICKNESS, 15.5, 3]);
                 // USB port

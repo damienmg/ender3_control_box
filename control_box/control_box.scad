@@ -10,14 +10,14 @@ $fn=50;
 
 M_DIAMETERS = [
     // M size, insert diameter, insert length, screw in diameter
-    [2, 2.8, 3, 1.5], // M2
-    [2.5, 3, 5, 2], // M2.5
-    [3, 4.8, 6, 2.5], // M3
-    [4, 4.5, 8, 3.5], // M4
-    [5, 6, 8, 4.5], // M5
-    [6, 7.5, 10, 3.5], // M6
-    [8, 9.5, 12, 4.5], // M8
-    [10, 11.6, 12, 4.5], // M10
+    [2, 3.2, 3, 1.5], // M2
+    [2.5, 3, 5, 2], // M2.5. TODO: increase insert diameter
+    [3, 5.1, 6, 2.5], // M3. TODO: Check insert diameter
+    [4, 4.5, 8, 3.5], // M4. TODO: increase insert diameter
+    [5, 6, 8, 4.5], // M5. TODO: increase insert diameter
+    [6, 7.5, 10, 3.5], // M6. TODO: increase insert diameter
+    [8, 9.5, 12, 4.5], // M8. TODO: increase insert diameter
+    [10, 11.6, 12, 4.5], // M10. TODO: increase insert diameter
 ];
 USE_INSERT = 1;
 
@@ -26,7 +26,7 @@ function select_insert(d, x=0) = M_DIAMETERS[x][0] == d ? M_DIAMETERS[x] : selec
 function insert_diameter(d) = select_insert(d)[USE_INSERT == 1 ? 1 : 2];
 function screw_insert_depth(d) = select_insert(d)[2];
 function screwin_diameter(d) = select_insert(d)[3];
-function screw_hole_diameter(d) = screwin_diameter()+1;
+function screw_hole_diameter(d) = screwin_diameter(d)+1;
 
 BOX_WIDTH = 102;
 BOX_HEIGHT = 90; //80;
@@ -225,25 +225,25 @@ module UpperLevel() {
         difference() {
             union() {
                 // Bottom
-                translate([0, 0, -WALL_THICKNESS])
+                translate([0.5, 0, -WALL_THICKNESS])
                     linear_extrude(WALL_THICKNESS)
                         polygon([
                             [WALL_THICKNESS, 0],
                             [10, 0],
-                            [BOX_WIDTH-30, -55],
-                            [BOX_WIDTH-WALL_THICKNESS, -55],
-                            [BOX_WIDTH-WALL_THICKNESS, length],
+                            [BOX_WIDTH-31, -55],
+                            [BOX_WIDTH-WALL_THICKNESS-1, -55],
+                            [BOX_WIDTH-WALL_THICKNESS-1, length],
                             [WALL_THICKNESS, length],
                         ]);
                 // Back
-                translate([WALL_THICKNESS, length, 0])
+                translate([WALL_THICKNESS, length, -WALL_THICKNESS])
                     rotate([90, 0, 0])
                         linear_extrude(WALL_THICKNESS)
                             polygon([
                                 [0, 0],
                                 [BOX_WIDTH-2*WALL_THICKNESS, 0],
-                                [BOX_WIDTH-2*WALL_THICKNESS, BOX_HEIGHT-LEVEL_HEIGHT-WALL_THICKNESS],
-                                [0, BOX_HEIGHT-LEVEL_HEIGHT-WALL_THICKNESS]
+                                [BOX_WIDTH-2*WALL_THICKNESS, BOX_HEIGHT-LEVEL_HEIGHT],
+                                [0, BOX_HEIGHT-LEVEL_HEIGHT]
                             ]);
                 // Feet for SKR13
                 translate([2.25, 5.25, 0]) {
@@ -271,8 +271,8 @@ module UpperLevel() {
                 translate([87, 12.5, 0]) {
                     // Along the mainboard
                     for (p = [0:17:68])
-                        translate([0, p, 0]) CableBracket(h=25, w=11, depth=2*WALL_THICKNESS);
-                    translate([0, 96, 0]) CableBracket(h=25, w=11, depth=2*WALL_THICKNESS);
+                        translate([0, p, 0]) CableBracket(h=35, w=10, depth=2*WALL_THICKNESS);
+                    translate([0, 96, 0]) CableBracket(h=35, w=10, depth=2*WALL_THICKNESS);
                 }
                 // Frame assembly: screw for the cover over the air vent
                 translate([70.6,121.6,33])
@@ -281,27 +281,23 @@ module UpperLevel() {
                     }
             }
             // Some feet support are getting out of the board surface, cut that part out.
-            translate([-10.005+WALL_THICKNESS, 0, -WALL_THICKNESS]) cube([10, length, 100]);
+            translate([-9.51+WALL_THICKNESS, -WALL_THICKNESS, -WALL_THICKNESS]) cube([10, length, 100]);
             // Air vent for the stepper motor cooling.
             Orientate(direction=[0,1,0], position=[59.3+WALL_THICKNESS, length-WALL_THICKNESS, 13.5], rotation=-90)
                 SquareAirVentPattern();
             // Cable management: cable out
             Orientate(direction=[0,1,0], position=[BOX_WIDTH-5, length-WALL_THICKNESS, 13.5], rotation=-90) {
                 hull() {
-                    cylinder(d=10, h=WALL_THICKNESS);
-                    translate([5, 0, 0]) cylinder(d=10, h=WALL_THICKNESS);
-                    translate([0, 5, 0]) cylinder(d=10, h=WALL_THICKNESS);
-                    translate([5, 5, 0]) cylinder(d=10, h=WALL_THICKNESS);
+                    cylinder(d=20, h=WALL_THICKNESS);
+                    translate([10, 0, 0]) cylinder(d=20, h=WALL_THICKNESS);
+                    translate([0, 10, 0]) cylinder(d=20, h=WALL_THICKNESS);
+                    translate([10, 10, 0]) cylinder(d=20, h=WALL_THICKNESS);
                 }
                 // A filet to ensure no support is needed here.
-                translate([10, -1, 0]) difference() {
+                translate([20, -1, 0]) difference() {
                     cube([4, 4, WALL_THICKNESS]);
                     translate([4, 0, 0]) cylinder(d=8, h=WALL_THICKNESS);
                 }
-            }
-            // Cable management: power in (from power management on the lower level).
-            translate([11, 115, -WALL_THICKNESS]) {
-                cube([42, 10, WALL_THICKNESS]);
             }
 
             // Cooling for the MOSFET under the board (place for heat sink)

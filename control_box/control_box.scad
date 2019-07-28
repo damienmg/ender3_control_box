@@ -41,7 +41,7 @@ FRONT_LENGTH = RASPBERRY_PI_POSITION[1]-30;
 WALL_THICKNESS=2;
 
 // TODO: Parameters: - AIY on/off, USB main board on/off, Insert vs screw in
-// TODO: Ender 3 melzi board.
+// TODO: Ender 3 melzi board (SKR E3 Mini).
 
 module Foot(d1=6, d2=2, h=3, pos=[0,0,0], direction=[0,0,1]) {
     difference() {
@@ -433,12 +433,7 @@ module ScreenBoxFront(length=FRONT_LENGTH) {
                 }
             translate([BOX_WIDTH+40+WALL_THICKNESS, WALL_THICKNESS, 0]) rotate([0,0,180]) 40ExtrusionEndcap();
             // Housing frame for Speaker
-            translate([0, length-WALL_THICKNESS, 0]) {
-                difference() {
-                    cube([32, WALL_THICKNESS, 50]);
-                    cube([12, WALL_THICKNESS, 5]);
-                }
-            }
+            translate([0, length-WALL_THICKNESS, 0]) cube([32, WALL_THICKNESS, 50]);
             translate([0, 77, 0]) {
                 cube([32, WALL_THICKNESS, 50]);
                 translate([32, 0, 0]) cube([WALL_THICKNESS, length-77, 50]);
@@ -480,13 +475,11 @@ module ScreenBoxFront(length=FRONT_LENGTH) {
             translate([BOX_WIDTH-WALL_THICKNESS, FRONT_LENGTH, WALL_THICKNESS]) {
                 translate([0,0,16]) mirror([1,0,0]) Cantilever(10);
                 translate([-3,-5,0]) cube([3, 5, 26]);
-                translate([0,0,WALL_THICKNESS+1]) mirror([1,0,0]) Cantilever(4);
+                translate([0,0,0.5]) mirror([1,0,0]) Cantilever(4);
             }
             translate([WALL_THICKNESS, FRONT_LENGTH, WALL_THICKNESS]) {
                 translate([0,0,22]) Cantilever(4);
-                // TODO: maybe this one is too small, considere replacing also the lower
-                // lug with a cantilever.
-                translate([0,0,WALL_THICKNESS+1]) Cantilever(1.5);
+                translate([0,0,0.5]) Cantilever(4);
             }
         }
         // Clearance for the upper level.
@@ -617,10 +610,9 @@ module ScreenBoxBack(front_length=FRONT_LENGTH) {
                 // Bottom
                 cube([BOX_WIDTH, BOX_LENGTH-front_length, WALL_THICKNESS]);
                 // Assembly: Cantilever
-                translate([WALL_THICKNESS, 0, WALL_THICKNESS])
-                    CantileverSupport(30);
-                translate([BOX_WIDTH-WALL_THICKNESS, 4.2, WALL_THICKNESS])
-                    rotate([0,0,180]) CantileverSupport(30);
+                translate([WALL_THICKNESS, 0, 0]) CantileverSupport(31);
+                translate([BOX_WIDTH-WALL_THICKNESS, 4.2, 0])
+                    rotate([0,0,180]) CantileverSupport(31);
             }
             // Raspberry Pi Ports
             translate([0, RASPBERRY_PI_POSITION[1], 6.5]) {
@@ -677,11 +669,7 @@ module ScreenBoxBack(front_length=FRONT_LENGTH) {
         }
 
         // Assembly: frame clips
-        translate([0, front_length-4, WALL_THICKNESS]) {
-            translate([WALL_THICKNESS, 0, 0]) InsertWithFillet();
-            translate([BOX_WIDTH/2-4, 0, 0]) InsertWithFillet();
-            translate([BOX_WIDTH-8-WALL_THICKNESS, 0, 0]) InsertWithFillet();
-        }
+        translate([BOX_WIDTH/2-4, front_length-4, WALL_THICKNESS]) InsertWithFillet();
         // Back
         translate([0, BOX_LENGTH-WALL_THICKNESS, 0]) {
             // Frame for the fan
@@ -786,7 +774,7 @@ module Scene() {
     Ender3WithoutScreen();
 
     // PCBPin();
-    //RaspberryPiStandoff();
+    // RaspberryPiStandoff();
 }
 
 Scene();

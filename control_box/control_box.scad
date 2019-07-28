@@ -219,6 +219,18 @@ module CableBracket(h=30, w=20, depth=3) {
     }
 }
 
+// A bottom plate with fillet on 3 sides.
+module FilletedBottom(w, l, h) {
+    hull() {
+        translate([0,0,h/2]) cube([w, l, h/2]);
+        translate([h/2, l-h/2, 0]) cube([w-h, h/2, h]);
+        translate([h/2, h/2, h/2]) sphere(h/2);
+        translate([w-h/2, h/2, h/2]) sphere(h/2);
+        translate([h/2,l,h/2]) rotate([90, 0, 0]) cylinder(h=h, d=h);
+        translate([w-h/2,l,h/2]) rotate([90, 0, 0]) cylinder(h=h, d=h);
+    }
+}
+
 module UpperLevel() {
     length = 130;
     translate([0, BOX_LENGTH-length, LEVEL_HEIGHT])
@@ -354,14 +366,14 @@ module Cantilever(length) {
 }
 
 module ScreenBorder(length = BOX_LENGTH) {
-    translate([WALL_THICKNESS, 0, 0])
+    translate([WALL_THICKNESS, 0, WALL_THICKNESS])
         rotate([0,-90,0])
             linear_extrude(WALL_THICKNESS)
                 polygon([[0,0],
                         [0, length],
-                        [BOX_HEIGHT, length],
-                        [BOX_HEIGHT, LCD_LENGTH],
-                        [LCD_SMALL_HEIGHT, 0]]);
+                        [BOX_HEIGHT-WALL_THICKNESS, length],
+                        [BOX_HEIGHT-WALL_THICKNESS, LCD_LENGTH],
+                        [LCD_SMALL_HEIGHT-WALL_THICKNESS, 0]]);
 }
 
 module Endcap(height=10, h=2, clearance=0) {
@@ -424,22 +436,23 @@ module ScreenBoxFront(length=FRONT_LENGTH) {
             // Right
             translate([BOX_WIDTH-WALL_THICKNESS, 0, 0]) ScreenBorder(length);
             // Bottom
-            cube([BOX_WIDTH, length, WALL_THICKNESS]);
+            FilletedBottom(BOX_WIDTH, length, WALL_THICKNESS);
             // Front with screw screw insert.
             MFoot(5, direction=[0, 1, 0], pos=[10, 0, 13], h=10)
-                MFoot(5, direction=[0, 1, 0], pos=[30, 0, 33], h=10) union() {
-                    cube([BOX_WIDTH, WALL_THICKNESS, LCD_SMALL_HEIGHT]);
-                    cube([43, 10, 43]);
-                }
+                MFoot(5, direction=[0, 1, 0], pos=[30, 0, 33], h=10)
+                    translate([0,0,WALL_THICKNESS]) union() {
+                        cube([BOX_WIDTH, WALL_THICKNESS, LCD_SMALL_HEIGHT-WALL_THICKNESS]);
+                        cube([43, 10, 43-WALL_THICKNESS]);
+                    }
             translate([BOX_WIDTH+40+WALL_THICKNESS, WALL_THICKNESS, 0]) rotate([0,0,180]) 40ExtrusionEndcap();
             // Housing frame for Speaker
-            translate([0, length-WALL_THICKNESS, 0]) cube([32, WALL_THICKNESS, 50]);
-            translate([0, 77, 0]) {
-                cube([32, WALL_THICKNESS, 50]);
-                translate([32, 0, 0]) cube([WALL_THICKNESS, length-77, 50]);
+            translate([0, length-WALL_THICKNESS, WALL_THICKNESS]) cube([32, WALL_THICKNESS, 50-WALL_THICKNESS]);
+            translate([0, 77, WALL_THICKNESS]) {
+                cube([32, WALL_THICKNESS, 50-WALL_THICKNESS]);
+                translate([32, 0, 0]) cube([WALL_THICKNESS, length-77, 50-WALL_THICKNESS]);
                 translate([20, 0, 0]) difference() {
-                    cube([WALL_THICKNESS, length-77, 50]);
-                    translate([0, 22, 40]) {
+                    cube([WALL_THICKNESS, length-77, 50-WALL_THICKNESS]);
+                    translate([0, 22, 40-WALL_THICKNESS]) {
                         cube([WALL_THICKNESS, 41, 20]);
                         translate([0, 20.5, 0]) rotate([0, 90, 0]) cylinder(d=41, h=WALL_THICKNESS);
                     }
@@ -603,12 +616,19 @@ module ScreenBoxBack(front_length=FRONT_LENGTH) {
         difference() {
             translate([0, front_length, 0]) {
                 // Left
-                cube([WALL_THICKNESS, BOX_LENGTH-front_length, BOX_HEIGHT]);
+                translate([0,0,WALL_THICKNESS]) hull() {
+                    translate([WALL_THICKNESS/2, 0, 0]) cube([WALL_THICKNESS/2, BOX_LENGTH-front_length, BOX_HEIGHT-WALL_THICKNESS]);
+                    cube([WALL_THICKNESS/2, BOX_LENGTH-front_length-WALL_THICKNESS/2, BOX_HEIGHT-WALL_THICKNESS]);
+                    translate([WALL_THICKNESS/2, BOX_LENGTH-front_length-WALL_THICKNESS/2, 0]) cylinder(h=BOX_HEIGHT-WALL_THICKNESS, d=WALL_THICKNESS);
+                }
                 // Right
-                translate([BOX_WIDTH-WALL_THICKNESS, 0, 0])
-                        cube([WALL_THICKNESS, BOX_LENGTH-front_length, BOX_HEIGHT]);
+                translate([BOX_WIDTH-WALL_THICKNESS, 0, WALL_THICKNESS]) hull() {
+                    cube([WALL_THICKNESS/2, BOX_LENGTH-front_length, BOX_HEIGHT-WALL_THICKNESS]);
+                    translate([WALL_THICKNESS/2, 0, 0]) cube([WALL_THICKNESS/2, BOX_LENGTH-front_length-WALL_THICKNESS/2, BOX_HEIGHT-WALL_THICKNESS]);
+                    translate([WALL_THICKNESS/2, BOX_LENGTH-front_length-WALL_THICKNESS/2, 0]) cylinder(h=BOX_HEIGHT-WALL_THICKNESS, d=WALL_THICKNESS);
+                }
                 // Bottom
-                cube([BOX_WIDTH, BOX_LENGTH-front_length, WALL_THICKNESS]);
+                translate([BOX_WIDTH, BOX_LENGTH-front_length, 0]) rotate([0,0,180]) FilletedBottom(BOX_WIDTH, BOX_LENGTH-front_length, WALL_THICKNESS);
                 // Assembly: Cantilever
                 translate([WALL_THICKNESS, 0, 0]) CantileverSupport(31);
                 translate([BOX_WIDTH-WALL_THICKNESS, 4.2, 0])
@@ -680,7 +700,7 @@ module ScreenBoxBack(front_length=FRONT_LENGTH) {
             Foot(pos=[60, WALL_THICKNESS, 38.5], d1=5.4, d2=select_insert(3)[3], h=3+WALL_THICKNESS, direction=[0,-1,0])
                 difference() {
                     // Back panel
-                    cube([BOX_WIDTH, WALL_THICKNESS, LEVEL_HEIGHT-WALL_THICKNESS]);
+                    translate([WALL_THICKNESS,0,WALL_THICKNESS]) cube([BOX_WIDTH-WALL_THICKNESS, WALL_THICKNESS, LEVEL_HEIGHT-2*WALL_THICKNESS]);
                     translate([42.2+WALL_THICKNESS, 0, 20.7+WALL_THICKNESS]) rotate([-90,0,0]) CircleAirVentPattern(d=39,h=WALL_THICKNESS);
                     // Cable management: hole for 24V line in
                     translate([BOX_WIDTH-5, WALL_THICKNESS, 0]) rotate([90, 0, 0]) hull() {
@@ -720,7 +740,7 @@ module ScreenBoxTop(logo=0) {
             difference() {
                 union() {
                     // Frame
-                    translate([0, 5, WALL_THICKNESS]) cube([BOX_WIDTH, BOX_LENGTH-LCD_LENGTH-5, WALL_THICKNESS]);
+                    translate([0, BOX_LENGTH-LCD_LENGTH, 2*WALL_THICKNESS]) mirror([0,1,0]) mirror([0,0,1]) FilletedBottom(BOX_WIDTH, BOX_LENGTH-LCD_LENGTH-5, WALL_THICKNESS);
                     translate([12.5, 0, 0]) cube([BOX_WIDTH-25, BOX_LENGTH-LCD_LENGTH, WALL_THICKNESS]);
                     translate([WALL_THICKNESS+0.25, FRONT_LENGTH-LCD_LENGTH+10, 0]) cube([BOX_WIDTH-2*WALL_THICKNESS-0.5, BOX_LENGTH-FRONT_LENGTH-10, WALL_THICKNESS]);
                     // AIY mic snap fit
@@ -772,8 +792,8 @@ module RaspberryPiStandoffs() {
             translate([52.2,25.8, 22]) mirror([0,0,1]) PCBPin();
         }
         color([0,.8,0.9]) {
-           translate([-8.2,-26, 19]) mirror([0,0,1]) RaspberryPiStandoff();
-            translate([52.2,25.8, 19]) mirror([0,0,1]) #RaspberryPiStandoff();
+            translate([-8.2,-26, 19]) mirror([0,0,1]) RaspberryPiStandoff();
+            translate([52.2,25.8, 19]) mirror([0,0,1]) RaspberryPiStandoff();
         }
     }
 }

@@ -765,16 +765,27 @@ module ScreenBox() {
     translate([BOX_WIDTH, 3, 0]) color([0.2,0.2,0.9]) mirror([0, 1, 0]) Endcap();
 }
 
+module RaspberryPiStandoffs() {
+    translate(RASPBERRY_PI_POSITION) {
+        color([0,0,0.5]) {
+            translate([-8.2,-26, 22]) mirror([0,0,1]) PCBPin();
+            translate([52.2,25.8, 22]) mirror([0,0,1]) PCBPin();
+        }
+        color([0,.8,0.9]) {
+           translate([-8.2,-26, 19]) mirror([0,0,1]) RaspberryPiStandoff();
+            translate([52.2,25.8, 19]) mirror([0,0,1]) #RaspberryPiStandoff();
+        }
+    }
+}
+
 module Scene() {
     translate([-BOX_WIDTH,0,0]) {
         ScreenBox();
         Components(LEVEL_HEIGHT, BOX_HEIGHT);
+        RaspberryPiStandoffs();
     }
     Ender3Screen();
     Ender3WithoutScreen();
-
-    // PCBPin();
-    // RaspberryPiStandoff();
 }
 
 Scene();

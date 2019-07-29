@@ -721,7 +721,7 @@ module Ender3Logo() {
     translate([62, 90, 0.5]) Ender3Relief();
 }
 
-module PCBSnapFit(h=3, h2=1, d=2, d2=4) {
+module PCBSnapFit(h=3.5, h2=1, d=2, d2=3.5) {
     // TODO: verify Snap fit works.
     difference() {
         union() {
@@ -750,7 +750,7 @@ module ScreenBoxTop(logo=0) {
                     }
                     translate([WALL_THICKNESS+0.25, FRONT_LENGTH-LCD_LENGTH+10, 0]) cube([BOX_WIDTH-2*WALL_THICKNESS-0.5, BOX_LENGTH-FRONT_LENGTH-10, WALL_THICKNESS]);
                     // AIY mic snap fit
-                    translate([17, 172.6-LCD_LENGTH,-3]) {
+                    translate([17, 172.6-LCD_LENGTH,-3.5]) {
                         translate([69.5, -5.1, 0]) PCBSnapFit();
                         translate([69.5, 5.1, 0]) PCBSnapFit();
                         translate([0, -5.1, 0]) PCBSnapFit();

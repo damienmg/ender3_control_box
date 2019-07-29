@@ -740,8 +740,14 @@ module ScreenBoxTop(logo=0) {
             difference() {
                 union() {
                     // Frame
-                    translate([0, BOX_LENGTH-LCD_LENGTH, 2*WALL_THICKNESS]) mirror([0,1,0]) mirror([0,0,1]) FilletedBottom(BOX_WIDTH, BOX_LENGTH-LCD_LENGTH-5, WALL_THICKNESS);
-                    translate([12.5, 0, 0]) cube([BOX_WIDTH-25, BOX_LENGTH-LCD_LENGTH, WALL_THICKNESS]);
+                    translate([0, BOX_LENGTH-LCD_LENGTH, 2*WALL_THICKNESS]) mirror([0,1,0]) mirror([0,0,1]) FilletedBottom(BOX_WIDTH, BOX_LENGTH-LCD_LENGTH-2, WALL_THICKNESS);
+                    translate([12.5, 2, 0]) cube([BOX_WIDTH-25, BOX_LENGTH-LCD_LENGTH-2, WALL_THICKNESS]);
+                    translate([12.5, -1, 0]) {
+                        rotate([0,90,0]) intersection() {
+                            translate([1,3,0]) cylinder(d=6, h=BOX_WIDTH-25);
+                            translate([-WALL_THICKNESS, 0, 0]) cube([WALL_THICKNESS, 3, BOX_WIDTH-25]);
+                        }
+                    }
                     translate([WALL_THICKNESS+0.25, FRONT_LENGTH-LCD_LENGTH+10, 0]) cube([BOX_WIDTH-2*WALL_THICKNESS-0.5, BOX_LENGTH-FRONT_LENGTH-10, WALL_THICKNESS]);
                     // AIY mic snap fit
                     translate([17, 172.6-LCD_LENGTH,-3]) {

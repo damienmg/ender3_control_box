@@ -235,7 +235,11 @@ module UpperLevel() {
     length = 130;
     translate([0, BOX_LENGTH-length, LEVEL_HEIGHT])
         difference() {
-            union() {
+            // Feet for SKR13
+            MFoot(pos=[6, 9, -WALL_THICKNESS], d=3, h=3.5+WALL_THICKNESS)
+            MFoot(pos=[82.10, 9, -WALL_THICKNESS], d=3, h=3.5+WALL_THICKNESS)
+            MFoot(pos=[82.10, 110.85, -WALL_THICKNESS], d=3, h=3.5+WALL_THICKNESS)
+            MFoot(pos=[6, 110.85, -WALL_THICKNESS], d=3, h=3.5+WALL_THICKNESS) {
                 // Bottom
                 translate([0.5, 0, -WALL_THICKNESS])
                     linear_extrude(WALL_THICKNESS)
@@ -257,13 +261,6 @@ module UpperLevel() {
                                 [BOX_WIDTH-2*WALL_THICKNESS, BOX_HEIGHT-LEVEL_HEIGHT],
                                 [0, BOX_HEIGHT-LEVEL_HEIGHT]
                             ]);
-                // Feet for SKR13
-                translate([2.25, 5.25, 0]) {
-                    translate([3.75, 3.75, 0]) MFoot(3, h=3.5);
-                    translate([79.85, 3.75, 0]) MFoot(3, h=3.5);
-                    translate([79.85, 105.60, 0]) MFoot(3, h=3.5);
-                    translate([3.75, 105.60, 0]) MFoot(3, h=3.5);
-                }
                 // Support for 5015 fan
                 translate([60, -20, 0]) cylinder(d=10, h=14);
                 translate([33.1, -12.1, 0]) MFoot(3, h=14);

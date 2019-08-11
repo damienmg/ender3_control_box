@@ -734,7 +734,6 @@ module Ender3Logo() {
 }
 
 module PCBSnapFit(h=3.5, h2=1, d=2, d2=3.5) {
-    // TODO: verify Snap fit works.
     difference() {
         union() {
             cylinder(d=d, h=h);
@@ -792,12 +791,16 @@ module ScreenBoxTop(logo=0) {
         }
 }
 
+module ScreenBoxTopLogo() {
+    ScreenBoxTop(logo=1);
+}
+
 module ScreenBox() {
     ScreenBoxFront();
     ScreenBoxBack();
     UpperLevel();
     ScreenBoxTop();
-    ScreenBoxTop(logo=1);
+    ScreenBoxTopLogo();
     FanTunnel(LEVEL_HEIGHT);
     translate([BOX_WIDTH, BOX_LENGTH-3, 0]) color([0.2,0.2,0.9]) Endcap();
     translate([BOX_WIDTH, 3, 0]) color([0.2,0.2,0.9]) mirror([0, 1, 0]) Endcap();

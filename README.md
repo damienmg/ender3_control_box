@@ -8,9 +8,17 @@ This is a 3D printable control box to replace the mainboard enclosure. This encl
     - 2 LM2596 Step down converter for providing 12V for the lights and 5V for the raspberry Pi,
     - 3 5V relay switch modules controlling the printer, the lights and a fan for the raspberry Pi.
 
-This installation is controlled using an OctoPrint plugin available at [damienmg/OctoPrint-ControlBox](https://github.com/damienmg/OctoPrint-ControlBox).
+This installation is controlled using an OctoPrint plugin available at
+[damienmg/OctoPrint-ControlBox](https://github.com/damienmg/OctoPrint-ControlBox).
 
-This repository contains the design files in [OpenSCAD](https://openscad.org), the main entry point is at [control_box/control_box.scad].
+This repository contains the design files in [OpenSCAD](https://openscad.org), the
+main entry point is at [control_box/control_box.scad].
+
+All parameters for this box can be changed in [control_box/params.scad]. Building all the
+files in the good orientation for printing can be done using [Bazel](https://bazel.build)
+with `bazel build ...` (Linux only), then the resulting STL can be found in
+`bazel-bin/control_box`. The top of the box has 2 STLs that can be combined following
+[this tutorial](https://medium.com/@damien.martin.guillerez/multi-filament-print-with-a-single-extruder-using-prusaslicer-2e0746348cdd?source=friends_link&sk=541dcda7cd469b502874ed76e266267e).
 
 ## License
 
@@ -19,6 +27,7 @@ The license of the original sources file of this document are covered by the
 [Creative Commons](https://creativecommons.org) licenses. Because the complexity
 of licensing law it is unclear wether the resulting output file would be covered
 as a library or a derivative. If it is a derivative, then it should be probably
-covered by a [CC-BY-NC-SA](https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode) license. The third party directory of this repository is a collecction
+covered by a [CC-BY-NC-SA](https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode)
+license. The third party directory of this repository is a collecction
 and each file has its own license, please refer to each README file for the
 exact license.

@@ -15,6 +15,11 @@
 load("//3rdparty/openscad:openscad.bzl", "openscad_library", "openscad_artifact")
 
 openscad_library(
+    name = "colors",
+    srcs = ["colors.scad"],
+)
+
+openscad_library(
     name = "control_box_component_positions",
     srcs = ["control_box_component_positions.scad"],
 )
@@ -24,6 +29,7 @@ openscad_library(
     srcs = ["control_box_components.scad"],
     deps = [
         ":control_box_component_positions",
+        ":colors",
         "//3rdparty/AIYVoiceKit",
         "//3rdparty/BuckConverter",
         "//3rdparty/Fan",
@@ -39,6 +45,7 @@ openscad_library(
     deps = [
         ":control_box_components",
         ":control_box_component_positions",
+        ":colors",
         "//3rdparty/Ender3",
         "//3rdparty/FanTunnel",
     ],

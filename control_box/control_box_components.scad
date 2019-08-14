@@ -21,6 +21,7 @@ use <../3rdparty/BuckConverter/buck_converter.scad>
 use <../3rdparty/RelaySwitch/relay_switch.scad>
 use <../3rdparty/AIYVoiceKit/aiy_voice_kit.scad>
 include <control_box_component_positions.scad>
+include <colors.scad>
 
 module Speaker3Inch() {
     $fn=100;
@@ -50,7 +51,7 @@ module Speaker3Inch() {
 
 module LowerLevelComponents() {
     translate([12,0,5.5])
-        color([0.8,0.8,0.8]) {
+        color(COMPONENTS_COLOR) {
             // Raspberry Pi 3B
             translate(RASPBERRY_PI_POSITION) {
                 rotate([0, 0, 180]) {
@@ -89,7 +90,7 @@ module LowerLevelComponents() {
 
 module HigherLevelComponents(level_height) {
     translate([12,0,3.5])
-        color([0.8,0.8,0.8]) {
+        color(COMPONENTS_COLOR) {
 
 
             // SKR1.3 board
@@ -109,7 +110,7 @@ module HigherLevelComponents(level_height) {
 
 module SideComponents(height) {
     translate([12,0,3.5])
-        color([0.8,0.8,0.8]) {
+        color(COMPONENTS_COLOR) {
             // AIY Speaker
             translate([17.5,119,37])
                 rotate([0, -90, 0]) Speaker3Inch();

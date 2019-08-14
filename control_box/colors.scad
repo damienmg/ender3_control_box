@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
- module FanTunnel(level_height) {
-    translate([52, 300, level_height+31])
-        rotate([180, 0, 90])
-            import("./files/Bigtreetech_Stepper_cooler_fan_up.stl");
-}
+
+STANDOFF_COLOR   = [0,   0.8, 0.9];
+PCBPIN_COLOR     = [0,   0,   0.5];
+LOGO_COLOR       = [0.5, 0.5, 0.8];
+ENDCAP_COLOR     = [0.2, 0.2, 0.9];
+COMPONENTS_COLOR = [0.8, 0.8, 0.8];
+FANTUNNEL_COLOR  = [0.6, 0.8, 0.6];

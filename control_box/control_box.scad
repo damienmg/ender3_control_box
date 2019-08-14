@@ -16,6 +16,7 @@
 use <../3rdparty/Ender3/ender3.scad>
 use <../3rdparty/FanTunnel/fan_tunnel.scad>
 use <control_box_components.scad>
+include <colors.scad>
 include <control_box_component_positions.scad>
 
 $fn=50;
@@ -746,7 +747,7 @@ module PCBSnapFit(h=3.5, h2=1, d=2, d2=3.5) {
 module ScreenBoxTop(logo=0) {
     translate([0, LCD_LENGTH, BOX_HEIGHT-WALL_THICKNESS])
         if (logo) {
-            color([0.5, 0.5, 0.8]) Ender3Logo();
+            color(LOGO_COLOR) Ender3Logo();
         } else {
             difference() {
                 union() {
@@ -801,18 +802,20 @@ module ScreenBox() {
     UpperLevel();
     ScreenBoxTop();
     ScreenBoxTopLogo();
-    FanTunnel(LEVEL_HEIGHT);
-    translate([BOX_WIDTH, BOX_LENGTH-3, 0]) color([0.2,0.2,0.9]) Endcap();
-    translate([BOX_WIDTH, 3, 0]) color([0.2,0.2,0.9]) mirror([0, 1, 0]) Endcap();
+    color(FANTUNNEL_COLOR) FanTunnel(LEVEL_HEIGHT);
+    color(ENDCAP_COLOR) {
+        translate([BOX_WIDTH, BOX_LENGTH-3, 0])Endcap();
+        translate([BOX_WIDTH, 3, 0]) mirror([0, 1, 0]) Endcap();
+    }
 }
 
 module RaspberryPiStandoffs() {
     translate(RASPBERRY_PI_POSITION) {
-        color([0,0,0.5]) {
+        color(PCBPIN_COLOR) {
             translate([-8.2,-26, 22]) mirror([0,0,1]) PCBPin();
             translate([52.2,25.8, 22]) mirror([0,0,1]) PCBPin();
         }
-        color([0,.8,0.9]) {
+        color(STANDOFF_COLOR) {
             translate([-8.2,-26, 19]) mirror([0,0,1]) RaspberryPiStandoff();
             translate([52.2,25.8, 19]) mirror([0,0,1]) RaspberryPiStandoff();
         }

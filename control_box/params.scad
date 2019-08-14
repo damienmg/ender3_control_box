@@ -23,17 +23,18 @@ USE_INSERT = 1;
 // TODO: Parameters: - AIY on/off, USB main board on/off
 
 // List of M screw diameters. Those are taken from a set of brass insert
-// I bought on AliExpress.
+// I bought on AliExpress. The insert diameter is the actual diameter of
+// my brass minus 1 mm.
 M_DIAMETERS = [
     // M size, insert diameter, insert length, screw in diameter
     [2, 3.2, 3, 1.5], // M2
-    [2.5, 3, 5, 2], // M2.5. TODO: increase insert diameter
-    [3, 5.1, 6, 2.5], // M3. TODO: Check insert diameter
-    [4, 4.5, 8, 3.5], // M4. TODO: increase insert diameter
-    [5, 6, 8, 4.5], // M5. TODO: increase insert diameter
-    [6, 7.5, 10, 3.5], // M6. TODO: increase insert diameter
-    [8, 9.5, 12, 4.5], // M8. TODO: increase insert diameter
-    [10, 11.6, 12, 4.5], // M10. TODO: increase insert diameter
+    [2.5, 3.3, 5, 2], // M2.5
+    [3, 5.2, 6, 2.5], // M3
+    [4, 4.9, 8, 3.5], // M4
+    [5, 6.4, 8, 4.5], // M5
+    [6, 8.3, 10, 3.5], // M6
+    [8, 10.2, 12, 4.5], // M8
+    [10, 12.1, 12, 4.5], // M10
 ];
 
 // Advanced parameters to set the box size, you should probably not

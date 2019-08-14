@@ -18,24 +18,12 @@ use <../3rdparty/FanTunnel/fan_tunnel.scad>
 use <control_box_components.scad>
 include <colors.scad>
 include <control_box_component_positions.scad>
+include <params.scad>
 
 $fn=50;
 // TODO: (in the slicer): removing support make the endcap shape break. Better to reduce the amount of support so there is none from the build plate.
 // TODO: (slicer): add supports for endcap shape, narrow for extrusion slider and for frame clips.
 // TODO: (slicer): no support on the border of the endcap.
-
-M_DIAMETERS = [
-    // M size, insert diameter, insert length, screw in diameter
-    [2, 3.2, 3, 1.5], // M2
-    [2.5, 3, 5, 2], // M2.5. TODO: increase insert diameter
-    [3, 5.1, 6, 2.5], // M3. TODO: Check insert diameter
-    [4, 4.5, 8, 3.5], // M4. TODO: increase insert diameter
-    [5, 6, 8, 4.5], // M5. TODO: increase insert diameter
-    [6, 7.5, 10, 3.5], // M6. TODO: increase insert diameter
-    [8, 9.5, 12, 4.5], // M8. TODO: increase insert diameter
-    [10, 11.6, 12, 4.5], // M10. TODO: increase insert diameter
-];
-USE_INSERT = 1;
 
 // Note: this function will crash if searching for a non existant diameter.
 function select_insert(d, x=0) = M_DIAMETERS[x][0] == d ? M_DIAMETERS[x] : select_insert(d, x+1);
@@ -44,19 +32,6 @@ function screw_insert_depth(d) = select_insert(d)[2];
 function screwin_diameter(d) = select_insert(d)[3];
 function screw_hole_diameter(d) = screwin_diameter(d)+1;
 
-BOX_WIDTH = 102;
-BOX_HEIGHT = 90; //80;
-LCD_SMALL_HEIGHT = 48; //44 + 2 + 2 for top
-LCD_LENGTH = 100.5; //108;
-// LCD_LENGTH^2 + (BOX_HEIGHT-LCD_SMALL_HEIGHT)^2 = 113^2?
-
-BOX_LENGTH = 295;
-LCD_THICKNESS = 2;
-LEVEL_HEIGHT = 45;
-FRONT_LENGTH = RASPBERRY_PI_POSITION[1]-30;
-WALL_THICKNESS=2;
-
-// TODO: Parameters: - AIY on/off, USB main board on/off, Insert vs screw in
 // TODO: Ender 3 melzi board (SKR E3 Mini).
 
 module Foot(d1=6, d2=2, h=3, pos=[0,0,0], direction=[0,0,1]) {

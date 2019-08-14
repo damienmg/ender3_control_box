@@ -25,6 +25,12 @@ openscad_library(
 )
 
 openscad_library(
+    name = "params",
+    srcs = ["params.scad"],
+    deps = [":control_box_component_positions"],
+)
+
+openscad_library(
     name = "control_box_components",
     srcs = ["control_box_components.scad"],
     deps = [
@@ -46,6 +52,7 @@ openscad_library(
         ":control_box_components",
         ":control_box_component_positions",
         ":colors",
+        ":params",
         "//3rdparty/Ender3",
         "//3rdparty/FanTunnel",
     ],

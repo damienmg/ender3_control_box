@@ -63,8 +63,7 @@ module Foot(d1=6, d2=2, h=3, pos=[0,0,0], direction=[0,0,1]) {
     difference() {
         union() {
             Orientate(position=pos, direction=direction) cylinder(d=d1, h=h);
-            for (c = [0:1:$children-1])
-                children(c);
+            children();
         }
         Orientate(position=pos, direction=direction) cylinder(d=d2, h=h);
     }
@@ -74,8 +73,7 @@ module MFoot(d=2, thickness=5, h=0, pos = [0,0,0], direction=[0,0,1]) {
     h = h > 0 ? h : screw_insert_depth(d);
     d = insert_diameter(d);
     Foot(d1=d+thickness, d2=d, h=h, pos=pos, direction=direction) {
-        for (c = [0:1:$children-1])
-            children(c);
+        children();
     }
 }
 
@@ -128,8 +126,7 @@ module RaspberryPiFeet(direction=[0,0,1], pos=[0,0,0], angle=0) {
                 translate([3.5,61.5,0]) Foot();
                 translate([52.5,3.5,0]) Foot();
             }
-            for (c = [0:1:$children-1])
-                children(c);
+            children();
         }
 }
 
@@ -138,8 +135,7 @@ module BuckConverterFeet(direction=[0,0,1], pos=[0,0,0], angle=0) {
     // Feet with M2 insert
     MFoot(pos=[2.5,7,-WALL_THICKNESS]*m+pos, h=screw_insert_depth(2)+WALL_THICKNESS)
         MFoot(pos=[18,37,-WALL_THICKNESS]*m+pos, h=screw_insert_depth(2)+WALL_THICKNESS) {
-            for (c = [0:1:$children-1])
-                children(c);
+            children();
         }
 }
 
@@ -152,8 +148,7 @@ module RelaySwitchFeet(direction=[0,0,1], pos=[0,0,0], angle=0) {
                 translate([2.2,31.2,0]) Foot(d2=0);
                 translate([23.2,2.2,0]) Foot(d2=0);
             }
-            for (c = [0:1:$children-1])
-                children(c);
+            children();
         }
 }
 
@@ -346,11 +341,10 @@ module Orientate(position=[0,0,0], direction=[0,0,-1], rotation=0, original_dire
     axis = cross(original_direction, direction);
     translation = position;
     rotation_axis = norm(axis) == 0 ? [0, -direction.z, direction.y] : axis;
-    for (c = [0:1:$children-1])
-        translate(translation)
-            rotate(rotation, direction)
-                rotate(angle, norm(axis) > 0 ? axis : rot(direction))
-                    children(c);
+    translate(translation)
+        rotate(rotation, direction)
+            rotate(angle, norm(axis) > 0 ? axis : rot(direction))
+                children();
 }
 
 module CantileverSupport(length) {

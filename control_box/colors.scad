@@ -19,4 +19,5 @@ PCBPIN_COLOR     = [0,   0,   0.5];
 LOGO_COLOR       = [0.5, 0.5, 0.8];
 ENDCAP_COLOR     = [0.2, 0.2, 0.9];
 COMPONENTS_COLOR = [0.8, 0.8, 0.8];
+SUPPORT_COLOR    = [1.0, 1.0, 0.6];
 FANTUNNEL_COLOR  = [0.6, 0.8, 0.6];

@@ -15,12 +15,20 @@
  */
 include <control_box_component_positions.scad>
 
+// Add support to the generated files instead of reyling on slicers.
+GENERATE_SUPPORT = 1;
+
+// This set the layer height at which the object will be printed. When we add
+// the support directly from OpenSCAD, this is used to adjust the supports.
+LAYER_HEIGHT = 0.2;
+
 // Use inserts size. If set to 1, everywhere an screw is supposed to go in, a
 // place for brass inserts will be added. If set to 0, simple holes in the
 // plastic will be added and the screw will screw in the plastic directly. 
 USE_INSERT = 1;
 
-// TODO: Parameters: - AIY on/off, USB main board on/off
+// TODO: AIY on/off
+// TODO: Ender 3 melzi board (SKR E3 Mini).
 
 // List of M screw diameters. Those are taken from a set of brass insert
 // I bought on AliExpress. The insert diameter is the actual diameter of

@@ -21,9 +21,6 @@ include <control_box_component_positions.scad>
 include <params.scad>
 
 $fn=50;
-// TODO: (in the slicer): removing support make the endcap shape break. Better to reduce the amount of support so there is none from the build plate.
-// TODO: (slicer): add supports for endcap shape, narrow for extrusion slider and for frame clips.
-// TODO: (slicer): no support on the border of the endcap.
 
 // Note: this function will crash if searching for a non existant diameter.
 function select_insert(d, x=0) = M_DIAMETERS[x][0] == d ? M_DIAMETERS[x] : select_insert(d, x+1);
@@ -32,7 +29,14 @@ function screw_insert_depth(d) = select_insert(d)[2];
 function screwin_diameter(d) = select_insert(d)[3];
 function screw_hole_diameter(d) = screwin_diameter(d)+1;
 
-// TODO: Ender 3 melzi board (SKR E3 Mini).
+// Module to mark all support
+module Support() {
+    if (GENERATE_SUPPORT) {
+        color(SUPPORT_COLOR) {
+            union() children();
+        }
+    }
+}
 
 module Foot(d1=6, d2=2, h=3, pos=[0,0,0], direction=[0,0,1]) {
     difference() {
@@ -91,6 +95,47 @@ function rotation_matrix(direction, angle) = (
     ])
     P+c*(I-P)+s*Q
 );
+
+// A custom support to make all support start from the ground and have no lateral contact with the model.
+// The support looks like this (inclination is set to be 45 degree):
+//          |<--->| width
+//      |<->| distance
+//           _____
+//           |   /   ^
+//           |  /    |
+//           / /     |
+//          / /      |
+//         / /       |  height - LAYER_HEIGHT
+//        / /        |
+//       / /         |
+//      / /          |
+//     / /           |
+//    / /            |
+//   / /             |
+//   ||              |
+//   ||              |
+//   ||              |
+//  /__\     .       v
+//  |<>|  ground_width
+module GroundSupport(length, height=15, distance=10, width=2, ground_width=4, thickness=2) {
+    Support() {
+        rotate([0, -90, -90]) linear_extrude(length) {
+            polygon([
+                // Diagonal support
+                [height-LAYER_HEIGHT-width+(-distance-ground_width/2+thickness/2), -distance-ground_width+thickness/2],
+                [height-LAYER_HEIGHT-width+ground_width/2, 0],
+                [height-LAYER_HEIGHT, 0],
+                [height-LAYER_HEIGHT, width],
+                [height-LAYER_HEIGHT-width+(-distance-ground_width/2+thickness/2), -distance-ground_width/2+thickness/2],
+                // base
+                [ground_width/2-thickness/2, -distance-ground_width/2+thickness/2],
+                [0, -distance],
+                [0, -distance-ground_width],
+                [ground_width/2-thickness/2, -distance-ground_width/2-thickness/2],
+            ]);
+        }
+    }
+}
 
 module RaspberryPiFeet(direction=[0,0,1], pos=[0,0,0], angle=0) {
     // 2 feet with M2 insert & 2 PCB pin feet.
@@ -476,6 +521,29 @@ module ScreenBoxFront(length=FRONT_LENGTH) {
                 translate([0,0,22]) Cantilever(4);
                 translate([0,0,0.5]) Cantilever(4);
             }
+
+            // Supports
+            translate([BOX_WIDTH+5, 120+10+WALL_THICKNESS, 0]) {
+                // Extrusion slides.
+                rotate([0, 0, 180]) GroundSupport(120, height=10-4, distance=1, width=2);
+                rotate([0, 0, 180]) GroundSupport(120, height=30-4, distance=1, width=2);
+            }
+            // Endcap supports
+            translate([BOX_WIDTH + 11, WALL_THICKNESS, 0])
+                rotate([0, 0, -90]) GroundSupport(20, height=27, distance=1, width=WALL_THICKNESS);
+            // Snapfit supports
+            translate([2, length+0.5, 0])
+                GroundSupport(5.5, height=24, distance=1, width=3);
+            translate([BOX_WIDTH-2, length+6, 0])
+                rotate([0, 0, 180]) GroundSupport(5.5, height=18, distance=1, width=3);
+            translate([0, length+0.5, 0]) {
+                Support() {
+                    cube([BOX_WIDTH, 5.5, WALL_THICKNESS-LAYER_HEIGHT]);
+                    translate([2, 0, 0]) cube([3, 5.5, WALL_THICKNESS+0.5-LAYER_HEIGHT/2]);
+                    translate([BOX_WIDTH-5.5, 0, 0]) cube([3, 5.5, WALL_THICKNESS+0.5-LAYER_HEIGHT/2]);
+                }
+            }
+
         }
         // Clearance for the upper level.
         translate([BOX_WIDTH-WALL_THICKNESS, length-55, LEVEL_HEIGHT-WALL_THICKNESS]) cube([0.4, 55, WALL_THICKNESS]);
@@ -695,6 +763,21 @@ module ScreenBoxBack(front_length=FRONT_LENGTH) {
             // 40x40 Extrusion side
             translate([BOX_WIDTH, 0, 0]) 40ExtrusionEndcap();
         }
+        // Supports
+        translate([0, RASPBERRY_PI_POSITION[1]+10, 0]) GroundSupport(10, height=6.5+15, distance=2, width=WALL_THICKNESS+2); // RPi ports
+        translate([BOX_WIDTH+5, BOX_LENGTH-10-WALL_THICKNESS, 0]) {
+            // Extrusion slides.
+            rotate([0, 0, 180]) GroundSupport(120, height=10-4, distance=1, width=2);
+            rotate([0, 0, 180]) GroundSupport(120, height=30-4, distance=1, width=2);
+        }
+        // Endcap support
+        translate([BOX_WIDTH + 31, BOX_LENGTH-WALL_THICKNESS, 0])
+            rotate([0, 0, 90]) GroundSupport(20, height=27, distance=1, width=WALL_THICKNESS);
+        // Snapfit support
+        translate([BOX_WIDTH/2-4, front_length-4.5, 0])
+            Support() {
+                cube([8, 4, WALL_THICKNESS-LAYER_HEIGHT]);
+            }
     }
 }
 
@@ -718,45 +801,51 @@ module ScreenBoxTop(logo=0) {
         if (logo) {
             color(LOGO_COLOR) Ender3Logo();
         } else {
-            difference() {
-                union() {
-                    // Frame
-                    translate([0, BOX_LENGTH-LCD_LENGTH, 2*WALL_THICKNESS]) mirror([0,1,0]) mirror([0,0,1]) FilletedBottom(BOX_WIDTH, BOX_LENGTH-LCD_LENGTH-2, WALL_THICKNESS);
-                    translate([12.5, 2, 0]) cube([BOX_WIDTH-25, BOX_LENGTH-LCD_LENGTH-2, WALL_THICKNESS]);
-                    translate([12.5, -1, 0]) {
-                        rotate([0,90,0]) intersection() {
-                            translate([1,3,0]) cylinder(d=6, h=BOX_WIDTH-25);
-                            translate([-WALL_THICKNESS, 0, 0]) cube([WALL_THICKNESS, 3, BOX_WIDTH-25]);
+            union() {
+                difference() {
+                    union() {
+                        // Frame
+                        translate([0, BOX_LENGTH-LCD_LENGTH, 2*WALL_THICKNESS]) mirror([0,1,0]) mirror([0,0,1]) FilletedBottom(BOX_WIDTH, BOX_LENGTH-LCD_LENGTH-2, WALL_THICKNESS);
+                        translate([12.5, 2, 0]) cube([BOX_WIDTH-25, BOX_LENGTH-LCD_LENGTH-2, WALL_THICKNESS]);
+                        translate([12.5, -1, 0]) {
+                            rotate([0,90,0]) intersection() {
+                                translate([1,3,0]) cylinder(d=6, h=BOX_WIDTH-25);
+                                translate([-WALL_THICKNESS, 0, 0]) cube([WALL_THICKNESS, 3, BOX_WIDTH-25]);
+                            }
+                        }
+                        translate([WALL_THICKNESS+0.25, FRONT_LENGTH-LCD_LENGTH+10, 0]) cube([BOX_WIDTH-2*WALL_THICKNESS-0.5, BOX_LENGTH-FRONT_LENGTH-10, WALL_THICKNESS]);
+                        // AIY mic snap fit
+                        translate([17, 172.6-LCD_LENGTH,-3.5]) {
+                            translate([69.5, -5.1, 0]) PCBSnapFit();
+                            translate([69.5, 5.1, 0]) PCBSnapFit();
+                            translate([0, -5.1, 0]) PCBSnapFit();
+                            translate([0, 5.1, 0]) PCBSnapFit();
+                        }
+                        // Cooling: tunnel for the 5015 fan
+                        translate([55, 30, -BOX_HEIGHT+LEVEL_HEIGHT+32]) difference() {
+                            cylinder(d=40+2*WALL_THICKNESS, h=BOX_HEIGHT-LEVEL_HEIGHT-32);
+                            cylinder(d=40, h=18);
                         }
                     }
-                    translate([WALL_THICKNESS+0.25, FRONT_LENGTH-LCD_LENGTH+10, 0]) cube([BOX_WIDTH-2*WALL_THICKNESS-0.5, BOX_LENGTH-FRONT_LENGTH-10, WALL_THICKNESS]);
-                    // AIY mic snap fit
-                    translate([17, 172.6-LCD_LENGTH,-3.5]) {
-                        translate([69.5, -5.1, 0]) PCBSnapFit();
-                        translate([69.5, 5.1, 0]) PCBSnapFit();
-                        translate([0, -5.1, 0]) PCBSnapFit();
-                        translate([0, 5.1, 0]) PCBSnapFit();
+                    // AIY mic holes
+                    translate([17, 172.7-LCD_LENGTH,0]) {
+                        cylinder(d=3, h=2*WALL_THICKNESS);
+                        translate([69.5, 0, 0]) cylinder(d=3, h=2*WALL_THICKNESS);
+                        translate([24.75, -2, 0]) cube([20, 4, WALL_THICKNESS]);
                     }
-                    // Cooling: tunnel for the 5015 fan
-                    translate([55, 30, -BOX_HEIGHT+LEVEL_HEIGHT+32]) difference() {
-                        cylinder(d=40+2*WALL_THICKNESS, h=BOX_HEIGHT-LEVEL_HEIGHT-32);
-                        cylinder(d=40, h=18);
+                    // Cooling: exhaust for the 5015 fan
+                    translate([55, 30, 0]) CircleAirVentPattern(h=2*WALL_THICKNESS, d=40);
+                    // Assembly: screw hole for the bottom
+                    translate([70.6, BOX_LENGTH-LCD_LENGTH-8.4, 0]) {
+                        cylinder(d=screw_hole_diameter(3), h=WALL_THICKNESS);
+                        translate([0, 0, WALL_THICKNESS]) cylinder(d=2*screw_hole_diameter(3), h=WALL_THICKNESS);
                     }
+                    Ender3Logo();
                 }
-                // AIY mic holes
-                translate([17, 172.7-LCD_LENGTH,0]) {
-                    cylinder(d=3, h=2*WALL_THICKNESS);
-                    translate([69.5, 0, 0]) cylinder(d=3, h=2*WALL_THICKNESS);
-                    translate([24.75, -2, 0]) cube([20, 4, WALL_THICKNESS]);
+                Support() {
+                    // Support for the screw hole so it does not create a 90 degrees overhang.
+                    translate([70.6, BOX_LENGTH-LCD_LENGTH-8.4, WALL_THICKNESS-LAYER_HEIGHT]) cylinder(d=screw_hole_diameter(3), h=LAYER_HEIGHT);
                 }
-                // Cooling: exhaust for the 5015 fan
-                translate([55, 30, 0]) CircleAirVentPattern(h=2*WALL_THICKNESS, d=40);
-                // Assembly: screw hole for the bottom
-                translate([70.6, BOX_LENGTH-LCD_LENGTH-8.4, 0]) {
-                    cylinder(d=screw_hole_diameter(3), h=WALL_THICKNESS);
-                    translate([0, 0, WALL_THICKNESS]) cylinder(d=2*screw_hole_diameter(3), h=WALL_THICKNESS);
-                }
-                Ender3Logo();
             }
         }
 }

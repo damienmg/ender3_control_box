@@ -310,8 +310,8 @@ module UpperLevel() {
                 // Cable management: bracket
                 translate([87, 12.5, 0]) {
                     // Along the mainboard
-                    for (p = [0:17:68])
-                        translate([0, p, 0]) CableBracket(h=35, w=10, depth=2*WALL_THICKNESS);
+                    CableBracket(h=35, w=10, depth=2*WALL_THICKNESS);
+                    translate([0, 68, 0]) CableBracket(h=35, w=10, depth=2*WALL_THICKNESS);
                     translate([0, 96, 0]) CableBracket(h=35, w=10, depth=2*WALL_THICKNESS);
                 }
                 // Frame assembly: screw for the cover over the air vent
@@ -341,14 +341,14 @@ module UpperLevel() {
             }
 
             // Cooling for the MOSFET under the board (place for heat sink)
-            translate([22, 90, -WALL_THICKNESS]) {
-                cube([34.5, 12, WALL_THICKNESS]);
+            translate([20, 88, -WALL_THICKNESS]) {
+                cube([38.5, 16, WALL_THICKNESS]);
             }
-            // Frame assembly part: 2 holes for screwing to the bottom
-            translate([0, 122, -WALL_THICKNESS]) {
-                translate([6,0,0]) cylinder(d=screw_hole_diameter(3), h=WALL_THICKNESS);
-                translate([BOX_WIDTH-WALL_THICKNESS-6,0,0]) cylinder(d=screw_hole_diameter(3), h=WALL_THICKNESS);
-            }
+            // Frame assembly part: 1 hole for screwing to the bottom
+            translate([6, 122, -WALL_THICKNESS]) cylinder(d=screw_hole_diameter(3), h=WALL_THICKNESS);
+            // A little chamfer to make sliding this level easier.
+            translate([BOX_WIDTH-WALL_THICKNESS-0.5, length-WALL_THICKNESS, 0])
+                rotate([-90,0,180]) linear_extrude(BOX_LENGTH) polygon([[0,0],[0,1], [1,0]]);
         }
 }
 
@@ -721,8 +721,7 @@ module ScreenBoxBack(front_length=FRONT_LENGTH) {
             MFoot(3, thickness=0, pos=[4,BOX_LENGTH-front_length-8,-screw_insert_depth(3)])
                 LevelSupport(BOX_LENGTH-front_length);
         translate([BOX_WIDTH-WALL_THICKNESS, BOX_LENGTH, LEVEL_HEIGHT-WALL_THICKNESS])
-            rotate([0,0,180]) MFoot(3, thickness=0, pos=[6, 8, -screw_insert_depth(3)])
-                LevelSupport(BOX_LENGTH-front_length);
+            rotate([0,0,180]) LevelSupport(BOX_LENGTH-front_length);
         // Assembly: slider for upper level, containing also screw insert for the frame.
         translate([WALL_THICKNESS, front_length+7, LEVEL_HEIGHT])
             UpperLevelBlockerWithM3Insert(depth=7, insert_depth=5, height=BOX_HEIGHT-LEVEL_HEIGHT-8);

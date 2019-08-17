@@ -521,6 +521,11 @@ module ScreenBoxFront(length=FRONT_LENGTH) {
                 translate([0,0,22]) Cantilever(4);
                 translate([0,0,0.5]) Cantilever(4);
             }
+            // Cable management: some brackets
+            translate([40, 45, WALL_THICKNESS])
+                rotate([0,0,-90]) CableBracket(h=30, w=10, depth=2*WALL_THICKNESS);
+            translate([70, 45, WALL_THICKNESS])
+                rotate([0,0,-90]) CableBracket(h=30, w=10, depth=2*WALL_THICKNESS);
 
             // Supports
             translate([BOX_WIDTH+5, 120+10+WALL_THICKNESS, 0]) {

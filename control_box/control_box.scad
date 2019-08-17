@@ -38,6 +38,44 @@ module Support() {
     }
 }
 
+// An insert that should enable sliding while holding 4 direction.
+// Both are made to be printed without support.
+module TopSlide(length) {
+    linear_extrude(length) polygon([
+        [-WALL_THICKNESS, 0],
+        [-WALL_THICKNESS, 8],
+        [0, 8],
+        [4, 6],
+        [6, 3],
+        [6, 0],
+        [5, 0],
+        [2.5, 4],
+        [0, 4],
+        [0, 2.5],
+        [1.5, 1.5],
+        [1.5, 0],
+    ]);
+}
+
+module TopSlideInsert(length) {
+    A=[4.1+WALL_THICKNESS, -WALL_THICKNESS];
+    B=[1.8, 3.8];
+    // Angle computation for information
+    // AB=B-A; // ref = [1,0]
+    // echo("angle = ", 90-acos(AB.y/sqrt(AB.x*AB.x+AB.y*AB.y)));
+    // -> 53.4 degree overhang (printable with minor defect)
+    linear_extrude(length) polygon([
+        A,
+        B,
+        [0.2, 3.8],
+        [0.2, 2.8],
+        [1.8, 1.8],
+        [2, 0],
+        [2, -WALL_THICKNESS],
+        [A.x, -WALL_THICKNESS],
+    ]);
+}
+
 module Foot(d1=6, d2=2, h=3, pos=[0,0,0], direction=[0,0,1]) {
     difference() {
         union() {
@@ -532,6 +570,11 @@ module ScreenBoxFront(length=FRONT_LENGTH) {
                 translate([0,0,22]) Cantilever(4);
                 translate([0,0,0.5]) Cantilever(4);
             }
+            // Assembly: Slides for the cover.
+            translate([WALL_THICKNESS+0.2,LCD_LENGTH+20,BOX_HEIGHT-WALL_THICKNESS])
+                rotate([0,90,-90]) TopSlideInsert(10);
+            translate([BOX_WIDTH-WALL_THICKNESS-0.2,LCD_LENGTH+10,BOX_HEIGHT-WALL_THICKNESS])
+                rotate([0,90,90]) TopSlideInsert(10);
             // Cable management: some brackets
             translate([40, 45, WALL_THICKNESS])
                 rotate([0,0,-90]) CableBracket(h=30, w=10, depth=2*WALL_THICKNESS);
@@ -755,6 +798,11 @@ module ScreenBoxBack(front_length=FRONT_LENGTH) {
 
         // Assembly: frame clips
         translate([BOX_WIDTH/2-4, front_length-4, WALL_THICKNESS]) InsertWithFillet();
+        // Assembly: Slides for the cover.
+        translate([WALL_THICKNESS+0.2,front_length+70,BOX_HEIGHT-WALL_THICKNESS])
+            rotate([0,90,-90]) TopSlideInsert(10);
+        translate([BOX_WIDTH-WALL_THICKNESS-0.2,front_length+60,BOX_HEIGHT-WALL_THICKNESS])
+            rotate([0,90,90]) TopSlideInsert(10);
         // Back
         translate([0, BOX_LENGTH-WALL_THICKNESS, 0]) {
             // Frame for the fan
@@ -841,6 +889,12 @@ module ScreenBoxTop(logo=0) {
                             cylinder(d=40+2*WALL_THICKNESS, h=BOX_HEIGHT-LEVEL_HEIGHT-32);
                             cylinder(d=40, h=18);
                         }
+
+                        // Slides to snap to the box.
+                        translate([WALL_THICKNESS+0.25,20,0]) rotate([0,90,-90]) TopSlide(10);
+                        translate([BOX_WIDTH-(WALL_THICKNESS+0.25),10,0]) rotate([0,90,90]) TopSlide(10);
+                        translate([WALL_THICKNESS+0.25,FRONT_LENGTH-30,0]) rotate([0,90,-90]) TopSlide(10);
+                        translate([BOX_WIDTH-(WALL_THICKNESS+0.25),FRONT_LENGTH-40,0]) rotate([0,90,90]) TopSlide(10);
                     }
                     // AIY mic holes
                     translate([17, 172.7-LCD_LENGTH,0]) {

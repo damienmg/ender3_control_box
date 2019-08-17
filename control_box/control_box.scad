@@ -307,6 +307,17 @@ module UpperLevel() {
                             cube([22.6, 12.8, WALL_THICKNESS]);
                     }
                 }
+                // Cable management: attach for zipties next to the cable exit.
+                translate([81.9,115.2,0]) {
+                    difference() {
+                        hull() {
+                            cube([5,6,30]);
+                            translate([0,6,30]) rotate([90,0,0]) cylinder(d=10, h=6, $fn=100);
+                        }
+                        translate([-5,0,0]) cube([5,6,40]);
+                        translate([1,0,10]) cube([2.5,6,20]);
+                    }
+                }
                 // Cable management: bracket
                 translate([87, 12.5, 0]) {
                     // Along the mainboard

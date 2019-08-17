@@ -697,6 +697,7 @@ module ScrewInsertForFrameAssembly(width = 8, height = 12) {
             ]);
         }
         translate([width/2, p, -height+width]) rotate([90, 0, 0]) cylinder(d=insert_diameter(3), h=p);
+        translate([-WALL_THICKNESS-1, 6.5, -h]) rotate([-45, 0, 0]) cube([WALL_THICKNESS+1, 20, 20]);
     }
 }
 

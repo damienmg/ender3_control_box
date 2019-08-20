@@ -513,9 +513,9 @@ module ScreenBoxFront(length=FRONT_LENGTH) {
             translate([BOX_WIDTH-WALL_THICKNESS, 0, 0]) ScreenBorder(length);
             // Bottom
             FilletedBottom(BOX_WIDTH, length, WALL_THICKNESS);
-            // Front with screw screw insert.
-            MFoot(5, direction=[0, 1, 0], pos=[10, 0, 13], h=10)
-                MFoot(5, direction=[0, 1, 0], pos=[30, 0, 33], h=10)
+            // Front with screen screw insert.
+            MFoot(5, direction=[0, 1, 0], pos=[10, 0, 11], h=10)
+                MFoot(5, direction=[0, 1, 0], pos=[30, 0, 31], h=10)
                     translate([0,0,WALL_THICKNESS]) union() {
                         cube([BOX_WIDTH, WALL_THICKNESS, LCD_SMALL_HEIGHT-WALL_THICKNESS]);
                         cube([43, 10, 43-WALL_THICKNESS]);

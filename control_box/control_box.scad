@@ -44,34 +44,33 @@ module TopSlide(length) {
     linear_extrude(length) polygon([
         [-WALL_THICKNESS, 0],
         [-WALL_THICKNESS, 8],
-        [0, 8],
-        [4, 6],
-        [6, 3],
+        [1, 8],
+        [5, 6],
+        [7, 3],
+        [7, 0],
         [6, 0],
-        [5, 0],
-        [2.5, 4],
-        [0, 4],
-        [0, 2.5],
-        [1.5, 1.5],
-        [1.5, 0],
+        [2.5, 5],
+        [0, 5],
+        [0, 3.5],
+        [2.5, 2],
+        [2.5, 0],
     ]);
 }
 
 module TopSlideInsert(length) {
-    A=[4.1+WALL_THICKNESS, -WALL_THICKNESS];
-    B=[1.8, 3.8];
+    A=[5.2+WALL_THICKNESS, -WALL_THICKNESS];
+    B=[2.4, 4.8];
     // Angle computation for information
     // AB=B-A; // ref = [1,0]
     // echo("angle = ", 90-acos(AB.y/sqrt(AB.x*AB.x+AB.y*AB.y)));
-    // -> 53.4 degree overhang (printable with minor defect)
+    // -> 54.8 degree overhang (printable with minor defect)
     linear_extrude(length) polygon([
         A,
         B,
-        [0.2, 3.8],
-        [0.2, 2.8],
-        [1.8, 1.8],
-        [2, 0],
-        [2, -WALL_THICKNESS],
+        [0.2, 4.8],
+        [0.2, 3.7],
+        [2.8, 2.2],
+        [2.8, -WALL_THICKNESS],
         [A.x, -WALL_THICKNESS],
     ]);
 }

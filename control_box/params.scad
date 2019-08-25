@@ -21,6 +21,7 @@ GENERATE_SUPPORT = 1;
 // This set the layer height at which the object will be printed. When we add
 // the support directly from OpenSCAD, this is used to adjust the supports.
 LAYER_HEIGHT = 0.2;
+EXTRUSION_WIDTH = 0.48;
 
 // Use inserts size. If set to 1, everywhere an screw is supposed to go in, a
 // place for brass inserts will be added. If set to 0, simple holes in the
@@ -44,6 +45,12 @@ M_DIAMETERS = [
     [8, 10.2, 12, 4.5], // M8
     [10, 12.1, 12, 4.5], // M10
 ];
+
+// Advanced support behaviour
+INTERFACE_LAYERS = 4;  // Number of layers to create non plain support.
+GAP_LAYERS = 1;  // Number of layers to skip between support and the shape.
+SUPPORT_PATTERN_DISTANCE = 3; // Distance between each line of non plain support (mm).
+SUPPORT_OFFSET = (INTERFACE_LAYERS+GAP_LAYERS)*LAYER_HEIGHT;
 
 // Advanced parameters to set the box size, you should probably not
 // change those unless you want to adapt to another printer than

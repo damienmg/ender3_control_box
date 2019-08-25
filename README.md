@@ -28,6 +28,6 @@ The license of the original sources file of this document are covered by the
 of licensing law it is unclear wether the resulting output file would be covered
 as a library or a derivative. If it is a derivative, then it should be probably
 covered by a [CC-BY-NC-SA](https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode)
-license. The third party directory of this repository is a collecction
+license. The third party directory of this repository is a collection
 and each file has its own license, please refer to each README file for the
 exact license.

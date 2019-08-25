@@ -38,6 +38,55 @@ module Support() {
     }
 }
 
+module SupportTopLayers(length, width) {
+    intersection() {
+        union() {
+            // A perimeter.
+            linear_extrude(INTERFACE_LAYERS*LAYER_HEIGHT)
+                polygon([
+                    [0, 0],
+                    [width, 0],
+                    [width, length],
+                    [0, length],
+                    [0, 0],
+                    [EXTRUSION_WIDTH, EXTRUSION_WIDTH],
+                    [width-EXTRUSION_WIDTH, EXTRUSION_WIDTH],
+                    [width-EXTRUSION_WIDTH, length-EXTRUSION_WIDTH],
+                    [EXTRUSION_WIDTH, length-EXTRUSION_WIDTH],
+                    [EXTRUSION_WIDTH, EXTRUSION_WIDTH]
+                ]);
+            // Add striped pattern
+            if (width < length) {
+                for (off = [SUPPORT_PATTERN_DISTANCE:SUPPORT_PATTERN_DISTANCE:length+SUPPORT_PATTERN_DISTANCE])
+                    linear_extrude(INTERFACE_LAYERS*LAYER_HEIGHT)
+                        polygon([
+                            [EXTRUSION_WIDTH, off-SUPPORT_PATTERN_DISTANCE],
+                            [width-EXTRUSION_WIDTH, off],
+                            [width-EXTRUSION_WIDTH, EXTRUSION_WIDTH+off],
+                            [EXTRUSION_WIDTH, EXTRUSION_WIDTH+off-SUPPORT_PATTERN_DISTANCE],
+                        ]);
+            } else {
+                for (off = [SUPPORT_PATTERN_DISTANCE:SUPPORT_PATTERN_DISTANCE:width+SUPPORT_PATTERN_DISTANCE])
+                    linear_extrude(INTERFACE_LAYERS*LAYER_HEIGHT)
+                        polygon([
+                            [off-SUPPORT_PATTERN_DISTANCE, EXTRUSION_WIDTH],
+                            [off, length-EXTRUSION_WIDTH],
+                            [EXTRUSION_WIDTH+off, length-EXTRUSION_WIDTH],
+                            [EXTRUSION_WIDTH+off-SUPPORT_PATTERN_DISTANCE, EXTRUSION_WIDTH],
+                        ]);
+            }
+        }
+        // Cut everything inside the support layout
+        linear_extrude(INTERFACE_LAYERS*LAYER_HEIGHT)
+                polygon([
+                    [0, 0],
+                    [width, 0],
+                    [width, length],
+                    [0, length],
+                ]);
+    }
+}
+
 // An insert that should enable sliding while holding 4 direction.
 // Both are made to be printed without support.
 module TopSlide(length) {
@@ -154,22 +203,25 @@ function rotation_matrix(direction, angle) = (
 //   ||              |
 //  /__\     .       v
 //  |<>|  ground_width
-module GroundSupport(length, height=15, distance=10, width=2, ground_width=4, thickness=2) {
+module GroundSupport(length, height=20, distance=10, width=2, ground_width=4, thickness=2) {
     Support() {
-        rotate([0, -90, -90]) linear_extrude(length) {
-            polygon([
-                // Diagonal support
-                [height-LAYER_HEIGHT-width+(-distance-ground_width/2+thickness/2), -distance-ground_width+thickness/2],
-                [height-LAYER_HEIGHT-width+ground_width/2, 0],
-                [height-LAYER_HEIGHT, 0],
-                [height-LAYER_HEIGHT, width],
-                [height-LAYER_HEIGHT-width+(-distance-ground_width/2+thickness/2), -distance-ground_width/2+thickness/2],
-                // base
-                [ground_width/2-thickness/2, -distance-ground_width/2+thickness/2],
-                [0, -distance],
-                [0, -distance-ground_width],
-                [ground_width/2-thickness/2, -distance-ground_width/2-thickness/2],
-            ]);
+        union() {
+            rotate([0, -90, -90]) linear_extrude(length) {
+                polygon([
+                    // Diagonal support
+                    [height-SUPPORT_OFFSET-width+(-distance-ground_width/2+thickness/2), -distance-ground_width+thickness/2],
+                    [height-SUPPORT_OFFSET-width+ground_width/2, 0],
+                    [height-SUPPORT_OFFSET, 0],
+                    [height-SUPPORT_OFFSET, width],
+                    [height-SUPPORT_OFFSET-width+(-distance-ground_width/2+thickness/2), -distance-ground_width/2+thickness/2],
+                    // base
+                    [ground_width/2-thickness/2, -distance-ground_width/2+thickness/2],
+                    [0, -distance],
+                    [0, -distance-ground_width],
+                    [ground_width/2-thickness/2, -distance-ground_width/2-thickness/2],
+                ]);
+            }
+            translate([0, 0, height-SUPPORT_OFFSET]) SupportTopLayers(length, width);
         }
     }
 }
@@ -590,15 +642,23 @@ module ScreenBoxFront(length=FRONT_LENGTH) {
             translate([BOX_WIDTH + 11, WALL_THICKNESS, 0])
                 rotate([0, 0, -90]) GroundSupport(20, height=27, distance=1, width=WALL_THICKNESS);
             // Snapfit supports
-            translate([2, length+0.5, 0])
-                GroundSupport(5.5, height=24, distance=1, width=3);
+            translate([2, length+1, 0])
+                GroundSupport(5, height=24, distance=1, width=3);
             translate([BOX_WIDTH-2, length+6, 0])
-                rotate([0, 0, 180]) GroundSupport(5.5, height=18, distance=1, width=3);
-            translate([0, length+0.5, 0]) {
+                rotate([0, 0, 180]) GroundSupport(5, height=18, distance=1, width=3);
+            translate([0, length+1, 0]) {
                 Support() {
-                    cube([BOX_WIDTH, 5.5, WALL_THICKNESS-LAYER_HEIGHT]);
-                    translate([2, 0, 0]) cube([3, 5.5, WALL_THICKNESS+0.5-LAYER_HEIGHT/2]);
-                    translate([BOX_WIDTH-5.5, 0, 0]) cube([3, 5.5, WALL_THICKNESS+0.5-LAYER_HEIGHT/2]);
+                    cube([BOX_WIDTH, 5, WALL_THICKNESS-SUPPORT_OFFSET]);
+                    translate([BOX_WIDTH/3-1,0,SUPPORT_OFFSET]) SupportTopLayers(3, 6);
+                    translate([2*BOX_WIDTH/3-1,0,SUPPORT_OFFSET]) SupportTopLayers(3, 6);
+                    translate([2, 0, 0]) {
+                        cube([3, 5, WALL_THICKNESS+0.5-SUPPORT_OFFSET]);
+                        translate([0,0,WALL_THICKNESS+0.5-SUPPORT_OFFSET]) SupportTopLayers(5, 3);
+                    }
+                    translate([BOX_WIDTH-5.5, 0, 0]) {
+                        cube([3, 5, WALL_THICKNESS+0.5-SUPPORT_OFFSET]);
+                        translate([0,0,WALL_THICKNESS+0.5-SUPPORT_OFFSET]) SupportTopLayers(5, 3);
+                    }
                 }
             }
 
@@ -839,7 +899,8 @@ module ScreenBoxBack(front_length=FRONT_LENGTH) {
         // Snapfit support
         translate([BOX_WIDTH/2-4, front_length-4.5, 0])
             Support() {
-                cube([8, 4, WALL_THICKNESS-LAYER_HEIGHT]);
+                cube([8, 3.5, WALL_THICKNESS-SUPPORT_OFFSET]);
+                translate([0,0,WALL_THICKNESS-SUPPORT_OFFSET]) SupportTopLayers(3.5, 8);
             }
     }
 }

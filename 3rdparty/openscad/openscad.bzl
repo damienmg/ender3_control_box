@@ -67,7 +67,7 @@ def _artifact_impl(ctx):
         args.add("--render")
     if ctx.attr.defines:
         args.add("-D")
-        args.add_all(["%s=%s" % (k, v) for k, v in ctx.attr.defines])
+        args.add_all(["%s=%s" % (k, ctx.attr.defines[k]) for k in ctx.attr.defines])
     args.add(src.path)
     ctx.actions.run(
         outputs = [ctx.outputs.out],
@@ -103,7 +103,7 @@ openscad_artifact = rule(
     implementation = _artifact_impl,
     attrs = {
         "deps": attr.label_list(providers = [OpenSCADLibraryProvider]),
-        "src": attr.label(allow_files = [".scad"], single_file = True, mandatory = False),
+        "src": attr.label(allow_single_file = [".scad"], mandatory = False),
         "module": attr.string(),
         "type": attr.string(default = "stl", values = ["stl", "off", "dxf", "csg"]),
         "defines": attr.string_dict(default = {}),

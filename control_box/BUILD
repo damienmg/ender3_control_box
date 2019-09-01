@@ -77,6 +77,27 @@ openscad_artifact(
 )
 
 openscad_artifact(
+    name = "control_box_front_NO_SUPPORT",
+    module = "ScreenBoxFront",
+    defines = {"GENERATE_SUPPORT": "0"},
+    deps = ["control_box"],
+)
+
+openscad_artifact(
+    name = "control_box_back_NO_SUPPORT",
+    module = "ScreenBoxBack",
+    defines = {"GENERATE_SUPPORT": "0"},
+    deps = ["control_box"],
+)
+
+openscad_artifact(
+    name = "control_box_top_NO_SUPPORT",
+    defines = {"GENERATE_SUPPORT": "0"},
+    module = "rotate([180,0,0]) ScreenBoxTop",
+    deps = ["control_box"],
+)
+
+openscad_artifact(
     name = "control_box_top_logo",
     module = "rotate([180,0,0]) ScreenBoxTopLogo",
     deps = ["control_box"],

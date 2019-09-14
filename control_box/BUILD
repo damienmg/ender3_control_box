@@ -104,12 +104,6 @@ openscad_artifact(
 )
 
 openscad_artifact(
-    name = "endcap",
-    module = "rotate([-90,0,0]) Endcap",
-    deps = ["control_box"],
-)
-
-openscad_artifact(
     name = "pcb_pin",
     module = "PCBPin",
     deps = ["control_box"],

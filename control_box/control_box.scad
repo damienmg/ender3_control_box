@@ -504,55 +504,52 @@ module ScreenBorder(length = BOX_LENGTH) {
 }
 
 module Endcap(height=10, h=2, clearance=0) {
-    rotate([-90, 0,0]) translate([21,-21,h]) {
-        d=2;
-        off = 20-d/2-clearance;
-        union() {
-            hull() {
-                translate([-off, -off, 0]) cylinder(d=d, h=h);
-                translate([off, -off, 0]) cylinder(d=d, h=h);
-                translate([off, off, 0]) cylinder(d=d, h=h);
-                translate([-off, off, 0]) cylinder(d=d, h=h);
-            }
-            translate([0,0,-height+h]) {
-                length = 17.6-clearance;
-                width = 5.6-clearance;
-                small_width = 3-clearance;
-                small_length = 1.5-clearance;
-                medium_length = 6-clearance;
-                five_points = [
-                    [-width, width],
-                    [-width, length-medium_length],
-                    [-small_width, length-small_length],
-                    [-small_width, length],
-                    [small_width, length],
-                    [small_width, length-small_length],
-                    [width, length-medium_length],
-                    [width, width],
-                ];
-                rotation = [[0, 1], [-1, 0]];
-                poly =concat(
-                            five_points,
-                            five_points*rotation,
-                            five_points*rotation*rotation,
-                            five_points*rotation*rotation*rotation
-                        );
-                linear_extrude(height)
-                    polygon(poly);
-            }
+    d=2;
+    off = 20-d/2-clearance;
+    union() {
+        cube([40+WALL_THICKNESS,WALL_THICKNESS*2,40+WALL_THICKNESS]);
+        rotate([-90, 0, 0]) translate([21,-21,-height+2*h]) {
+            length = 17.6-clearance;
+            width = 5.6-clearance;
+            small_width = 3-clearance;
+            small_length = 1.5-clearance;
+            medium_length = 6-clearance;
+            five_points = [
+                [-width, width],
+                [-width, length-medium_length],
+                [-small_width, length-small_length],
+                [-small_width, length],
+                [small_width, length],
+                [small_width, length-small_length],
+                [width, length-medium_length],
+                [width, width],
+            ];
+            rotation = [[0, 1], [-1, 0]];
+            poly =concat(
+                        five_points,
+                        five_points*rotation,
+                        five_points*rotation*rotation,
+                        five_points*rotation*rotation*rotation
+                    );
+            linear_extrude(height)
+                polygon(poly);
         }
     }
 }
 
 module 40ExtrusionEndcap() {
-    difference() {
-        cube([40+WALL_THICKNESS,WALL_THICKNESS*2,40+WALL_THICKNESS]);
-        // insert for endcap
-        Endcap(clearance=-0.4);
-    }
+    Endcap(clearance=-0.4);
     // Endcap support
-    translate([31, 0, 0])
-        rotate([0, 0, 90]) GroundSupport(20, height=27, distance=1, width=WALL_THICKNESS);
+    translate([25, -6, 0])
+        rotate([0, 0, 90]) GroundSupport(8, height=3, distance=-4, width=2*WALL_THICKNESS);
+    translate([32.5, -6, 0])
+        rotate([0, 0, 90]) GroundSupport(5, height=15, distance=-3, width=2*WALL_THICKNESS);
+    translate([14.5, -6, 0])
+        rotate([0, 0, 90]) GroundSupport(5, height=15, distance=-3, width=2*WALL_THICKNESS);
+    translate([39, -6, 0])
+        rotate([0, 0, 90]) GroundSupport(1.5, height=17.6, distance=-3, width=2*WALL_THICKNESS);
+    translate([4.5, -6, 0])
+        rotate([0, 0, 90]) GroundSupport(1.5, height=17.6, distance=-3, width=2*WALL_THICKNESS);
 }
 
 module ScreenBoxFront(length=FRONT_LENGTH) {

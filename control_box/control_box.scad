@@ -550,6 +550,9 @@ module 40ExtrusionEndcap() {
         // insert for endcap
         Endcap(clearance=-0.4);
     }
+    // Endcap support
+    translate([31, 0, 0])
+        rotate([0, 0, 90]) GroundSupport(20, height=27, distance=1, width=WALL_THICKNESS);
 }
 
 module ScreenBoxFront(length=FRONT_LENGTH) {
@@ -638,9 +641,6 @@ module ScreenBoxFront(length=FRONT_LENGTH) {
                 rotate([0, 0, 180]) GroundSupport(120, height=10-4, distance=1, width=2);
                 rotate([0, 0, 180]) GroundSupport(120, height=30-4, distance=1, width=2);
             }
-            // Endcap supports
-            translate([BOX_WIDTH + 11, WALL_THICKNESS, 0])
-                rotate([0, 0, -90]) GroundSupport(20, height=27, distance=1, width=WALL_THICKNESS);
             // Snapfit supports
             translate([2, length+1, 0])
                 GroundSupport(5, height=24, distance=1, width=3);
@@ -893,9 +893,6 @@ module ScreenBoxBack(front_length=FRONT_LENGTH) {
             rotate([0, 0, 180]) GroundSupport(120, height=10-4, distance=1, width=2);
             rotate([0, 0, 180]) GroundSupport(120, height=30-4, distance=1, width=2);
         }
-        // Endcap support
-        translate([BOX_WIDTH + 31, BOX_LENGTH-WALL_THICKNESS, 0])
-            rotate([0, 0, 90]) GroundSupport(20, height=27, distance=1, width=WALL_THICKNESS);
         // Snapfit support
         translate([BOX_WIDTH/2-4, front_length-4.5, 0])
             Support() {

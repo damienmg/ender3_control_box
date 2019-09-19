@@ -14,27 +14,22 @@
  * limitations under the License.
  */
 
-COLOR=[0.3,0.3,0.3];
-
 module Ender3() {
-    color(COLOR)
-        translate([-100,200,0])
-            rotate([90,0,180])
-                import("Ender3.stl");
+    %translate([-100,200,0])
+        rotate([90,0,180])
+            import("Ender3.stl");
 }
 
 module Ender3Screen() {
-    color(COLOR)
-        translate([-102, -2, 4])
-            rotate([0,-90,180])
-                import("LCD.stl");
+    %translate([-102, -2, 4])
+        rotate([0,-90,180])
+            import("LCD.stl");
 }
 
 module Ender3WithoutScreen() {
-    color(COLOR)
-        translate([122,234,0])
-            rotate([90,0,180])
-                import("Ender3-NoLCD-NoBox.stl");
+    %translate([122,234,0])
+        rotate([90,0,180])
+            import("Ender3-NoLCD-NoBox.stl");
 }
 
 module Ender3Relief() {

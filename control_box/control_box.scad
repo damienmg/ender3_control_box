@@ -591,8 +591,8 @@ module ScreenBoxFront(length=FRONT_LENGTH) {
                 translate([2*BOX_WIDTH/3-2, 0, 0]) mirror([0, 1, 0]) InsertWithFillet();
             }
             // Assembly: frame screws
-            translate([BOX_WIDTH-10, 143, BOX_HEIGHT]) ScrewInsertForFrameAssembly();
-            translate([10, 143, BOX_HEIGHT]) mirror([1,0,0]) ScrewInsertForFrameAssembly();
+            translate([BOX_WIDTH-10, 142, BOX_HEIGHT]) ScrewInsertForFrameAssembly();
+            translate([10, 142, BOX_HEIGHT]) mirror([1,0,0]) ScrewInsertForFrameAssembly();
 
             // Assembly: Support for upper level
             translate([BOX_WIDTH-WALL_THICKNESS, length-WALL_THICKNESS, LEVEL_HEIGHT-WALL_THICKNESS]) {

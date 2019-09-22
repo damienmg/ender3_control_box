@@ -104,6 +104,12 @@ openscad_artifact(
 )
 
 openscad_artifact(
+    name = "control_box_upper_level",
+    module = "UpperLevel",
+    deps = ["control_box"],
+)
+
+openscad_artifact(
     name = "pcb_pin",
     module = "PCBPin",
     deps = ["control_box"],

@@ -797,8 +797,8 @@ module ScreenBoxBack(front_length=FRONT_LENGTH) {
                 translate([BOX_WIDTH, BOX_LENGTH-front_length, 0]) rotate([0,0,180]) FilletedBottom(BOX_WIDTH, BOX_LENGTH-front_length, WALL_THICKNESS);
                 // Assembly: Cantilever
                 translate([WALL_THICKNESS, 0, 0]) CantileverSupport(31);
-                translate([BOX_WIDTH-WALL_THICKNESS, 4.2, 0])
-                    rotate([0,0,180]) CantileverSupport(31);
+                translate([BOX_WIDTH-WALL_THICKNESS, 0, 0])
+                    mirror([1,0,0]) CantileverSupport(31);
             }
             // Raspberry Pi Ports
             translate([0, RASPBERRY_PI_POSITION[1], 6.5]) {

@@ -57,10 +57,7 @@ module PSUCover(height=70, width=115, depth=54, corner_radius=10, fillet=0.5, th
             translate([0,-12.5,thickness]) cylinder(r=6, h=h-thickness, $fn=100);
         }
         // Cable out
-        translate([0,depth/2,15]) rotate([90,0,0]) hull() {
-            cylinder(h=thickness, d=20);
-            translate([10,0,0]) cylinder(h=thickness, d=20);
-        }
+        translate([0,depth/2,15]) rotate([90,0,0]) cylinder(h=thickness, d=10, $fn=50);
     }
 }
 

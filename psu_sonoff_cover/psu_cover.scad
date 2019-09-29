@@ -82,8 +82,10 @@ module SonoffEnclosure(pos=[0,0,0], rotation=[0,0,0], h=4, thickness=2) {
             // Light semi hole
             translate([48.4,6.2,16.5]) cylinder(d=3.5, h=4, $fn=100);
             // Screw in holes (M2)
-            translate([-1.5*thickness-0.1, 25, thickness/2]) rotate([-90,0,0]) cylinder(d=1.7, h=10, $fn=30);
-            translate([69.2-thickness/2, 25, thickness/2]) rotate([-90,0,0]) cylinder(d=1.7, h=10, $fn=30);
+            translate([-1.5*thickness-0.1, 25, thickness/2]) rotate([-90,0,0]) cylinder(d=1.8, h=10, $fn=30);
+            translate([69.2-thickness/2, 25, thickness/2]) rotate([-90,0,0]) cylinder(d=1.8, h=10, $fn=30);
+            translate([-1.5*thickness-0.1, 33.8, thickness/2]) rotate([-90,0,0]) cylinder(d1=1.8, d2=2.2, h=0.6, $fn=30);
+            translate([69.2-thickness/2, 33.8, thickness/2]) rotate([-90,0,0]) cylinder(d1=1.8, d2=2.2, h=0.6, $fn=30);
         }
     }
 }
@@ -102,6 +104,8 @@ module SonoffEnclosureCap(pos=[0,0,0], rotation=[0,0,0], h=4, thickness=2) {
             // Screw in holes (M2)
             translate([-1.5*thickness-0.1, 28, thickness/2]) rotate([-90,0,0]) cylinder(d=2, h=10, $fn=30);
             translate([69.2-thickness/2, 28, thickness/2]) rotate([-90,0,0]) cylinder(d=2, h=10, $fn=30);
+            translate([-1.5*thickness-0.1, 35.8, thickness/2]) rotate([-90,0,0]) cylinder(d1=2, d2=2.3, h=0.6, $fn=30);
+            translate([69.2-thickness/2, 35.8, thickness/2]) rotate([-90,0,0]) cylinder(d1=2, d2=2.3, h=0.6, $fn=30);
         }
     }
 }

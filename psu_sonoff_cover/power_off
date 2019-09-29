@@ -1,0 +1,47 @@
+#!/bin/bash
+
+# ATTENTION: Change the below address before using this script
+ADDR=0.0.0.0 # IP address of the Sonoff running Tasmota 
+DELAY=50  # Delay in deciseconds (1/10th of seconds)
+LOG_FILE=/var/log/power_off.log
+
+
+if [[ "$ADDR" == "0.0.0.0" ]]; then
+  echo "Please configure this service by setting the ADDR line to the correct ip address" >&2
+  exit 1
+fi
+
+mydate() {
+  date +%y/%m/%d_%H:%M:%S
+}
+
+url() {
+  echo "http://$ADDR/cm?cmnd=Backlog%20Delay%20$DELAY%3BPower1%20OFF"
+}
+
+log() {
+  echo "[`mydate`] $@" >>$LOG_FILE
+}
+
+JOBS=$(/bin/systemctl list-jobs)
+
+# log "running jobs: $JOBS"
+if echo "$JOBS" | egrep -q 'reboot.target.*start'; then
+  log "Refusing to run when rebooting"
+  exit 0
+fi
+
+case "$1" in
+  "stop")
+    # Shut down the power after 10s
+    log "curl \"`url`\""
+    log "$(curl "$(url)" 2>&1)"
+    ;;
+  "dry-run")
+    log "[DRY_RUN] curl \"`url`\""
+    echo "curl \"`url`\""
+    ;;
+  *)
+    echo "Failed, command $1 not supported" >&2
+    ;;
+esac

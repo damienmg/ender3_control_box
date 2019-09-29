@@ -1,0 +1,12 @@
+[Unit]
+Description=ShutdownPower
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/bin/true
+ExecStop=/usr/local/bin/power_off stop
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

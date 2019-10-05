@@ -160,12 +160,10 @@ module FullPSUCover() {
 }
 
 module Scene() {
-    translate([90.5,124+WIDTH/2,127.5-HEIGHT]) {
-        rotate([0,0,90]) {
-            FullPSUCover();
-            SonoffEnclosureCap(SONOFF_POS, SONOFF_ROTATION);
-            %translate(SONOFF_POS) rotate(SONOFF_ROTATION) SonoffBoardMock(false);
-        }
+    rotate([0,0,90]) {
+        FullPSUCover();
+        SonoffEnclosureCap(SONOFF_POS, SONOFF_ROTATION);
+        %translate(SONOFF_POS) rotate(SONOFF_ROTATION) SonoffBoardMock(false);
     }
 }
 

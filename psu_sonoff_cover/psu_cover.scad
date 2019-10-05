@@ -66,14 +66,15 @@ module SonoffEnclosure(pos=[0,0,0], rotation=[0,0,0], h=4, thickness=2) {
         union() {
             children();
             translate(pos) rotate(rotation) {
-                translate([-3*thickness-0.2,-1,-thickness-0.2]) cube([3*thickness, 35.4, thickness+h+0.2]);
-                translate([69.2-2*thickness,-1,-thickness-0.2]) cube([3*thickness, 35.4, thickness+h+0.2]);
+                translate([-3*thickness-0.2,-1,-thickness-0.2-h]) cube([3*thickness, 35.4, thickness+h+0.2]);
+                translate([69.2-2*thickness,-1,-thickness-0.2-h]) cube([3*thickness, 35.4, thickness+h+0.2]);
+                translate([-3*thickness-0.2,-1,-thickness-0.2]) cube([3*thickness, 10, thickness+h+0.2]);
+                translate([69.2-2*thickness,-1,-thickness-0.2]) cube([3*thickness, 10, thickness+h+0.2]);
                 // Front and back are set to not colide with board components
                 translate([-0.2,-1, 2]) cube([2.5, 2*thickness, h/2]);
-                translate([-0.2,-1, -thickness-0.2]) cube([2.5, 2*thickness, h/2]);
+                translate([-0.2,-1, -thickness-0.2-h/2]) cube([2.5, 2*thickness, h]);
                 translate([69.2-2*thickness-8,-1, 2]) cube([8, 2*thickness, h/2]);
-                translate([69.2-2*thickness-8,-1, -thickness-0.2]) cube([8, 2*thickness, h/2]);
-                // translate([-thickness-0.2,-1,-thickness-0.2]) cube([69.4, h, thickness]);
+                translate([69.2-2*thickness-8,-1, -thickness-0.2-h/2]) cube([8, 2*thickness, h]);
             }
         }
         translate(pos) rotate(rotation) {
@@ -82,10 +83,10 @@ module SonoffEnclosure(pos=[0,0,0], rotation=[0,0,0], h=4, thickness=2) {
             // Light semi hole
             translate([48.4,6.2,16.5]) cylinder(d=3.5, h=4, $fn=100);
             // Screw in holes (M2)
-            translate([-1.5*thickness-0.1, 25, thickness/2]) rotate([-90,0,0]) cylinder(d=1.8, h=10, $fn=30);
-            translate([69.2-thickness/2, 25, thickness/2]) rotate([-90,0,0]) cylinder(d=1.8, h=10, $fn=30);
-            translate([-1.5*thickness-0.1, 33.8, thickness/2]) rotate([-90,0,0]) cylinder(d1=1.8, d2=2.2, h=0.6, $fn=30);
-            translate([69.2-thickness/2, 33.8, thickness/2]) rotate([-90,0,0]) cylinder(d1=1.8, d2=2.2, h=0.6, $fn=30);
+            translate([-1.5*thickness-0.1, 25, -3*thickness/2]) rotate([-90,0,0]) cylinder(d=1.8, h=10, $fn=30);
+            translate([69.2-thickness/2, 25, -3*thickness/2]) rotate([-90,0,0]) cylinder(d=1.8, h=10, $fn=30);
+            translate([-1.5*thickness-0.1, 33.8, -3*thickness/2]) rotate([-90,0,0]) cylinder(d1=1.8, d2=2.2, h=0.6, $fn=30);
+            translate([69.2-thickness/2, 33.8, -3*thickness/2]) rotate([-90,0,0]) cylinder(d1=1.8, d2=2.2, h=0.6, $fn=30);
         }
     }
 }
@@ -94,18 +95,21 @@ module SonoffEnclosureCap(pos=[0,0,0], rotation=[0,0,0], h=4, thickness=2) {
     translate(pos) rotate(rotation) {
         difference() {
             union() {
-                translate([-3*thickness-0.2,34.4,-thickness-0.2]) cube([6*thickness+65.4, thickness, thickness+h+0.2]);
-                translate([0.5,31.4,-thickness-0.2]) cube([3.5,3,thickness+h+0.2]);
-                translate([4,31.4,-thickness-0.2]) cube([3.5,3,thickness]);
-                translate([4,31.4,h-thickness]) cube([3.5,3,thickness]);
-                translate([55,31.4,-thickness-0.2]) cube([3.5,3,thickness]);
+                translate([-3*thickness-0.2,34.4,-h-thickness-0.2]) cube([6*thickness+65.4, thickness, thickness+2*h+0.2]);
+                translate([0.5,31.4,-thickness-h-0.2]) cube([3.5,3,thickness+2*h+0.2]);
+                translate([4,31.4,-h-0.4]) cube([3.5,3,h+0.2]);
+                translate([-2.5,31.4,h-thickness]) cube([10,3,thickness]);
+                translate([55,31.4,-h-0.2]) cube([3.5,3,h]);
                 translate([55,31.4,h-thickness]) cube([3.5,3,thickness]);
+                translate([0.2,0,-2*h+thickness-0.2]) cube([64.8, 35.8, thickness-0.2]);
+                translate([-3*thickness-0.2,25.8,0.2]) cube([3*thickness, 10, 2*thickness-0.2]);
+                translate([65.2,25.8,0.2]) cube([3*thickness, 10, 2*thickness-0.2]);
             }
             // Screw in holes (M2)
-            translate([-1.5*thickness-0.1, 28, thickness/2]) rotate([-90,0,0]) cylinder(d=2, h=10, $fn=30);
-            translate([69.2-thickness/2, 28, thickness/2]) rotate([-90,0,0]) cylinder(d=2, h=10, $fn=30);
-            translate([-1.5*thickness-0.1, 35.8, thickness/2]) rotate([-90,0,0]) cylinder(d1=2, d2=2.3, h=0.6, $fn=30);
-            translate([69.2-thickness/2, 35.8, thickness/2]) rotate([-90,0,0]) cylinder(d1=2, d2=2.3, h=0.6, $fn=30);
+            translate([-1.5*thickness-0.1, 28, -3*thickness/2]) rotate([-90,0,0]) cylinder(d=2, h=10, $fn=30);
+            translate([69.2-thickness/2, 28, -3*thickness/2]) rotate([-90,0,0]) cylinder(d=2, h=10, $fn=30);
+            translate([-1.5*thickness-0.1, 35.8, -3*thickness/2]) rotate([-90,0,0]) cylinder(d1=2, d2=2.3, h=0.6, $fn=30);
+            translate([69.2-thickness/2, 35.8, -3*thickness/2]) rotate([-90,0,0]) cylinder(d1=2, d2=2.3, h=0.6, $fn=30);
         }
     }
 }

@@ -114,14 +114,25 @@ module SonoffEnclosureCap(pos=[0,0,0], rotation=[0,0,0], h=4, thickness=2) {
     }
 }
 
-module PowerPlug(pos=[0,0,0], rotation=[0,0,0], h=27, w=56, d=10, thickness=2, fillet=1, hole_depth=10) {
+module PowerPlug(pos=[0,0,0], rotation=[0,0,0], h=27, w=56, d=10, thickness=2, fillet=1, hole_depth=10, height=15) {
     difference() {
-        children();
+        union() {
+            translate(pos) rotate(rotation) minkowski() {
+                rotate([90,90,0]) linear_extrude(thickness/(2*fillet)+height) {
+                    polygon([
+                        [-h/2,-w/2],[-h/2-d,0],[-h/2,w/2],
+                        [h/2,w/2],[h/2+d,0],[h/2,-w/2]
+                    ]);
+                }
+                sphere(fillet, $fn=50);
+            }
+            children();
+        }
 
-        translate(pos) rotate(rotation) {
-            translate([-w/2+3.5, -hole_depth/2, -h/2-0.5]) cube([w-7,hole_depth,h+1]);
-            translate([0, hole_depth/2, h/2+d/2+1.5]) rotate([90,0,0]) cylinder(d=2.6, h=hole_depth, $fn=50);
-            translate([0, hole_depth/2, -h/2-d/2-1.5]) rotate([90,0,0]) cylinder(d=2.6, h=hole_depth, $fn=50);
+        translate(pos + [height,0,0]) rotate(rotation) {
+            translate([-w/2+3.5, -hole_depth/2, -h/2-0.5]) cube([w-7,hole_depth+height,h+1]);
+            translate([0, hole_depth/2, h/2+d/2+1.5]) rotate([90,0,0]) cylinder(d=2, h=hole_depth+height, $fn=50);
+            translate([0, hole_depth/2, -h/2-d/2-1.5]) rotate([90,0,0]) cylinder(d=2, h=hole_depth+height, $fn=50);
         }
     }
 }

@@ -131,8 +131,8 @@ module PowerPlug(pos=[0,0,0], rotation=[0,0,0], h=27, w=56, d=10, thickness=2, f
 
         translate(pos + [height,0,0]) rotate(rotation) {
             translate([-w/2+3.5, -hole_depth/2, -h/2-0.5]) cube([w-7,hole_depth+height,h+1]);
-            translate([0, hole_depth/2, h/2+d/2+1.5]) rotate([90,0,0]) cylinder(d=2, h=hole_depth+height, $fn=50);
-            translate([0, hole_depth/2, -h/2-d/2-1.5]) rotate([90,0,0]) cylinder(d=2, h=hole_depth+height, $fn=50);
+            translate([0, hole_depth/2, h/2+d/2+1.5]) rotate([90,0,0]) cylinder(d=2.3, h=hole_depth+height, $fn=50);
+            translate([0, hole_depth/2, -h/2-d/2-1.5]) rotate([90,0,0]) cylinder(d=2.3, h=hole_depth+height, $fn=50);
         }
     }
 }

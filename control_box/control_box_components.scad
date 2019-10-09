@@ -60,7 +60,7 @@ module LowerLevelComponents() {
                 }
             }
             // Buck converter 24V -> 5V for Raspberry Pi.
-            translate([10, 227, 0]) {
+            translate([10, 231.5, 0]) {
                 rotate([90, 0, 0])
                     BuckConverter();
             }
@@ -69,7 +69,7 @@ module LowerLevelComponents() {
                 rotate([0,0,90]) RelaySwitch();
             }
             // Buck converter 24V -> 12V for the LEDs
-            translate([10, 253, 0]) {
+            translate([10, 255.5, 0]) {
                 rotate([90, 0, 0])
                     BuckConverter();
             }

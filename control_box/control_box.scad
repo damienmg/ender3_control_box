@@ -775,8 +775,8 @@ module InsertWithFillet() {
 
 module ScreenBoxBack(front_length=FRONT_LENGTH) {
     // Buck converter feet (x2)
-    BuckConverterFeet(pos=[65, 227.5, WALL_THICKNESS], angle=-90)
-    BuckConverterFeet(pos=[65, 253.5, WALL_THICKNESS], angle=-90)
+    BuckConverterFeet(pos=[65, 232, WALL_THICKNESS], angle=-90)
+    BuckConverterFeet(pos=[65, 256, WALL_THICKNESS], angle=-90)
     // Raspberry pi feet
     RaspberryPiFeet(pos=RASPBERRY_PI_POSITION + [-10.5, 28, WALL_THICKNESS], angle=-90) {
         difference() {
@@ -1004,14 +1004,24 @@ module RaspberryPiStandoffs() {
     }
 }
 
-module Scene() {
+module AllComponents() {
+    Components(LEVEL_HEIGHT, BOX_HEIGHT);
+    RaspberryPiStandoffs();
+}
+
+module WithEnder3() {
     translate([-BOX_WIDTH,0,0]) {
-        ScreenBox();
-        Components(LEVEL_HEIGHT, BOX_HEIGHT);
-        RaspberryPiStandoffs();
+        children();
     }
     Ender3Screen();
     Ender3WithoutScreen();
+}
+
+module Scene() {
+    WithEnder3() {
+        ScreenBox();
+        AllComponents();
+    }
 }
 
 Scene();

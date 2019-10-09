@@ -14,5 +14,5 @@
  * limitations under the License.
  */
 
-RASPBERRY_PI_POSITION = [33,190,0];
+RASPBERRY_PI_POSITION = [33,194,0];
 MAINBOARD_POSITION = [-10,170,0]; 

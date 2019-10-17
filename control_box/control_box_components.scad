@@ -22,6 +22,7 @@ use <../3rdparty/RelaySwitch/relay_switch.scad>
 use <../3rdparty/AIYVoiceKit/aiy_voice_kit.scad>
 include <control_box_component_positions.scad>
 include <colors.scad>
+include <params.scad>
 
 module Speaker3Inch() {
     $fn=100;
@@ -56,7 +57,7 @@ module LowerLevelComponents() {
             translate(RASPBERRY_PI_POSITION) {
                 rotate([0, 0, 180]) {
                     RPi();
-                    VoiceHat();
+                    if (AIY_KIT) VoiceHat();
                 }
             }
             // Buck converter 24V -> 5V for Raspberry Pi.
@@ -91,8 +92,6 @@ module LowerLevelComponents() {
 module HigherLevelComponents(level_height) {
     translate([12,0,3.5])
         color(COMPONENTS_COLOR) {
-
-
             // SKR1.3 board
             // 0 height would be -5
             translate(MAINBOARD_POSITION + [0, 0, level_height]) {
@@ -109,15 +108,17 @@ module HigherLevelComponents(level_height) {
 }
 
 module SideComponents(height) {
-    translate([12,0,3.5])
-        color(COMPONENTS_COLOR) {
-            // AIY Speaker
-            translate([17.5,119,37])
-                rotate([0, -90, 0]) Speaker3Inch();
+    if (AIY_KIT) {
+        translate([12,0,3.5])
+            color(COMPONENTS_COLOR) {
+                // AIY Speaker
+                translate([17.5,119,37])
+                    rotate([0, -90, 0]) Speaker3Inch();
 
-            // AIY microphone
-            translate([-25, 165, height-6]) VoiceHatMic();
-        }
+                // AIY microphone
+                translate([-25, 165, height-6]) VoiceHatMic();
+            }
+    }
 }
 
 module Components(level_height, height) {

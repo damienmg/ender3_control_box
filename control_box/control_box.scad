@@ -576,16 +576,18 @@ module ScreenBoxFront(length=FRONT_LENGTH) {
                         cube([43, 10, 43-WALL_THICKNESS]);
                     }
             translate([BOX_WIDTH+40+WALL_THICKNESS, WALL_THICKNESS, 0]) rotate([0,0,180]) 40ExtrusionEndcap();
-            // Housing frame for Speaker
-            translate([0, length-WALL_THICKNESS, WALL_THICKNESS]) cube([32, WALL_THICKNESS, 50-WALL_THICKNESS]);
-            translate([0, 77, WALL_THICKNESS]) {
-                cube([32, WALL_THICKNESS, 50-WALL_THICKNESS]);
-                translate([32, 0, 0]) cube([WALL_THICKNESS, length-77, 50-WALL_THICKNESS]);
-                translate([20, 0, 0]) difference() {
-                    cube([WALL_THICKNESS, length-77, 50-WALL_THICKNESS]);
-                    translate([0, 22, 40-WALL_THICKNESS]) {
-                        cube([WALL_THICKNESS, 41, 20]);
-                        translate([0, 20.5, 0]) rotate([0, 90, 0]) cylinder(d=41, h=WALL_THICKNESS);
+            if (AIY_KIT) {
+                // Housing frame for Speaker
+                translate([0, length-WALL_THICKNESS, WALL_THICKNESS]) cube([32, WALL_THICKNESS, 50-WALL_THICKNESS]);
+                translate([0, 77, WALL_THICKNESS]) {
+                    cube([32, WALL_THICKNESS, 50-WALL_THICKNESS]);
+                    translate([32, 0, 0]) cube([WALL_THICKNESS, length-77, 50-WALL_THICKNESS]);
+                    translate([20, 0, 0]) difference() {
+                        cube([WALL_THICKNESS, length-77, 50-WALL_THICKNESS]);
+                        translate([0, 22, 40-WALL_THICKNESS]) {
+                            cube([WALL_THICKNESS, 41, 20]);
+                            translate([0, 20.5, 0]) rotate([0, 90, 0]) cylinder(d=41, h=WALL_THICKNESS);
+                        }
                     }
                 }
             }
@@ -623,6 +625,9 @@ module ScreenBoxFront(length=FRONT_LENGTH) {
             }
             translate([WALL_THICKNESS, FRONT_LENGTH, WALL_THICKNESS]) {
                 translate([0,0,22]) Cantilever(4);
+                if (!AIY_KIT) {
+                    translate([0,-5,0]) cube([3, 5, 26]);
+                }
                 translate([0,0,0.5]) Cantilever(4);
             }
             // Assembly: Slides for the cover.
@@ -675,15 +680,17 @@ module ScreenBoxFront(length=FRONT_LENGTH) {
                     [BOX_WIDTH-33, -55],
                     [BOX_WIDTH-33, 0],
                 ]);
-        // Speaker holes
-        translate([0, 118, 40]) rotate([0,90,0]) union() {
-            cylinder(d=15, h=WALL_THICKNESS);
-            translate([20, 0, 0]) cylinder(d=15, h=WALL_THICKNESS);
-            translate([-20, 0, 0]) cylinder(d=15, h=WALL_THICKNESS);
-            translate([10, -20, 0]) cylinder(d=15, h=WALL_THICKNESS);
-            translate([-10, -20, 0]) cylinder(d=15, h=WALL_THICKNESS);
-            translate([10, 20, 0]) cylinder(d=15, h=WALL_THICKNESS);
-            translate([-10, 20, 0]) cylinder(d=15, h=WALL_THICKNESS);
+        if (AIY_KIT) {
+            // Speaker holes
+            translate([0, 118, 40]) rotate([0,90,0]) union() {
+                cylinder(d=15, h=WALL_THICKNESS);
+                translate([20, 0, 0]) cylinder(d=15, h=WALL_THICKNESS);
+                translate([-20, 0, 0]) cylinder(d=15, h=WALL_THICKNESS);
+                translate([10, -20, 0]) cylinder(d=15, h=WALL_THICKNESS);
+                translate([-10, -20, 0]) cylinder(d=15, h=WALL_THICKNESS);
+                translate([10, 20, 0]) cylinder(d=15, h=WALL_THICKNESS);
+                translate([-10, 20, 0]) cylinder(d=15, h=WALL_THICKNESS);
+            }
         }
     }
 }
@@ -940,12 +947,14 @@ module ScreenBoxTop(logo=0) {
                             }
                         }
                         translate([WALL_THICKNESS+0.25, FRONT_LENGTH-LCD_LENGTH+10, 0]) cube([BOX_WIDTH-2*WALL_THICKNESS-0.5, BOX_LENGTH-FRONT_LENGTH-10, WALL_THICKNESS]);
-                        // AIY mic snap fit
-                        translate([17, 172.6-LCD_LENGTH,-3.5]) {
-                            translate([69.5, -5.1, 0]) PCBSnapFit();
-                            translate([69.5, 5.1, 0]) PCBSnapFit();
-                            translate([0, -5.1, 0]) PCBSnapFit();
-                            translate([0, 5.1, 0]) PCBSnapFit();
+                        if (AIY_KIT) {
+                            // AIY mic snap fit
+                            translate([17, 172.6-LCD_LENGTH,-3.5]) {
+                                translate([69.5, -5.1, 0]) PCBSnapFit();
+                                translate([69.5, 5.1, 0]) PCBSnapFit();
+                                translate([0, -5.1, 0]) PCBSnapFit();
+                                translate([0, 5.1, 0]) PCBSnapFit();
+                            }
                         }
                         // Cooling: tunnel for the 5015 fan
                         translate([55, 30, -BOX_HEIGHT+LEVEL_HEIGHT+32]) difference() {
@@ -959,11 +968,13 @@ module ScreenBoxTop(logo=0) {
                         translate([WALL_THICKNESS+0.25,FRONT_LENGTH-30,0]) rotate([0,90,-90]) TopSlide(10);
                         translate([BOX_WIDTH-(WALL_THICKNESS+0.25),FRONT_LENGTH-40,0]) rotate([0,90,90]) TopSlide(10);
                     }
-                    // AIY mic holes
-                    translate([17, 172.7-LCD_LENGTH,0]) {
-                        cylinder(d=3, h=2*WALL_THICKNESS);
-                        translate([69.5, 0, 0]) cylinder(d=3, h=2*WALL_THICKNESS);
-                        translate([24.75, -2, 0]) cube([20, 4, WALL_THICKNESS]);
+                    if (AIY_KIT) {
+                        // AIY mic holes
+                        translate([17, 172.7-LCD_LENGTH,0]) {
+                            cylinder(d=3, h=2*WALL_THICKNESS);
+                            translate([69.5, 0, 0]) cylinder(d=3, h=2*WALL_THICKNESS);
+                            translate([24.75, -2, 0]) cube([20, 4, WALL_THICKNESS]);
+                        }
                     }
                     // Cooling: exhaust for the 5015 fan
                     translate([55, 30, 0]) CircleAirVentPattern(h=2*WALL_THICKNESS, d=40);
@@ -1001,13 +1012,20 @@ module ScreenBox() {
 
 module RaspberryPiStandoffs() {
     translate(RASPBERRY_PI_POSITION) {
-        color(PCBPIN_COLOR) {
-            translate([-8.2,-26, 22]) mirror([0,0,1]) PCBPin();
-            translate([52.2,25.8, 22]) mirror([0,0,1]) PCBPin();
-        }
-        color(STANDOFF_COLOR) {
-            translate([-8.2,-26, 19]) mirror([0,0,1]) RaspberryPiStandoff();
-            translate([52.2,25.8, 19]) mirror([0,0,1]) RaspberryPiStandoff();
+        if (AIY_KIT) {
+            color(PCBPIN_COLOR) {
+                translate([-8.2,-26, 22]) mirror([0,0,1]) PCBPin();
+                translate([52.2,25.8, 22]) mirror([0,0,1]) PCBPin();
+            }
+            color(STANDOFF_COLOR) {
+                translate([-8.2,-26, 19]) mirror([0,0,1]) RaspberryPiStandoff();
+                translate([52.2,25.8, 19]) mirror([0,0,1]) RaspberryPiStandoff();
+            }
+        } else {
+            color(PCBPIN_COLOR) {
+                translate([-7,-26, 8]) mirror([0,0,1]) PCBPin();
+                translate([51,24.5, 8]) mirror([0,0,1]) PCBPin();
+            }
         }
     }
 }

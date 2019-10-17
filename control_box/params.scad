@@ -22,6 +22,9 @@ GENERATE_SUPPORT = true;
 // the fixation will be omitted, which make the box suitable for use with an enclosure.
 ENDER3_FIXATION = true;
 
+// Add feature to have room for the Google AIY Kit v1.
+AIY_KIT = true;
+
 // This set the layer height at which the object will be printed. When we add
 // the support directly from OpenSCAD, this is used to adjust the supports.
 LAYER_HEIGHT = 0.2;
@@ -32,7 +35,6 @@ EXTRUSION_WIDTH = 0.48;
 // plastic will be added and the screw will screw in the plastic directly. 
 USE_INSERT = 1;
 
-// TODO: AIY on/off
 // TODO: Ender 3 melzi board (SKR E3 Mini).
 
 // List of M screw diameters. Those are taken from a set of brass insert

@@ -262,19 +262,21 @@ module RelaySwitchFeet(direction=[0,0,1], pos=[0,0,0], angle=0) {
 }
 
 module AluminiumExtrusionSlider(length=10) {
-    rotate([90, -90, 0]) linear_extrude(height = length)
-        polygon([
-            [-2.25, 0],
-            [-2.25, 3],
-            [-4, 3],
-            [-4, 4],
-            [-2.25, 5.5],
-            [2.25, 5.5],
-            [4, 4],
-            [4, 3],
-            [2.25, 3],
-            [2.25, 0],
-        ]);
+    if (ENDER3_FIXATION) {
+        rotate([90, -90, 0]) linear_extrude(height = length)
+            polygon([
+                [-2.25, 0],
+                [-2.25, 3],
+                [-4, 3],
+                [-4, 4],
+                [-2.25, 5.5],
+                [2.25, 5.5],
+                [4, 4],
+                [4, 3],
+                [2.25, 3],
+                [2.25, 0],
+            ]);
+    }
 }
 
 module SquareAirVentPattern(h=WALL_THICKNESS, w=18.6, l=17.6, m=5, n=5) {
@@ -538,18 +540,20 @@ module Endcap(height=10, h=2, clearance=0) {
 }
 
 module 40ExtrusionEndcap() {
-    Endcap(clearance=-0.4);
-    // Endcap support
-    translate([25, -6, 0])
-        rotate([0, 0, 90]) GroundSupport(8, height=3, distance=-4, width=2*WALL_THICKNESS);
-    translate([32.5, -6, 0])
-        rotate([0, 0, 90]) GroundSupport(5, height=15, distance=-3, width=2*WALL_THICKNESS);
-    translate([14.5, -6, 0])
-        rotate([0, 0, 90]) GroundSupport(5, height=15, distance=-3, width=2*WALL_THICKNESS);
-    translate([39, -6, 0])
-        rotate([0, 0, 90]) GroundSupport(1.5, height=17.6, distance=-3, width=2*WALL_THICKNESS);
-    translate([4.5, -6, 0])
-        rotate([0, 0, 90]) GroundSupport(1.5, height=17.6, distance=-3, width=2*WALL_THICKNESS);
+    if (ENDER3_FIXATION) {
+        Endcap(clearance=-0.4);
+        // Endcap support
+        translate([25, -6, 0])
+            rotate([0, 0, 90]) GroundSupport(8, height=3, distance=-4, width=2*WALL_THICKNESS);
+        translate([32.5, -6, 0])
+            rotate([0, 0, 90]) GroundSupport(5, height=15, distance=-3, width=2*WALL_THICKNESS);
+        translate([14.5, -6, 0])
+            rotate([0, 0, 90]) GroundSupport(5, height=15, distance=-3, width=2*WALL_THICKNESS);
+        translate([39, -6, 0])
+            rotate([0, 0, 90]) GroundSupport(1.5, height=17.6, distance=-3, width=2*WALL_THICKNESS);
+        translate([4.5, -6, 0])
+            rotate([0, 0, 90]) GroundSupport(1.5, height=17.6, distance=-3, width=2*WALL_THICKNESS);
+    }
 }
 
 module ScreenBoxFront(length=FRONT_LENGTH) {
@@ -633,10 +637,12 @@ module ScreenBoxFront(length=FRONT_LENGTH) {
                 rotate([0,0,-90]) CableBracket(h=30, w=10, depth=2*WALL_THICKNESS);
 
             // Supports
-            translate([BOX_WIDTH+5, 120+10+WALL_THICKNESS, 0]) {
-                // Extrusion slides.
-                rotate([0, 0, 180]) GroundSupport(120, height=10-4, distance=1, width=2);
-                rotate([0, 0, 180]) GroundSupport(120, height=30-4, distance=1, width=2);
+            if(ENDER3_FIXATION) {
+                translate([BOX_WIDTH+5, 120+10+WALL_THICKNESS, 0]) {
+                    // Extrusion slides.
+                    rotate([0, 0, 180]) GroundSupport(120, height=10-4, distance=1, width=2);
+                    rotate([0, 0, 180]) GroundSupport(120, height=30-4, distance=1, width=2);
+                }
             }
             // Snapfit supports
             translate([2, length+1, 0])
@@ -885,10 +891,12 @@ module ScreenBoxBack(front_length=FRONT_LENGTH) {
         }
         // Supports
         translate([0, RASPBERRY_PI_POSITION[1]+10, 0]) GroundSupport(10, height=6.5+15, distance=2, width=WALL_THICKNESS+2); // RPi ports
-        translate([BOX_WIDTH+5, BOX_LENGTH-10-WALL_THICKNESS, 0]) {
-            // Extrusion slides.
-            rotate([0, 0, 180]) GroundSupport(120, height=10-4, distance=1, width=2);
-            rotate([0, 0, 180]) GroundSupport(120, height=30-4, distance=1, width=2);
+        if (ENDER3_FIXATION) {
+            translate([BOX_WIDTH+5, BOX_LENGTH-10-WALL_THICKNESS, 0]) {
+                // Extrusion slides.
+                rotate([0, 0, 180]) GroundSupport(120, height=10-4, distance=1, width=2);
+                rotate([0, 0, 180]) GroundSupport(120, height=30-4, distance=1, width=2);
+            }
         }
         // Snapfit support
         translate([BOX_WIDTH/2-4, front_length-4.5, 0])

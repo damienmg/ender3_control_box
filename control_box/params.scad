@@ -15,8 +15,12 @@
  */
 include <control_box_component_positions.scad>
 
-// Add support to the generated files instead of reyling on slicers.
-GENERATE_SUPPORT = 1;
+// Add support to the generated files instead of relyng on slicers.
+GENERATE_SUPPORT = true;
+
+// Add the fixation to attach to the Ender-3. By setting the next parameter to false,
+// the fixation will be omitted, which make the box suitable for use with an enclosure.
+ENDER3_FIXATION = true;
 
 // This set the layer height at which the object will be printed. When we add
 // the support directly from OpenSCAD, this is used to adjust the supports.

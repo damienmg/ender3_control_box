@@ -51,73 +51,70 @@ module Speaker3Inch() {
 }
 
 module LowerLevelComponents() {
-    translate([12,0,5.5])
-        color(COMPONENTS_COLOR) {
-            // Raspberry Pi 3B
-            translate(RASPBERRY_PI_POSITION) {
-                rotate([0, 0, 180]) {
-                    RPi();
-                    if (AIY_KIT) VoiceHat();
-                }
-            }
-            // Buck converter 24V -> 5V for Raspberry Pi.
-            translate([10, 231.5, 0]) {
-                rotate([90, 0, 0])
-                    BuckConverter();
-            }
-            // Relay for the LEDs driving 12V
-            translate([70, 125, 0]) {
-                rotate([0,0,90]) RelaySwitch();
-            }
-            // Buck converter 24V -> 12V for the LEDs
-            translate([10, 255.5, 0]) {
-                rotate([90, 0, 0])
-                    BuckConverter();
-            }
-            // Relay for the fan, connected on the Rpi 24V input
-            translate([70, 95, 0]) {
-                rotate([0,0,90]) RelaySwitch();
-            }
-            // Electronic Fan
-            translate([32, 288, 17]) {
-                rotate([90, -90, 0]) 4010Fan();
-            }
-            // Printer relay.
-            translate([70, 65, 0]) {
-                rotate([0,0,90]) RelaySwitch();
+    %translate([12,0,5.5]) {
+        // Raspberry Pi 3B
+        translate(RASPBERRY_PI_POSITION) {
+            rotate([0, 0, 180]) {
+                RPi();
+                if (AIY_KIT) VoiceHat();
             }
         }
+        // Buck converter 24V -> 5V for Raspberry Pi.
+        translate([10, 231.5, 0]) {
+            rotate([90, 0, 0])
+                BuckConverter();
+        }
+        // Relay for the LEDs driving 12V
+        translate([70, 125, 0]) {
+            rotate([0,0,90]) RelaySwitch();
+        }
+        // Buck converter 24V -> 12V for the LEDs
+        translate([10, 255.5, 0]) {
+            rotate([90, 0, 0])
+                BuckConverter();
+        }
+        // Relay for the fan, connected on the Rpi 24V input
+        translate([70, 95, 0]) {
+            rotate([0,0,90]) RelaySwitch();
+        }
+        // Electronic Fan
+        translate([32, 288, 17]) {
+            rotate([90, -90, 0]) 4010Fan();
+        }
+        // Printer relay.
+        translate([70, 65, 0]) {
+            rotate([0,0,90]) RelaySwitch();
+        }
+    }
 }
 
 module HigherLevelComponents(level_height) {
-    translate([12,0,3.5])
-        color(COMPONENTS_COLOR) {
-            // SKR1.3 board
-            // 0 height would be -5
-            translate(MAINBOARD_POSITION + [0, 0, level_height]) {
-                 SKR13();
-            }
+    %translate([12,0,3.5]) {
+        // SKR1.3 board
+        // 0 height would be -5
+        translate(MAINBOARD_POSITION + [0, 0, level_height]) {
+                SKR13();
+        }
 
-            // 5015 Fan for the TMC steppers
-            translate([68,160,70.6]) {
-                rotate([0, 0, 180]) {
-                    5015Fan();
-                }
+        // 5015 Fan for the TMC steppers
+        translate([68,160,70.6]) {
+            rotate([0, 0, 180]) {
+                5015Fan();
             }
         }
+    }
 }
 
 module SideComponents(height) {
     if (AIY_KIT) {
-        translate([12,0,3.5])
-            color(COMPONENTS_COLOR) {
-                // AIY Speaker
-                translate([17.5,119,37])
-                    rotate([0, -90, 0]) Speaker3Inch();
+        %translate([12,0,3.5]) {
+            // AIY Speaker
+            translate([17.5,119,37])
+                rotate([0, -90, 0]) Speaker3Inch();
 
-                // AIY microphone
-                translate([-25, 165, height-6]) VoiceHatMic();
-            }
+            // AIY microphone
+            translate([-25, 165, height-6]) VoiceHatMic();
+        }
     }
 }
 

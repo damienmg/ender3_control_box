@@ -21,10 +21,7 @@ openscad_library(
 
 openscad_library(
     name = "params",
-    srcs = [
-        "control_box_component_positions.scad",
-        "params.scad",
-    ],
+    srcs = ["params.scad"],
 )
 
 openscad_library(

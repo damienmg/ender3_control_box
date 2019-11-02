@@ -88,7 +88,7 @@ module LowerLevelComponents() {
 }
 
 module HigherLevelComponents(level_height, height) {
-    %translate([12,0,3.5]) {
+    %translate([0,0,3.5]) {
         // SKR1.3 board
         // 0 height would be -5
         translate(MAINBOARD_POSITION + [0, 0, level_height]) {
@@ -98,14 +98,14 @@ module HigherLevelComponents(level_height, height) {
         }
         if (BLOWER_COOLING) {
             // 5015 Fan for the TMC steppers.
-            translate([68,160,70.6]) {
+            translate([80,160,70.6]) {
                 rotate([0, 0, 180]) {
                     5015Fan();
                 }
             }
         } else {
             // 2*4010 to cool stepper driver.
-            translate([BOX_WIDTH/2-12, MAINBOARD_POSITION.y, height-10]) {
+            translate([BOX_WIDTH/2, MAINBOARD_POSITION.y, height-10]) {
                 translate([0,22,0]) 4010Fan();
                 translate([0,-22,0]) 4010Fan();
             }

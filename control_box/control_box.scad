@@ -357,10 +357,12 @@ module UpperLevel() {
     translate([0, BOX_LENGTH-length, LEVEL_HEIGHT])
         difference() {
             // Feet for SKR13
-            MFoot(pos=[6, 9, -WALL_THICKNESS], d=3, h=3.5+WALL_THICKNESS)
-            MFoot(pos=[82.10, 9, -WALL_THICKNESS], d=3, h=3.5+WALL_THICKNESS)
-            MFoot(pos=[82.10, 110.85, -WALL_THICKNESS], d=3, h=3.5+WALL_THICKNESS)
-            MFoot(pos=[6, 110.85, -WALL_THICKNESS], d=3, h=3.5+WALL_THICKNESS) {
+            SKR13_HOLE_DISTANCE=[76.1, 101.85, 0];
+            SKR13_OFFSET=MAINBOARD_POSITION+[0, -BOX_LENGTH+length, -WALL_THICKNESS];
+            MFoot(pos=SKR13_OFFSET-SKR13_HOLE_DISTANCE/2, d=3, h=3.5+WALL_THICKNESS)
+            MFoot(pos=SKR13_OFFSET+[SKR13_HOLE_DISTANCE.x/2, -SKR13_HOLE_DISTANCE.y/2, 0], d=3, h=3.5+WALL_THICKNESS)
+            MFoot(pos=SKR13_OFFSET+SKR13_HOLE_DISTANCE/2, d=3, h=3.5+WALL_THICKNESS)
+            MFoot(pos=SKR13_OFFSET+[-SKR13_HOLE_DISTANCE.x/2, SKR13_HOLE_DISTANCE.y/2, 0], d=3, h=3.5+WALL_THICKNESS) {
                 // Bottom
                 translate([0.5, 0, -WALL_THICKNESS])
                     linear_extrude(WALL_THICKNESS)

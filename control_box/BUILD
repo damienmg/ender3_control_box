@@ -20,22 +20,19 @@ openscad_library(
 )
 
 openscad_library(
-    name = "control_box_component_positions",
-    srcs = ["control_box_component_positions.scad"],
-)
-
-openscad_library(
     name = "params",
-    srcs = ["params.scad"],
-    deps = [":control_box_component_positions"],
+    srcs = [
+        "control_box_component_positions.scad",
+        "params.scad",
+    ],
 )
 
 openscad_library(
     name = "control_box_components",
     srcs = ["control_box_components.scad"],
     deps = [
-        ":control_box_component_positions",
         ":colors",
+        ":params",
         "//3rdparty/AIYVoiceKit",
         "//3rdparty/BuckConverter",
         "//3rdparty/Fan",
@@ -50,7 +47,6 @@ openscad_library(
     srcs = ["control_box.scad"],
     deps = [
         ":control_box_components",
-        ":control_box_component_positions",
         ":colors",
         ":params",
         "//3rdparty/Ender3",

@@ -17,7 +17,6 @@ use <../3rdparty/Ender3/ender3.scad>
 use <../3rdparty/FanTunnel/fan_tunnel.scad>
 use <control_box_components.scad>
 include <colors.scad>
-include <control_box_component_positions.scad>
 include <params.scad>
 
 $fn=50;
@@ -791,7 +790,7 @@ module ScreenBoxBack(front_length=FRONT_LENGTH) {
     BuckConverterFeet(pos=[65, 232, WALL_THICKNESS], angle=-90)
     BuckConverterFeet(pos=[65, 256, WALL_THICKNESS], angle=-90)
     // Raspberry pi feet
-    RaspberryPiFeet(pos=RASPBERRY_PI_POSITION + [-10.5, 28, WALL_THICKNESS], angle=-90) {
+    RaspberryPiFeet(pos=RASPBERRY_PI_POSITION + [REVERSED ? -30.5 : -10.5, 28, WALL_THICKNESS], angle=-90) {
         difference() {
             translate([0, front_length, 0]) {
                 // Left
@@ -814,27 +813,27 @@ module ScreenBoxBack(front_length=FRONT_LENGTH) {
                     mirror([1,0,0]) CantileverSupport(31);
             }
             // Raspberry Pi Ports
-            translate([0, RASPBERRY_PI_POSITION[1], 6.5]) {
+            translate([REVERSED ? BOX_WIDTH - 10 : 0, RASPBERRY_PI_POSITION[1], 6.5]) {
                 // Ethernet
-                translate([0, 9, 0])
+                translate([0, REVERSED ? -27 : 9, 0])
                     cube([10, 18, 15]);
                 // USB
-                translate([0, -27, 0])
+                translate([0, REVERSED ? -9 : -27, 0])
                     cube([10, 37, 17]);
             }
-            sd_card_y = 52;
+            sd_card_y = REVERSED ? -12.8 : -2.8;
             // Main board ports
-            translate([0, MAINBOARD_POSITION[1], LEVEL_HEIGHT+5.5]) {
+            translate([REVERSED ? BOX_WIDTH - WALL_THICKNESS : 0, MAINBOARD_POSITION[1], LEVEL_HEIGHT+5.5]) {
                 // SD-card slot
                 translate([0, sd_card_y, 0]) cube([WALL_THICKNESS, 15.5, 3]);
                 // USB port
-                translate([0, 73, 0]) cube([WALL_THICKNESS, 12.5, 11]);
+                translate([0, REVERSED ? -30.8 : 18.2, 0]) cube([WALL_THICKNESS, 12.5, 11]);
             }
             // Clearance for the upper level.
             translate([BOX_WIDTH-WALL_THICKNESS, front_length, LEVEL_HEIGHT-WALL_THICKNESS]) cube([0.4, BOX_LENGTH-front_length, WALL_THICKNESS]);
             translate([WALL_THICKNESS-0.4, front_length, LEVEL_HEIGHT-WALL_THICKNESS]) cube([0.4, BOX_LENGTH-front_length, WALL_THICKNESS]);
             // Clearance for the SD-card reader
-            translate([WALL_THICKNESS-1, MAINBOARD_POSITION[1]+sd_card_y, LEVEL_HEIGHT+4.5]) {
+            translate([REVERSED ? BOX_WIDTH-WALL_THICKNESS : WALL_THICKNESS-1, MAINBOARD_POSITION[1]+sd_card_y, LEVEL_HEIGHT+4.5]) {
                 rotate([-90,0,0]) linear_extrude(BOX_LENGTH-MAINBOARD_POSITION[1]-sd_card_y) {
                     polygon([
                         [0,0],
@@ -846,11 +845,11 @@ module ScreenBoxBack(front_length=FRONT_LENGTH) {
             }
         }
         // Assembly: Support for upper level
-        translate([WALL_THICKNESS, front_length, LEVEL_HEIGHT-WALL_THICKNESS])
-            MFoot(3, thickness=0, pos=[4,BOX_LENGTH-front_length-8,-screw_insert_depth(3)])
-                LevelSupport(BOX_LENGTH-front_length);
-        translate([BOX_WIDTH-WALL_THICKNESS, BOX_LENGTH, LEVEL_HEIGHT-WALL_THICKNESS])
-            rotate([0,0,180]) LevelSupport(BOX_LENGTH-front_length);
+        translate([REVERSED ? BOX_WIDTH-WALL_THICKNESS : WALL_THICKNESS, REVERSED ? BOX_LENGTH : front_length, LEVEL_HEIGHT-WALL_THICKNESS])
+            MFoot(3, thickness=0, pos=[REVERSED ? -4 : 4, REVERSED ? -8 : BOX_LENGTH-front_length-8,-screw_insert_depth(3)])
+                rotate([0,0, REVERSED ? 180 : 0]) LevelSupport(BOX_LENGTH-front_length);
+        translate([REVERSED ? WALL_THICKNESS : BOX_WIDTH-WALL_THICKNESS, REVERSED ? front_length : BOX_LENGTH, LEVEL_HEIGHT-WALL_THICKNESS])
+            rotate([0,0,REVERSED ? 0 : 180]) LevelSupport(BOX_LENGTH-front_length);
         // Assembly: slider for upper level, containing also screw insert for the frame.
         translate([WALL_THICKNESS, front_length+7, LEVEL_HEIGHT])
             UpperLevelBlockerWithM3Insert(depth=7, insert_depth=5, height=BOX_HEIGHT-LEVEL_HEIGHT-8);
@@ -859,11 +858,11 @@ module ScreenBoxBack(front_length=FRONT_LENGTH) {
 
         // Assembly: Slider for 40x40 aluminium extrusion.
         // Note this part needs support.
-        translate([BOX_WIDTH, BOX_LENGTH-WALL_THICKNESS-10, 30]) {
-            mirror([1, 0, 0]) AluminiumExtrusionSlider(120);
+        translate([REVERSED ? 0 : BOX_WIDTH, BOX_LENGTH-WALL_THICKNESS-10, 30]) {
+            mirror([REVERSED ? 0 : 1, 0, 0]) AluminiumExtrusionSlider(120);
         }
-        translate([BOX_WIDTH, BOX_LENGTH-WALL_THICKNESS-10, 10]) {
-            mirror([1, 0, 0]) AluminiumExtrusionSlider(120);
+        translate([REVERSED ? 0 : BOX_WIDTH, BOX_LENGTH-WALL_THICKNESS-10, 10]) {
+            mirror([REVERSED ? 0 : 1, 0, 0]) AluminiumExtrusionSlider(120);
         }
 
         // Assembly: frame clips
@@ -876,17 +875,17 @@ module ScreenBoxBack(front_length=FRONT_LENGTH) {
         // Back
         translate([0, BOX_LENGTH-WALL_THICKNESS, 0]) {
             // Frame for the fan
-            translate([21.8, -10, 0]) cube([WALL_THICKNESS, 10, 40]);
-            translate([64.2, -10, 0]) cube([WALL_THICKNESS, 10, 40]);
+            translate([REVERSED ? 41.8 : 21.8, -10, 0]) cube([WALL_THICKNESS, 10, 40]);
+            translate([REVERSED ? 84.2 : 64.2, -10, 0]) cube([WALL_THICKNESS, 10, 40]);
             // Mounting hole for the fan
-            Foot(pos=[28, WALL_THICKNESS, 6.5], d1=5.4, d2=select_insert(3)[3], h=3+WALL_THICKNESS, direction=[0,-1,0])
-            Foot(pos=[60, WALL_THICKNESS, 38.5], d1=5.4, d2=select_insert(3)[3], h=3+WALL_THICKNESS, direction=[0,-1,0])
+            Foot(pos=[REVERSED ? 48 : 28, WALL_THICKNESS, 6.5], d1=5.4, d2=select_insert(3)[3], h=3+WALL_THICKNESS, direction=[0,-1,0])
+            Foot(pos=[REVERSED ? 80 : 60, WALL_THICKNESS, 38.5], d1=5.4, d2=select_insert(3)[3], h=3+WALL_THICKNESS, direction=[0,-1,0])
                 difference() {
                     // Back panel
-                    translate([WALL_THICKNESS,0,WALL_THICKNESS]) cube([BOX_WIDTH-WALL_THICKNESS, WALL_THICKNESS, LEVEL_HEIGHT-2*WALL_THICKNESS]);
-                    translate([42.2+WALL_THICKNESS, 0, 20.7+WALL_THICKNESS]) rotate([-90,0,0]) CircleAirVentPattern(d=39,h=WALL_THICKNESS);
+                    translate([REVERSED ? 0 : WALL_THICKNESS,0,WALL_THICKNESS]) cube([BOX_WIDTH-WALL_THICKNESS, WALL_THICKNESS, LEVEL_HEIGHT-2*WALL_THICKNESS]);
+                    translate([(REVERSED ? 62.2 : 42.2)+WALL_THICKNESS, 0, 20.7+WALL_THICKNESS]) rotate([-90,0,0]) CircleAirVentPattern(d=39,h=WALL_THICKNESS);
                     // Cable management: hole for 24V line in
-                    translate([BOX_WIDTH-5, WALL_THICKNESS, 0]) rotate([90, 0, 0]) hull() {
+                    translate([REVERSED ? 0 : BOX_WIDTH-5, WALL_THICKNESS, 0]) rotate([90, 0, 0]) hull() {
                         cylinder(d=10, h=WALL_THICKNESS);
                         translate([0, 5, 0]) cylinder(d=10, h=WALL_THICKNESS);
                         translate([5, 5, 0]) cylinder(d=10, h=WALL_THICKNESS);
@@ -894,15 +893,16 @@ module ScreenBoxBack(front_length=FRONT_LENGTH) {
                     }
                 }
             // 40x40 Extrusion side
-            translate([BOX_WIDTH, 0, 0]) 40ExtrusionEndcap();
+            translate([REVERSED ? -40-WALL_THICKNESS : BOX_WIDTH, 0, 0]) 40ExtrusionEndcap();
         }
         // Supports
-        translate([0, RASPBERRY_PI_POSITION[1]+10, 0]) GroundSupport(10, height=6.5+15, distance=2, width=WALL_THICKNESS+2); // RPi ports
+        // RPi ports
+        translate([REVERSED ? BOX_WIDTH : 0, RASPBERRY_PI_POSITION[1]+(REVERSED ? -9 : 10), 0]) rotate([0,0,REVERSED ? 180 : 0]) GroundSupport(10, height=6.5+15, distance=2, width=WALL_THICKNESS+2);
         if (ENDER3_FIXATION) {
-            translate([BOX_WIDTH+5, BOX_LENGTH-10-WALL_THICKNESS, 0]) {
+            translate([REVERSED ? -5 : BOX_WIDTH+5, BOX_LENGTH-WALL_THICKNESS-(REVERSED ? 130 : 10), 0]) {
                 // Extrusion slides.
-                rotate([0, 0, 180]) GroundSupport(120, height=10-4, distance=1, width=2);
-                rotate([0, 0, 180]) GroundSupport(120, height=30-4, distance=1, width=2);
+                rotate([0, 0, REVERSED ? 0 : 180]) GroundSupport(120, height=10-4, distance=1, width=2);
+                rotate([0, 0, REVERSED ? 0 : 180]) GroundSupport(120, height=30-4, distance=1, width=2);
             }
         }
         // Snapfit support
@@ -1004,14 +1004,10 @@ module ScreenBox() {
     ScreenBoxTop();
     ScreenBoxTopLogo();
     color(FANTUNNEL_COLOR) FanTunnel(LEVEL_HEIGHT);
-    color(ENDCAP_COLOR) {
-        translate([BOX_WIDTH, BOX_LENGTH-3, 0])Endcap();
-        translate([BOX_WIDTH, 3, 0]) mirror([0, 1, 0]) Endcap();
-    }
 }
 
 module RaspberryPiStandoffs() {
-    translate(RASPBERRY_PI_POSITION) {
+    translate(RASPBERRY_PI_POSITION - [REVERSED ? 20 : 0,0,0]) {
         if (AIY_KIT) {
             color(PCBPIN_COLOR) {
                 translate([-8.2,-26, 22]) mirror([0,0,1]) PCBPin();

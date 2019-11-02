@@ -20,7 +20,6 @@ use <../3rdparty/Fan/fan.scad>
 use <../3rdparty/BuckConverter/buck_converter.scad>
 use <../3rdparty/RelaySwitch/relay_switch.scad>
 use <../3rdparty/AIYVoiceKit/aiy_voice_kit.scad>
-include <control_box_component_positions.scad>
 include <colors.scad>
 include <params.scad>
 
@@ -54,13 +53,13 @@ module LowerLevelComponents() {
     %translate([12,0,5.5]) {
         // Raspberry Pi 3B
         translate(RASPBERRY_PI_POSITION) {
-            rotate([0, 0, 180]) {
+            rotate([0, 0, REVERSED ? 0 : 180]) {
                 RPi();
                 if (AIY_KIT) VoiceHat();
             }
         }
         // Buck converter 24V -> 5V for Raspberry Pi.
-        translate([10, 231.5, 0]) {
+        translate([REVERSED ? 30 : 10, 231.5, 0]) {
             rotate([90, 0, 0])
                 BuckConverter();
         }
@@ -69,7 +68,7 @@ module LowerLevelComponents() {
             rotate([0,0,90]) RelaySwitch();
         }
         // Buck converter 24V -> 12V for the LEDs
-        translate([10, 255.5, 0]) {
+        translate([REVERSED ? 30 : 10, 255.5, 0]) {
             rotate([90, 0, 0])
                 BuckConverter();
         }
@@ -78,7 +77,7 @@ module LowerLevelComponents() {
             rotate([0,0,90]) RelaySwitch();
         }
         // Electronic Fan
-        translate([32, 288, 17]) {
+        translate([REVERSED ? 52 : 32, 288, 17]) {
             rotate([90, -90, 0]) 4010Fan();
         }
         // Printer relay.
@@ -88,18 +87,27 @@ module LowerLevelComponents() {
     }
 }
 
-module HigherLevelComponents(level_height) {
+module HigherLevelComponents(level_height, height) {
     %translate([12,0,3.5]) {
         // SKR1.3 board
         // 0 height would be -5
         translate(MAINBOARD_POSITION + [0, 0, level_height]) {
-                SKR13();
+                rotate([0, 0, REVERSED ? 180 : 0])
+                    translate([-MAINBOARD_SIZE.x/2, -MAINBOARD_SIZE.y/2, 0])
+                        SKR13();
         }
-
-        // 5015 Fan for the TMC steppers
-        translate([68,160,70.6]) {
-            rotate([0, 0, 180]) {
-                5015Fan();
+        if (BLOWER_COOLING) {
+            // 5015 Fan for the TMC steppers.
+            translate([68,160,70.6]) {
+                rotate([0, 0, 180]) {
+                    5015Fan();
+                }
+            }
+        } else {
+            // 2*4010 to cool stepper driver.
+            translate(MAINBOARD_POSITION + [-25,0,height-10]) {
+                translate([0,22,0]) 4010Fan();
+                translate([0,-22,0]) 4010Fan();
             }
         }
     }
@@ -109,8 +117,8 @@ module SideComponents(height) {
     if (AIY_KIT) {
         %translate([12,0,3.5]) {
             // AIY Speaker
-            translate([17.5,119,37])
-                rotate([0, -90, 0]) Speaker3Inch();
+            translate([REVERSED ? 57.5 : 17.5,119,37])
+                rotate([0, REVERSED ? 90 : -90, 0]) Speaker3Inch();
 
             // AIY microphone
             translate([-25, 165, height-6]) VoiceHatMic();
@@ -121,5 +129,5 @@ module SideComponents(height) {
 module Components(level_height, height) {
     SideComponents(height);
     LowerLevelComponents();
-    HigherLevelComponents(level_height);
+    HigherLevelComponents(level_height, height);
 }

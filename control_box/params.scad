@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-include <control_box_component_positions.scad>
 
 // Add support to the generated files instead of relyng on slicers.
 GENERATE_SUPPORT = true;
@@ -21,6 +20,9 @@ GENERATE_SUPPORT = true;
 // Add the fixation to attach to the Ender-3. By setting the next parameter to false,
 // the fixation will be omitted, which make the box suitable for use with an enclosure.
 ENDER3_FIXATION = true;
+
+// Reverse the orientation, for example to mount it on the left of the printer.
+REVERSED = false;
 
 // Add feature to have room for the Google AIY Kit v1.
 AIY_KIT = true;
@@ -34,8 +36,6 @@ EXTRUSION_WIDTH = 0.48;
 // place for brass inserts will be added. If set to 0, simple holes in the
 // plastic will be added and the screw will screw in the plastic directly. 
 USE_INSERT = 1;
-
-// TODO: Ender 3 melzi board (SKR E3 Mini).
 
 // List of M screw diameters. Those are taken from a set of brass insert
 // I bought on AliExpress. The insert diameter is the actual diameter of
@@ -62,6 +62,11 @@ SUPPORT_OFFSET = (INTERFACE_LAYERS+GAP_LAYERS)*LAYER_HEIGHT;
 // change those unless you want to adapt to another printer than
 // the Creality Ender-3.
 
+RASPBERRY_PI_POSITION = REVERSED ? [45,194,0] : [33,194,0];
+MAINBOARD_SIZE = [84.30, 109.67, 0];
+MAINBOARD_POSITION = MAINBOARD_SIZE/2 + (
+    REVERSED ? [3.7,170,0] : [-10,170,0]);
+
 BOX_WIDTH = 102;
 BOX_HEIGHT = 90;
 LCD_SMALL_HEIGHT = 46; //44 + 2 + 2 for top
@@ -73,3 +78,5 @@ LCD_THICKNESS = 2;
 LEVEL_HEIGHT = 45;
 FRONT_LENGTH = RASPBERRY_PI_POSITION[1]-34;
 WALL_THICKNESS=2;
+
+BLOWER_COOLING = !REVERSED;

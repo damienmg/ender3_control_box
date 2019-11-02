@@ -407,11 +407,11 @@ module UpperLevel() {
                     }
                 } else {
                     // Support for the screw insert for the cover.
-                    translate([59.3,115.2,0]) cube([22.6,12.8,31+WALL_THICKNESS]);
+                    translate([REVERSED ? 19 : 59.3,115.2,0]) cube([22.6,12.8,31+WALL_THICKNESS]);
                 }
                 // Cable management: attach for zipties next to the cable exit.
-                translate([81.9,115.2,0]) {
-                    difference() {
+                translate([REVERSED ? 19 : 81.9,115.2,0]) {
+                    mirror([REVERSED ? 1 : 0,0,0]) difference() {
                         hull() {
                             cube([5,6,30]);
                             translate([0,6,30]) rotate([90,0,0]) cylinder(d=10, h=6, $fn=100);
@@ -421,26 +421,27 @@ module UpperLevel() {
                     }
                 }
                 // Cable management: bracket
-                translate([87, 12.5, 0]) {
+                translate([REVERSED ? 15 : BOX_WIDTH-15, 12.5, 0]) {
                     // Along the mainboard
-                    CableBracket(h=35, w=10, depth=2*WALL_THICKNESS);
-                    translate([0, 68, 0]) CableBracket(h=35, w=10, depth=2*WALL_THICKNESS);
-                    translate([0, 96, 0]) CableBracket(h=35, w=10, depth=2*WALL_THICKNESS);
+                    rotate([0,0, REVERSED ? 180 : 0]) CableBracket(h=35, w=10, depth=2*WALL_THICKNESS);
+                    translate([0, 68, 0]) rotate([0,0, REVERSED ? 180 : 0]) CableBracket(h=35, w=10, depth=2*WALL_THICKNESS);
+                    translate([0, 96, 0]) rotate([0,0, REVERSED ? 180 : 0]) CableBracket(h=35, w=10, depth=2*WALL_THICKNESS);
                 }
                 // Frame assembly: screw for the cover over the air vent
-                translate([70.6,121.6,33])
+                translate([REVERSED ? 30.3 : 70.6,121.6,33])
                     MFoot(3, h=BOX_HEIGHT-LEVEL_HEIGHT-WALL_THICKNESS-33) {
                         translate([-11.3, -6.4, 0]) cube([22.6,12.8, BOX_HEIGHT-LEVEL_HEIGHT-WALL_THICKNESS-33]);
                     }
             }
             // Some feet support are getting out of the board surface, cut that part out.
-            translate([-9.51+WALL_THICKNESS, -WALL_THICKNESS, -WALL_THICKNESS]) cube([10, length, 100]);
+            translate([REVERSED ? BOX_WIDTH - 0.49 - WALL_THICKNESS : -9.51+WALL_THICKNESS, -WALL_THICKNESS, -WALL_THICKNESS])
+                cube([10, length, 100]);
             // Air vent for the stepper motor cooling.
             if (BLOWER_COOLING)
                 Orientate(direction=[0,1,0], position=[59.3+WALL_THICKNESS, length-WALL_THICKNESS, 13.5], rotation=-90)
                     SquareAirVentPattern();
             // Cable management: cable out
-            Orientate(direction=[0,1,0], position=[BOX_WIDTH-5, length-WALL_THICKNESS, 13.5], rotation=-90) {
+            Orientate(direction=[0,1,0], position=[REVERSED ? -5 : BOX_WIDTH-5, length-WALL_THICKNESS, 13.5], rotation=-90) {
                 hull() {
                     cylinder(d=20, h=WALL_THICKNESS);
                     translate([10, 0, 0]) cylinder(d=20, h=WALL_THICKNESS);
@@ -448,9 +449,9 @@ module UpperLevel() {
                     translate([10, 10, 0]) cylinder(d=20, h=WALL_THICKNESS);
                 }
                 // A filet to ensure no support is needed here.
-                translate([20, -1, 0]) difference() {
+                translate([20, REVERSED ? 7 : -1, 0]) difference() {
                     cube([4, 4, WALL_THICKNESS]);
-                    translate([4, 0, 0]) cylinder(d=8, h=WALL_THICKNESS);
+                    translate([REVERSED ? 4 : 4, REVERSED ? 4 : 0, 0]) cylinder(d=8, h=WALL_THICKNESS);
                 }
             }
 
@@ -459,10 +460,10 @@ module UpperLevel() {
                 cube([38.5, 16, WALL_THICKNESS]);
             }
             // Frame assembly part: 1 hole for screwing to the bottom
-            translate([6, 122, -WALL_THICKNESS]) cylinder(d=screw_hole_diameter(3), h=WALL_THICKNESS);
+            translate([REVERSED ? BOX_WIDTH-6 : 6, 122, -WALL_THICKNESS]) cylinder(d=screw_hole_diameter(3), h=WALL_THICKNESS);
             // A little chamfer to make sliding this level easier.
-            translate([BOX_WIDTH-WALL_THICKNESS-0.5, length-WALL_THICKNESS, 0])
-                rotate([-90,0,180]) linear_extrude(BOX_LENGTH) polygon([[0,0],[0,1], [1,0]]);
+            translate([REVERSED ? WALL_THICKNESS+0.5 : BOX_WIDTH-WALL_THICKNESS-0.5, REVERSED ? 0 : length-WALL_THICKNESS, 0])
+                rotate([-90,0, REVERSED ? 0 : 180]) linear_extrude(BOX_LENGTH) polygon([[0,0],[0,1], [1,0]]);
         }
 }
 
@@ -1015,7 +1016,7 @@ module ScreenBoxTop(logo=0) {
                         }
                     }
                     // Assembly: screw hole for the bottom
-                    translate([70.6, BOX_LENGTH-LCD_LENGTH-8.4, 0]) {
+                    translate([REVERSED ? 30.3 : 70.6, BOX_LENGTH-LCD_LENGTH-8.4, 0]) {
                         cylinder(d=screw_hole_diameter(3), h=WALL_THICKNESS);
                         translate([0, 0, WALL_THICKNESS]) cylinder(d=2*screw_hole_diameter(3), h=WALL_THICKNESS);
                     }
@@ -1023,7 +1024,7 @@ module ScreenBoxTop(logo=0) {
                 }
                 Support() {
                     // Support for the screw hole so it does not create a 90 degrees overhang.
-                    translate([70.6, BOX_LENGTH-LCD_LENGTH-8.4, WALL_THICKNESS-LAYER_HEIGHT]) cylinder(d=screw_hole_diameter(3), h=LAYER_HEIGHT);
+                    translate([REVERSED ? 30.3 : 70.6, BOX_LENGTH-LCD_LENGTH-8.4, WALL_THICKNESS-LAYER_HEIGHT]) cylinder(d=screw_hole_diameter(3), h=LAYER_HEIGHT);
                 }
             }
         }

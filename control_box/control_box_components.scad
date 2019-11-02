@@ -105,7 +105,7 @@ module HigherLevelComponents(level_height, height) {
             }
         } else {
             // 2*4010 to cool stepper driver.
-            translate(MAINBOARD_POSITION + [-25,0,height-10]) {
+            translate([BOX_WIDTH/2-12, MAINBOARD_POSITION.y, height-10]) {
                 translate([0,22,0]) 4010Fan();
                 translate([0,-22,0]) 4010Fan();
             }
@@ -121,7 +121,7 @@ module SideComponents(height) {
                 rotate([0, REVERSED ? 90 : -90, 0]) Speaker3Inch();
 
             // AIY microphone
-            translate([-25, 165, height-6]) VoiceHatMic();
+            translate([-25, BLOWER_COOLING ? 165 : 110, height-6]) VoiceHatMic();
         }
     }
 }

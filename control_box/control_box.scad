@@ -364,11 +364,16 @@ module UpperLevel() {
                 // Bottom
                 translate([0.5, 0, -WALL_THICKNESS])
                     linear_extrude(WALL_THICKNESS)
-                        polygon([
+                        polygon(BLOWER_COOLING ? [
                             [WALL_THICKNESS, 0],
                             [10, 0],
                             [BOX_WIDTH-31, -55],
                             [BOX_WIDTH-WALL_THICKNESS-1, -55],
+                            [BOX_WIDTH-WALL_THICKNESS-1, length],
+                            [WALL_THICKNESS, length],
+                        ] : [
+                            [WALL_THICKNESS, 0],
+                            [BOX_WIDTH-WALL_THICKNESS-1, 0],
                             [BOX_WIDTH-WALL_THICKNESS-1, length],
                             [WALL_THICKNESS, length],
                         ]);
@@ -383,19 +388,24 @@ module UpperLevel() {
                                 [0, BOX_HEIGHT-LEVEL_HEIGHT]
                             ]);
                 // Support for 5015 fan
-                translate([60, -20, 0]) cylinder(d=10, h=14);
-                translate([33.1, -12.1, 0]) MFoot(3, h=14);
-                translate([75.8, -49.7, 0]) MFoot(3, h=14);
-                // Insert for air tunnel for stepper motor cooling
-                translate([59.3,115.2,0]) {
-                    cube([22.6,12.8,13.5]);
-                    translate([0,0,13.5]) {
-                        cube([WALL_THICKNESS, 12.8, 17.6]);
-                        translate([20.6, 0, 0])
+                if (BLOWER_COOLING) {
+                    translate([60, -20, 0]) cylinder(d=10, h=14);
+                    translate([33.1, -12.1, 0]) MFoot(3, h=14);
+                    translate([75.8, -49.7, 0]) MFoot(3, h=14);
+                    // Insert for air tunnel for stepper motor cooling
+                    translate([59.3,115.2,0]) {
+                        cube([22.6,12.8,13.5]);
+                        translate([0,0,13.5]) {
                             cube([WALL_THICKNESS, 12.8, 17.6]);
-                        translate([0, 0, 17.6])
-                            cube([22.6, 12.8, WALL_THICKNESS]);
+                            translate([20.6, 0, 0])
+                                cube([WALL_THICKNESS, 12.8, 17.6]);
+                            translate([0, 0, 17.6])
+                                cube([22.6, 12.8, WALL_THICKNESS]);
+                        }
                     }
+                } else {
+                    // Support for the screw insert for the cover.
+                    translate([59.3,115.2,0]) cube([22.6,12.8,31+WALL_THICKNESS]);
                 }
                 // Cable management: attach for zipties next to the cable exit.
                 translate([81.9,115.2,0]) {
@@ -424,8 +434,9 @@ module UpperLevel() {
             // Some feet support are getting out of the board surface, cut that part out.
             translate([-9.51+WALL_THICKNESS, -WALL_THICKNESS, -WALL_THICKNESS]) cube([10, length, 100]);
             // Air vent for the stepper motor cooling.
-            Orientate(direction=[0,1,0], position=[59.3+WALL_THICKNESS, length-WALL_THICKNESS, 13.5], rotation=-90)
-                SquareAirVentPattern();
+            if (BLOWER_COOLING)
+                Orientate(direction=[0,1,0], position=[59.3+WALL_THICKNESS, length-WALL_THICKNESS, 13.5], rotation=-90)
+                    SquareAirVentPattern();
             // Cable management: cable out
             Orientate(direction=[0,1,0], position=[BOX_WIDTH-5, length-WALL_THICKNESS, 13.5], rotation=-90) {
                 hull() {
@@ -916,7 +927,8 @@ module ScreenBoxBack(front_length=FRONT_LENGTH) {
 
 module Ender3Logo() {
     // Ender 3 logo.
-    translate([62, 90, 0.5]) Ender3Relief();
+    translate([62, BLOWER_COOLING ? 90 : 25, 0.5])
+        scale([BLOWER_COOLING ? 1 : 0.9, BLOWER_COOLING ? 1 : 0.9, 1]) Ender3Relief();
 }
 
 module PCBSnapFit(h=3.5, h2=1, d=2, d2=3.5) {
@@ -929,6 +941,18 @@ module PCBSnapFit(h=3.5, h2=1, d=2, d2=3.5) {
     }
 }
 
+module ScreenBoxTopFrame() {
+    translate([0, BOX_LENGTH-LCD_LENGTH, 2*WALL_THICKNESS]) mirror([0,1,0]) mirror([0,0,1]) FilletedBottom(BOX_WIDTH, BOX_LENGTH-LCD_LENGTH-2, WALL_THICKNESS);
+    translate([12.5, 2, 0]) cube([BOX_WIDTH-25, BOX_LENGTH-LCD_LENGTH-2, WALL_THICKNESS]);
+    translate([12.5, -1, 0]) {
+        rotate([0,90,0]) intersection() {
+            translate([1,3,0]) cylinder(d=6, h=BOX_WIDTH-25);
+            translate([-WALL_THICKNESS, 0, 0]) cube([WALL_THICKNESS, 3, BOX_WIDTH-25]);
+        }
+    }
+    translate([WALL_THICKNESS+0.25, FRONT_LENGTH-LCD_LENGTH+10, 0]) cube([BOX_WIDTH-2*WALL_THICKNESS-0.5, BOX_LENGTH-FRONT_LENGTH-10, WALL_THICKNESS]);
+}
+
 module ScreenBoxTop(logo=0) {
     translate([0, LCD_LENGTH, BOX_HEIGHT-WALL_THICKNESS])
         if (logo) {
@@ -938,30 +962,32 @@ module ScreenBoxTop(logo=0) {
                 difference() {
                     union() {
                         // Frame
-                        translate([0, BOX_LENGTH-LCD_LENGTH, 2*WALL_THICKNESS]) mirror([0,1,0]) mirror([0,0,1]) FilletedBottom(BOX_WIDTH, BOX_LENGTH-LCD_LENGTH-2, WALL_THICKNESS);
-                        translate([12.5, 2, 0]) cube([BOX_WIDTH-25, BOX_LENGTH-LCD_LENGTH-2, WALL_THICKNESS]);
-                        translate([12.5, -1, 0]) {
-                            rotate([0,90,0]) intersection() {
-                                translate([1,3,0]) cylinder(d=6, h=BOX_WIDTH-25);
-                                translate([-WALL_THICKNESS, 0, 0]) cube([WALL_THICKNESS, 3, BOX_WIDTH-25]);
-                            }
+                        if (BLOWER_COOLING) {
+                            ScreenBoxTopFrame();
+                        } else {
+                            // Mounting hole for the cooling fans when using double 4010.
+                            Foot(pos=[BOX_WIDTH/2-16,6+MAINBOARD_POSITION.y-LCD_LENGTH,0], d1=5.4, d2=select_insert(3)[3], h=3+WALL_THICKNESS, direction=[0,0,-1])
+                            Foot(pos=[BOX_WIDTH/2+16,38+MAINBOARD_POSITION.y-LCD_LENGTH,0], d1=5.4, d2=select_insert(3)[3], h=3+WALL_THICKNESS, direction=[0,0,-1])
+                            Foot(pos=[BOX_WIDTH/2-16,-38+MAINBOARD_POSITION.y-LCD_LENGTH,0], d1=5.4, d2=select_insert(3)[3], h=3+WALL_THICKNESS, direction=[0,0,-1])
+                            Foot(pos=[BOX_WIDTH/2+16,-6+MAINBOARD_POSITION.y-LCD_LENGTH,0], d1=5.4, d2=select_insert(3)[3], h=3+WALL_THICKNESS, direction=[0,0,-1])
+                            ScreenBoxTopFrame();
                         }
-                        translate([WALL_THICKNESS+0.25, FRONT_LENGTH-LCD_LENGTH+10, 0]) cube([BOX_WIDTH-2*WALL_THICKNESS-0.5, BOX_LENGTH-FRONT_LENGTH-10, WALL_THICKNESS]);
                         if (AIY_KIT) {
                             // AIY mic snap fit
-                            translate([17, 172.6-LCD_LENGTH,-3.5]) {
+                            translate([17, (BLOWER_COOLING ? 172.6 : 117.6)-LCD_LENGTH,-3.5]) {
                                 translate([69.5, -5.1, 0]) PCBSnapFit();
                                 translate([69.5, 5.1, 0]) PCBSnapFit();
                                 translate([0, -5.1, 0]) PCBSnapFit();
                                 translate([0, 5.1, 0]) PCBSnapFit();
                             }
                         }
-                        // Cooling: tunnel for the 5015 fan
-                        translate([55, 30, -BOX_HEIGHT+LEVEL_HEIGHT+32]) difference() {
-                            cylinder(d=40+2*WALL_THICKNESS, h=BOX_HEIGHT-LEVEL_HEIGHT-32);
-                            cylinder(d=40, h=18);
+                        if (BLOWER_COOLING) {
+                            // Cooling: tunnel for the 5015 fan
+                            translate([55, 30, -BOX_HEIGHT+LEVEL_HEIGHT+32]) difference() {
+                                cylinder(d=40+2*WALL_THICKNESS, h=BOX_HEIGHT-LEVEL_HEIGHT-32);
+                                cylinder(d=40, h=18);
+                            }
                         }
-
                         // Slides to snap to the box.
                         translate([WALL_THICKNESS+0.25,20,0]) rotate([0,90,-90]) TopSlide(10);
                         translate([BOX_WIDTH-(WALL_THICKNESS+0.25),10,0]) rotate([0,90,90]) TopSlide(10);
@@ -970,14 +996,22 @@ module ScreenBoxTop(logo=0) {
                     }
                     if (AIY_KIT) {
                         // AIY mic holes
-                        translate([17, 172.7-LCD_LENGTH,0]) {
+                        translate([17, (BLOWER_COOLING ? 172.7 : 117.7)-LCD_LENGTH,0]) {
                             cylinder(d=3, h=2*WALL_THICKNESS);
                             translate([69.5, 0, 0]) cylinder(d=3, h=2*WALL_THICKNESS);
                             translate([24.75, -2, 0]) cube([20, 4, WALL_THICKNESS]);
                         }
                     }
-                    // Cooling: exhaust for the 5015 fan
-                    translate([55, 30, 0]) CircleAirVentPattern(h=2*WALL_THICKNESS, d=40);
+                    if (BLOWER_COOLING) {
+                        // Cooling: exhaust for the 5015 fan
+                        translate([55, 30, 0]) CircleAirVentPattern(h=2*WALL_THICKNESS, d=40);
+                    } else {
+                        // Cooling: exhaust for 2 4010 fan
+                        translate([BOX_WIDTH/2,MAINBOARD_POSITION.y-LCD_LENGTH,0]) {
+                            translate([0, 22, 0]) CircleAirVentPattern(h=2*WALL_THICKNESS, d=39);
+                            translate([0, -22, 0]) CircleAirVentPattern(h=2*WALL_THICKNESS, d=39);
+                        }
+                    }
                     // Assembly: screw hole for the bottom
                     translate([70.6, BOX_LENGTH-LCD_LENGTH-8.4, 0]) {
                         cylinder(d=screw_hole_diameter(3), h=WALL_THICKNESS);

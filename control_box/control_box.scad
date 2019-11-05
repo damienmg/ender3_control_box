@@ -520,7 +520,6 @@ module ScreenBorder(length = BOX_LENGTH) {
 
 module Endcap(height=10, h=2, clearance=0) {
     d=2;
-    off = 20-d/2-clearance;
     union() {
         cube([40+WALL_THICKNESS,WALL_THICKNESS*2,40+WALL_THICKNESS]);
         rotate([-90, 0, 0]) translate([21,-21,-height+2*h]) {
@@ -552,20 +551,20 @@ module Endcap(height=10, h=2, clearance=0) {
     }
 }
 
-module 40ExtrusionEndcap() {
+module 40ExtrusionEndcap(clearance=0.4) {
     if (ENDER3_FIXATION) {
-        Endcap(clearance=-0.4);
+        Endcap(clearance=clearance);
         // Endcap support
-        translate([25, -6, 0])
-            rotate([0, 0, 90]) GroundSupport(8, height=3, distance=-4, width=2*WALL_THICKNESS);
+        translate([24.6-clearance, -6, 0])
+            rotate([0, 0, 90]) GroundSupport(7.2-2*clearance, height=3.4+clearance, distance=-4, width=2*WALL_THICKNESS);
         translate([32.5, -6, 0])
-            rotate([0, 0, 90]) GroundSupport(5, height=15, distance=-3, width=2*WALL_THICKNESS);
-        translate([14.5, -6, 0])
-            rotate([0, 0, 90]) GroundSupport(5, height=15, distance=-3, width=2*WALL_THICKNESS);
-        translate([39, -6, 0])
-            rotate([0, 0, 90]) GroundSupport(1.5, height=17.6, distance=-3, width=2*WALL_THICKNESS);
+            rotate([0, 0, 90]) GroundSupport(5.4+clearance, height=15.4+clearance, distance=-3, width=2*WALL_THICKNESS);
+        translate([14.9+clearance, -6, 0])
+            rotate([0, 0, 90]) GroundSupport(5.4+clearance, height=15.4+clearance, distance=-3, width=2*WALL_THICKNESS);
+        translate([38.6-clearance, -6, 0])
+            rotate([0, 0, 90]) GroundSupport(1.1-clearance, height=18+clearance, distance=-3, width=2*WALL_THICKNESS);
         translate([4.5, -6, 0])
-            rotate([0, 0, 90]) GroundSupport(1.5, height=17.6, distance=-3, width=2*WALL_THICKNESS);
+            rotate([0, 0, 90]) GroundSupport(1.1-clearance, height=18+clearance, distance=-3, width=2*WALL_THICKNESS);
     }
 }
 

@@ -570,10 +570,11 @@ module 40ExtrusionEndcap(clearance=0.4) {
 
 module ScreenBoxFront(length=FRONT_LENGTH) {
     difference() {
+        foot_x = REVERSED ? 50.95: 82.25;
         // Relay switch feet (x3)
-        RelaySwitchFeet(pos=[82.25, 124.5, WALL_THICKNESS], angle=-90)
-        RelaySwitchFeet(pos=[82.25, 94.5, WALL_THICKNESS], angle=-90)
-        RelaySwitchFeet(pos=[82.25, 64.5, WALL_THICKNESS], angle=-90) {
+        RelaySwitchFeet(pos=[foot_x, 124.5, WALL_THICKNESS], angle=-90)
+        RelaySwitchFeet(pos=[foot_x, 94.5, WALL_THICKNESS], angle=-90)
+        RelaySwitchFeet(pos=[foot_x, 64.5, WALL_THICKNESS], angle=-90) {
             // Left
             ScreenBorder(length);
             // Right
@@ -587,18 +588,20 @@ module ScreenBoxFront(length=FRONT_LENGTH) {
                         cube([BOX_WIDTH, WALL_THICKNESS, LCD_SMALL_HEIGHT-WALL_THICKNESS]);
                         cube([43, 10, 43-WALL_THICKNESS]);
                     }
-            translate([BOX_WIDTH+40+WALL_THICKNESS, WALL_THICKNESS, 0]) rotate([0,0,180]) 40ExtrusionEndcap();
+            translate([REVERSED ? 0 : BOX_WIDTH+40+WALL_THICKNESS, WALL_THICKNESS, 0]) rotate([0,0,180]) 40ExtrusionEndcap();
             if (AIY_KIT) {
                 // Housing frame for Speaker
-                translate([0, length-WALL_THICKNESS, WALL_THICKNESS]) cube([32, WALL_THICKNESS, 50-WALL_THICKNESS]);
-                translate([0, 77, WALL_THICKNESS]) {
-                    cube([32, WALL_THICKNESS, 50-WALL_THICKNESS]);
-                    translate([32, 0, 0]) cube([WALL_THICKNESS, length-77, 50-WALL_THICKNESS]);
-                    translate([20, 0, 0]) difference() {
-                        cube([WALL_THICKNESS, length-77, 50-WALL_THICKNESS]);
-                        translate([0, 22, 40-WALL_THICKNESS]) {
-                            cube([WALL_THICKNESS, 41, 20]);
-                            translate([0, 20.5, 0]) rotate([0, 90, 0]) cylinder(d=41, h=WALL_THICKNESS);
+                translate([REVERSED ? BOX_WIDTH : 0, 0, 0]) mirror([REVERSED ? 1 : 0, 0, 0]) {
+                    translate([0, length-WALL_THICKNESS, WALL_THICKNESS]) cube([32, WALL_THICKNESS, 50-WALL_THICKNESS]);
+                    translate([0, 77, WALL_THICKNESS]) {
+                        cube([32, WALL_THICKNESS, 50-WALL_THICKNESS]);
+                        translate([32, 0, 0]) cube([WALL_THICKNESS, length-77, 50-WALL_THICKNESS]);
+                        translate([20, 0, 0]) difference() {
+                            cube([WALL_THICKNESS, length-77, 50-WALL_THICKNESS]);
+                            translate([0, 22, 40-WALL_THICKNESS]) {
+                                cube([WALL_THICKNESS, 41, 20]);
+                                translate([0, 20.5, 0]) rotate([0, 90, 0]) cylinder(d=41, h=WALL_THICKNESS);
+                            }
                         }
                     }
                 }
@@ -612,32 +615,38 @@ module ScreenBoxFront(length=FRONT_LENGTH) {
             translate([BOX_WIDTH-10, 142, BOX_HEIGHT]) ScrewInsertForFrameAssembly();
             translate([10, 142, BOX_HEIGHT]) mirror([1,0,0]) ScrewInsertForFrameAssembly();
 
-            // Assembly: Support for upper level
-            translate([BOX_WIDTH-WALL_THICKNESS, length-WALL_THICKNESS, LEVEL_HEIGHT-WALL_THICKNESS]) {
-                rotate([0,0,180]) LevelSupport(55);
-                // Stop for the upper level
-                translate([-10, -55, 0]) cube([10,5,10]);
+            if (BLOWER_COOLING) {
+                // Assembly: Support for upper level
+                translate([BOX_WIDTH-WALL_THICKNESS, length-WALL_THICKNESS, LEVEL_HEIGHT-WALL_THICKNESS]) {
+                    rotate([0,0,180]) LevelSupport(55);
+                    // Stop for the upper level
+                    translate([-10, -55, 0]) cube([10,5,10]);
+                }
+                // Assembly: slider for upper level (one side only)
+                translate([BOX_WIDTH-WALL_THICKNESS, 120, LEVEL_HEIGHT])
+                    mirror([1,0,0]) UpperLevelBlocker(depth=7, height=18);
             }
-            // Assembly: slider for upper level (one side only)
-            translate([BOX_WIDTH-WALL_THICKNESS, 120, LEVEL_HEIGHT])
-                mirror([1,0,0]) UpperLevelBlocker(depth=7, height=18);
-            // Assembly: Slider for 40x40 aluminium extrusion.
-            // Note this part needs support.
-            translate([BOX_WIDTH, 132, 30]) {
-                mirror([1, 0, 0]) AluminiumExtrusionSlider(120);
-            }
-            translate([BOX_WIDTH, 132, 10]) {
-                mirror([1, 0, 0]) AluminiumExtrusionSlider(120);
+            if (ENDER3_FIXATION) {
+                // Assembly: Slider for 40x40 aluminium extrusion.
+                // Note this part needs support.
+                translate([REVERSED ? 0 : BOX_WIDTH, 132, 30]) {
+                    mirror([REVERSED ? 0 : 1, 0, 0]) AluminiumExtrusionSlider(120);
+                }
+                translate([REVERSED ? 0 : BOX_WIDTH, 132, 10]) {
+                    mirror([REVERSED ? 0 : 1, 0, 0]) AluminiumExtrusionSlider(120);
+                }
             }
             // Assembly: Cantilever
             translate([BOX_WIDTH-WALL_THICKNESS, FRONT_LENGTH, WALL_THICKNESS]) {
                 translate([0,0,16]) mirror([1,0,0]) Cantilever(10);
-                translate([-3,-5,0]) cube([3, 5, 26]);
+                if (!AIY_KIT || !REVERSED) {
+                    translate([-3,-5,0]) cube([3, 5, 26]);
+                }
                 translate([0,0,0.5]) mirror([1,0,0]) Cantilever(4);
             }
             translate([WALL_THICKNESS, FRONT_LENGTH, WALL_THICKNESS]) {
-                translate([0,0,22]) Cantilever(4);
-                if (!AIY_KIT) {
+                translate([0,0,16]) Cantilever(10);
+                if (!AIY_KIT || REVERSED) {
                     translate([0,-5,0]) cube([3, 5, 26]);
                 }
                 translate([0,0,0.5]) Cantilever(4);
@@ -648,22 +657,22 @@ module ScreenBoxFront(length=FRONT_LENGTH) {
             translate([BOX_WIDTH-WALL_THICKNESS-0.2,LCD_LENGTH+10,BOX_HEIGHT-WALL_THICKNESS])
                 rotate([0,90,90]) TopSlideInsert(10);
             // Cable management: some brackets
-            translate([40, 45, WALL_THICKNESS])
+            translate([REVERSED ? BOX_WIDTH - WALL_THICKNESS - 40 : 40, 45, WALL_THICKNESS])
                 rotate([0,0,-90]) CableBracket(h=30, w=10, depth=2*WALL_THICKNESS);
-            translate([70, 45, WALL_THICKNESS])
+            translate([REVERSED ? BOX_WIDTH - WALL_THICKNESS - 70 : 70, 45, WALL_THICKNESS])
                 rotate([0,0,-90]) CableBracket(h=30, w=10, depth=2*WALL_THICKNESS);
 
             // Supports
             if(ENDER3_FIXATION) {
-                translate([BOX_WIDTH+5, 120+10+WALL_THICKNESS, 0]) {
+                translate([REVERSED ? -5 : BOX_WIDTH+5, (REVERSED ? 0 : 120)+10+WALL_THICKNESS, 0]) {
                     // Extrusion slides.
-                    rotate([0, 0, 180]) GroundSupport(120, height=10-4, distance=1, width=2);
-                    rotate([0, 0, 180]) GroundSupport(120, height=30-4, distance=1, width=2);
+                    rotate([0, 0, REVERSED ? 0 : 180]) GroundSupport(120, height=10-4, distance=1, width=2);
+                    rotate([0, 0, REVERSED ? 0 : 180]) GroundSupport(120, height=30-4, distance=1, width=2);
                 }
             }
             // Snapfit supports
             translate([2, length+1, 0])
-                GroundSupport(5, height=24, distance=1, width=3);
+                GroundSupport(5, height=18, distance=1, width=3);
             translate([BOX_WIDTH-2, length+6, 0])
                 rotate([0, 0, 180]) GroundSupport(5, height=18, distance=1, width=3);
             translate([0, length+1, 0]) {
@@ -684,17 +693,18 @@ module ScreenBoxFront(length=FRONT_LENGTH) {
 
         }
         // Clearance for the upper level.
-        translate([BOX_WIDTH-WALL_THICKNESS, length-55, LEVEL_HEIGHT-WALL_THICKNESS]) cube([0.4, 55, WALL_THICKNESS]);
-        translate([0.5, BOX_LENGTH-130, LEVEL_HEIGHT-WALL_THICKNESS])
-            linear_extrude(30)
-                polygon([
-                    [8, 0],
-                    [BOX_WIDTH-33, -55],
-                    [BOX_WIDTH-33, 0],
-                ]);
+        if (BLOWER_COOLING)
+            translate([BOX_WIDTH-WALL_THICKNESS, length-55, LEVEL_HEIGHT-WALL_THICKNESS]) cube([0.4, 55, WALL_THICKNESS]);
         if (AIY_KIT) {
+            if (BLOWER_COOLING) translate([0.5, BOX_LENGTH-130, LEVEL_HEIGHT-WALL_THICKNESS])
+                linear_extrude(30)
+                    polygon([
+                        [8, 0],
+                        [BOX_WIDTH-33, -55],
+                        [BOX_WIDTH-33, 0],
+                    ]);
             // Speaker holes
-            translate([0, 118, 40]) rotate([0,90,0]) union() {
+            translate([REVERSED ? BOX_WIDTH-WALL_THICKNESS : 0, 118, 40]) rotate([0,90,0]) union() {
                 cylinder(d=15, h=WALL_THICKNESS);
                 translate([20, 0, 0]) cylinder(d=15, h=WALL_THICKNESS);
                 translate([-20, 0, 0]) cylinder(d=15, h=WALL_THICKNESS);

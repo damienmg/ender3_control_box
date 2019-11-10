@@ -696,13 +696,20 @@ module ScreenBoxFront(length=FRONT_LENGTH) {
         if (BLOWER_COOLING)
             translate([BOX_WIDTH-WALL_THICKNESS, length-55, LEVEL_HEIGHT-WALL_THICKNESS]) cube([0.4, 55, WALL_THICKNESS]);
         if (AIY_KIT) {
-            if (BLOWER_COOLING) translate([0.5, BOX_LENGTH-130, LEVEL_HEIGHT-WALL_THICKNESS])
+            if (BLOWER_COOLING) translate([0.5, BOX_LENGTH-130, LEVEL_HEIGHT-WALL_THICKNESS]) {
                 linear_extrude(30)
                     polygon([
                         [8, 0],
                         [BOX_WIDTH-33, -55],
                         [BOX_WIDTH-33, 0],
                     ]);
+                translate([0,0,-20]) linear_extrude(50)
+                    polygon([
+                        [13, 0],
+                        [BOX_WIDTH-33, -50],
+                        [BOX_WIDTH-33, 0],
+                    ]);
+            }
             // Speaker holes
             translate([REVERSED ? BOX_WIDTH-WALL_THICKNESS : 0, 118, 40]) rotate([0,90,0]) union() {
                 cylinder(d=15, h=WALL_THICKNESS);

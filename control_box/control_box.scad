@@ -260,19 +260,19 @@ module RelaySwitchFeet(direction=[0,0,1], pos=[0,0,0], angle=0) {
         }
 }
 
-module AluminiumExtrusionSlider(length=10) {
+module AluminiumExtrusionSlider(length=10, offset=EXTRUSION_OFFSET) {
     if (ENDER3_FIXATION) {
         rotate([90, -90, 0]) linear_extrude(height = length)
             polygon([
                 [-2.25, 0],
-                [-2.25, 3],
-                [-4, 3],
-                [-4, 4],
-                [-2.25, 5.5],
-                [2.25, 5.5],
-                [4, 4],
-                [4, 3],
-                [2.25, 3],
+                [-2.25, 3+offset],
+                [-4, 3+offset],
+                [-4, 4+offset],
+                [-2.25, 5.5+offset],
+                [2.25, 5.5+offset],
+                [4, 4+offset],
+                [4, 3+offset],
+                [2.25, 3+offset],
                 [2.25, 0],
             ]);
     }
@@ -518,11 +518,11 @@ module ScreenBorder(length = BOX_LENGTH) {
                         [LCD_SMALL_HEIGHT-WALL_THICKNESS, 0]]);
 }
 
-module Endcap(height=10, h=2, clearance=0) {
+module Endcap(height=10, h=2, clearance=0, offset=EXTRUSION_OFFSET) {
     d=2;
     union() {
-        cube([40+WALL_THICKNESS,WALL_THICKNESS*2,40+WALL_THICKNESS]);
-        rotate([-90, 0, 0]) translate([21,-21,-height+2*h]) {
+        cube([offset+40+WALL_THICKNESS,WALL_THICKNESS*2,40+WALL_THICKNESS]);
+        rotate([-90, 0, 0]) translate([offset+21,-21,-height+2*h]) {
             length = 17.6-clearance;
             width = 5.6-clearance;
             small_width = 3-clearance;
@@ -551,19 +551,19 @@ module Endcap(height=10, h=2, clearance=0) {
     }
 }
 
-module 40ExtrusionEndcap(clearance=0.4) {
+module 40ExtrusionEndcap(clearance=0.4, offset=EXTRUSION_OFFSET) {
     if (ENDER3_FIXATION) {
-        Endcap(clearance=clearance);
+        Endcap(clearance=clearance, offset=offset);
         // Endcap support
-        translate([24.6-clearance, -6, 0])
+        translate([offset+24.6-clearance, -6, 0])
             rotate([0, 0, 90]) GroundSupport(7.2-2*clearance, height=3.4+clearance, distance=-4, width=2*WALL_THICKNESS);
-        translate([32.5, -6, 0])
+        translate([offset+32.5, -6, 0])
             rotate([0, 0, 90]) GroundSupport(5.4+clearance, height=15.4+clearance, distance=-3, width=2*WALL_THICKNESS);
-        translate([14.9+clearance, -6, 0])
+        translate([offset+14.9+clearance, -6, 0])
             rotate([0, 0, 90]) GroundSupport(5.4+clearance, height=15.4+clearance, distance=-3, width=2*WALL_THICKNESS);
-        translate([38.6-clearance, -6, 0])
+        translate([offset+38.6-clearance, -6, 0])
             rotate([0, 0, 90]) GroundSupport(1.1-clearance, height=18+clearance, distance=-3, width=2*WALL_THICKNESS);
-        translate([4.5, -6, 0])
+        translate([offset+4.5, -6, 0])
             rotate([0, 0, 90]) GroundSupport(1.1-clearance, height=18+clearance, distance=-3, width=2*WALL_THICKNESS);
     }
 }
@@ -588,7 +588,7 @@ module ScreenBoxFront(length=FRONT_LENGTH) {
                         cube([BOX_WIDTH, WALL_THICKNESS, LCD_SMALL_HEIGHT-WALL_THICKNESS]);
                         cube([43, 10, 43-WALL_THICKNESS]);
                     }
-            translate([REVERSED ? 0 : BOX_WIDTH+40+WALL_THICKNESS, WALL_THICKNESS, 0]) rotate([0,0,180]) 40ExtrusionEndcap();
+            translate([REVERSED ? 0 : BOX_WIDTH, WALL_THICKNESS, 0]) mirror([REVERSED ? 1 : 0,0,0]) mirror([0,1,0]) 40ExtrusionEndcap();
             if (AIY_KIT) {
                 // Housing frame for Speaker
                 translate([REVERSED ? BOX_WIDTH : 0, 0, 0]) mirror([REVERSED ? 1 : 0, 0, 0]) {
@@ -664,7 +664,7 @@ module ScreenBoxFront(length=FRONT_LENGTH) {
 
             // Supports
             if(ENDER3_FIXATION) {
-                translate([REVERSED ? -5 : BOX_WIDTH+5, (REVERSED ? 0 : 120)+10+WALL_THICKNESS, 0]) {
+                translate([EXTRUSION_OFFSET + (REVERSED ? -5 : BOX_WIDTH+5), (REVERSED ? 0 : 120)+10+WALL_THICKNESS, 0]) {
                     // Extrusion slides.
                     rotate([0, 0, REVERSED ? 0 : 180]) GroundSupport(120, height=10-4, distance=1, width=2);
                     rotate([0, 0, REVERSED ? 0 : 180]) GroundSupport(120, height=30-4, distance=1, width=2);
@@ -923,13 +923,13 @@ module ScreenBoxBack(front_length=FRONT_LENGTH) {
                     }
                 }
             // 40x40 Extrusion side
-            translate([REVERSED ? -40-WALL_THICKNESS : BOX_WIDTH, 0, 0]) 40ExtrusionEndcap();
+            translate([REVERSED ? 0 : BOX_WIDTH, 0, 0]) mirror([REVERSED ? 1 : 0,0,0]) 40ExtrusionEndcap();
         }
         // Supports
         // RPi ports
         translate([REVERSED ? BOX_WIDTH : 0, RASPBERRY_PI_POSITION[1]+(REVERSED ? -9 : 10), 0]) rotate([0,0,REVERSED ? 180 : 0]) GroundSupport(10, height=6.5+15, distance=2, width=WALL_THICKNESS+2);
         if (ENDER3_FIXATION) {
-            translate([REVERSED ? -5 : BOX_WIDTH+5, BOX_LENGTH-WALL_THICKNESS-(REVERSED ? 130 : 10), 0]) {
+            translate([EXTRUSION_OFFSET + (REVERSED ? -5 : BOX_WIDTH+5), BOX_LENGTH-WALL_THICKNESS-(REVERSED ? 130 : 10), 0]) {
                 // Extrusion slides.
                 rotate([0, 0, REVERSED ? 0 : 180]) GroundSupport(120, height=10-4, distance=1, width=2);
                 rotate([0, 0, REVERSED ? 0 : 180]) GroundSupport(120, height=30-4, distance=1, width=2);

@@ -84,3 +84,7 @@ FRONT_LENGTH = RASPBERRY_PI_POSITION[1]-34;
 WALL_THICKNESS=2;
 
 BLOWER_COOLING = !REVERSED && !FORCE_4010_COOLING;
+
+// A 1 mm offset is added when mounting on the left of the printer
+// to make room for the z stepper motor.
+EXTRUSION_OFFSET = REVERSED ? 0 : 1;

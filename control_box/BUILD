@@ -25,11 +25,20 @@ openscad_library(
 )
 
 openscad_library(
+    name = "feet",
+    srcs = ["feet.scad"],
+    deps = [
+        ":params",
+    ],
+)
+
+openscad_library(
     name = "control_box_components",
     srcs = ["control_box_components.scad"],
     deps = [
         ":colors",
         ":params",
+        ":feet",
         "//3rdparty/AIYVoiceKit",
         "//3rdparty/BuckConverter",
         "//3rdparty/Fan",
@@ -105,11 +114,11 @@ openscad_artifact(
 openscad_artifact(
     name = "pcb_pin",
     module = "PCBPin",
-    deps = ["control_box"],
+    deps = ["feet"],
 )
 
 openscad_artifact(
     name = "raspberry_pi_standoff",
     module = "RaspberryPiStandoff",
-    deps = ["control_box"],
+    deps = ["feet"],
 )

@@ -285,6 +285,18 @@ module TopLevelSupportWithM3Insert(width = 8,
     }
 }
 
+module UpperLevelRail(h, in=false) {
+    clearance = in ? 0.15 : 0;
+    linear_extrude(h) polygon([
+        [0,0],
+        [0,4-clearance],
+        [3-2*clearance,2.25-clearance],
+        [3-2*clearance,1.75+clearance],
+        [1.5-2*clearance,1+clearance],
+        [1.5-2*clearance,0]
+    ]);
+}
+
 module UpperLevel() {
     offset = 5;
     length = BOX_LENGTH-FRONT_LENGTH-offset;
@@ -293,10 +305,10 @@ module UpperLevel() {
             // Feet for SKR13
             SKR13_HOLE_DISTANCE=[76.1, 101.85, 0];
             SKR13_OFFSET=MAINBOARD_POSITION+[0, -BOX_LENGTH+length, -WALL_THICKNESS];
-            MFoot(pos=SKR13_OFFSET-SKR13_HOLE_DISTANCE/2, d=3, h=3.5+WALL_THICKNESS)
-            MFoot(pos=SKR13_OFFSET+[SKR13_HOLE_DISTANCE.x/2, -SKR13_HOLE_DISTANCE.y/2, 0], d=3, h=3.5+WALL_THICKNESS)
-            MFoot(pos=SKR13_OFFSET+SKR13_HOLE_DISTANCE/2, d=3, h=3.5+WALL_THICKNESS)
-            MFoot(pos=SKR13_OFFSET+[-SKR13_HOLE_DISTANCE.x/2, SKR13_HOLE_DISTANCE.y/2, 0], d=3, h=3.5+WALL_THICKNESS) {
+            MFoot(pos=SKR13_OFFSET-SKR13_HOLE_DISTANCE/2, d=3, h=3.5+2*WALL_THICKNESS)
+            MFoot(pos=SKR13_OFFSET+[SKR13_HOLE_DISTANCE.x/2, -SKR13_HOLE_DISTANCE.y/2, 0], d=3, h=3.5+2*WALL_THICKNESS)
+            MFoot(pos=SKR13_OFFSET+SKR13_HOLE_DISTANCE/2, d=3, h=3.5+2*WALL_THICKNESS)
+            MFoot(pos=SKR13_OFFSET+[-SKR13_HOLE_DISTANCE.x/2, SKR13_HOLE_DISTANCE.y/2, 0], d=3, h=3.5+2*WALL_THICKNESS) {
                 // Bottom
                 translate([0, 0, -WALL_THICKNESS])
                     linear_extrude(WALL_THICKNESS)
@@ -315,6 +327,7 @@ module UpperLevel() {
                             [BOX_WIDTH-WALL_THICKNESS, length],
                             [WALL_THICKNESS, length],
                         ]);
+                translate([WALL_THICKNESS, -offset, 0]) cube([BOX_WIDTH-2*WALL_THICKNESS, BOX_LENGTH-FRONT_LENGTH-WALL_THICKNESS, WALL_THICKNESS]);
                 // Left
                 translate([0, -offset, -WALL_THICKNESS]) hull() {
                     translate([WALL_THICKNESS/2, 0, 0]) cube([WALL_THICKNESS/2, length+offset, BOX_HEIGHT-LEVEL_HEIGHT+WALL_THICKNESS]);
@@ -339,11 +352,11 @@ module UpperLevel() {
                             ]);
                 // Support for 5015 fan
                 if (BLOWER_COOLING) {
-                    translate([60, -20, 0]) cylinder(d=10, h=14);
-                    translate([33.1, -12.1, 0]) MFoot(3, h=14);
-                    translate([75.8, -49.7, 0]) MFoot(3, h=14);
+                    translate([60, -20, 0]) cylinder(d=10, h=14+WALL_THICKNESS);
+                    translate([33.1, -12.1, 0]) MFoot(3, h=14+WALL_THICKNESS);
+                    translate([75.8, -49.7, 0]) MFoot(3, h=14+WALL_THICKNESS);
                     // Insert for air tunnel for stepper motor cooling
-                    translate([59.3,115.2,0]) {
+                    translate([59.3,115.2,WALL_THICKNESS]) {
                         cube([22.6,12.8,13.5]);
                         translate([0,0,13.5]) {
                             cube([WALL_THICKNESS, 12.8, 17.6]);
@@ -369,11 +382,11 @@ module UpperLevel() {
                     }
                 }
                 // Cable management: bracket
-                translate([REVERSED ? 15 : BOX_WIDTH-15, 12.5, 0]) {
+                translate([REVERSED ? 15 : BOX_WIDTH-15, 12.5, WALL_THICKNESS]) {
                     // Along the mainboard
-                    rotate([0,0, REVERSED ? 180 : 0]) CableBracket(h=35, w=7, depth=2*WALL_THICKNESS);
-                    translate([0, 68, 0]) rotate([0,0, REVERSED ? 180 : 0]) CableBracket(h=35, w=7, depth=2*WALL_THICKNESS);
-                    translate([0, 96, 0]) rotate([0,0, REVERSED ? 180 : 0]) CableBracket(h=35, w=7, depth=2*WALL_THICKNESS);
+                    rotate([0,0, REVERSED ? 180 : 0]) CableBracket(h=35-WALL_THICKNESS, w=7, depth=2*WALL_THICKNESS);
+                    translate([0, 68, 0]) rotate([0,0, REVERSED ? 180 : 0]) CableBracket(h=35-WALL_THICKNESS, w=7, depth=2*WALL_THICKNESS);
+                    translate([0, 96, 0]) rotate([0,0, REVERSED ? 180 : 0]) CableBracket(h=35-WALL_THICKNESS, w=7, depth=2*WALL_THICKNESS);
                 }
                 // Frame assembly: screw for the cover over the air vent
                 translate([REVERSED ? 30.3 : 70.6,121.6,33])
@@ -393,7 +406,7 @@ module UpperLevel() {
             }
             // Air vent for the stepper motor cooling.
             if (BLOWER_COOLING)
-                Orientate(direction=[0,1,0], position=[59.3+WALL_THICKNESS, length-WALL_THICKNESS, 13.5], rotation=-90)
+                Orientate(direction=[0,1,0], position=[59.3+WALL_THICKNESS, length-WALL_THICKNESS, 13.5+WALL_THICKNESS], rotation=-90)
                     SquareAirVentPattern();
             // Cable management: cable out
             Orientate(direction=[0,1,0], position=[REVERSED ? -5 : BOX_WIDTH-5, length-WALL_THICKNESS, 13.5], rotation=-90) {
@@ -409,7 +422,7 @@ module UpperLevel() {
             }
 
             // Main board ports
-            translate([REVERSED ? BOX_WIDTH - WALL_THICKNESS : 0, MAINBOARD_POSITION[1]-BOX_LENGTH+length, 5.5]) {
+            translate([REVERSED ? BOX_WIDTH - WALL_THICKNESS : 0, MAINBOARD_POSITION[1]-BOX_LENGTH+length, 5.5+WALL_THICKNESS]) {
                 // SD-card slot
                 translate([0, REVERSED ? -12.8 : -2.8, 0]) cube([WALL_THICKNESS, 15.5, 3]);
                 // USB port
@@ -418,10 +431,13 @@ module UpperLevel() {
 
             // Cooling for the MOSFET under the board (place for heat sink)
             translate([20, 88, -WALL_THICKNESS]) {
-                cube([38.5, 16, WALL_THICKNESS]);
+                cube([38.5, 16, 2*WALL_THICKNESS]);
             }
             // Frame assembly part: 1 hole for screwing to the bottom
-            translate([REVERSED ? BOX_WIDTH-6 : 6, 122, -WALL_THICKNESS]) cylinder(d=screw_hole_diameter(3), h=WALL_THICKNESS);
+            translate([REVERSED ? BOX_WIDTH-6 : 6, 122, -WALL_THICKNESS]) cylinder(d=screw_hole_diameter(3), h=2*WALL_THICKNESS);
+            // Frame assembly: rails for attaching to the lower part
+            translate([0, length,-2]) rotate([90,0,0]) UpperLevelRail(length+offset);
+            translate([BOX_WIDTH, length,-2]) mirror([1,0,0]) rotate([90,0,0]) UpperLevelRail(length+offset);
             // A little chamfer to make sliding this level easier.
             if (BLOWER_COOLING) {
                 translate([BOX_WIDTH-WALL_THICKNESS-0.5, -offset, 0])
@@ -808,6 +824,10 @@ module ScreenBoxBack(front_length=FRONT_LENGTH) {
             mirror([REVERSED ? 0 : 1, 0, 0]) AluminiumExtrusionSlider(120);
         }
 
+        // Frame assembly: slider for attaching to the upper part
+        translate([0, BOX_LENGTH, LEVEL_HEIGHT-2]) rotate([90,0,0]) UpperLevelRail(BOX_LENGTH-front_length, true);
+        translate([BOX_WIDTH, BOX_LENGTH, LEVEL_HEIGHT-2]) mirror([1,0,0]) rotate([90,0,0]) UpperLevelRail(BOX_LENGTH-front_length, true);
+
         // Assembly: frame clips
         translate([BOX_WIDTH/2-4, front_length-4, WALL_THICKNESS]) InsertWithFillet();
         // Back
@@ -910,8 +930,8 @@ module ScreenBoxTop(logo=0) {
                         }
                         if (BLOWER_COOLING) {
                             // Cooling: tunnel for the 5015 fan
-                            translate([55, 30, -BOX_HEIGHT+LEVEL_HEIGHT+32]) difference() {
-                                cylinder(d=40+2*WALL_THICKNESS, h=BOX_HEIGHT-LEVEL_HEIGHT-32);
+                            translate([55, 30, -BOX_HEIGHT+LEVEL_HEIGHT+WALL_THICKNESS+33]) difference() {
+                                cylinder(d=40+2*WALL_THICKNESS, h=BOX_HEIGHT-LEVEL_HEIGHT-WALL_THICKNESS-33);
                                 cylinder(d=40, h=18);
                             }
                         }

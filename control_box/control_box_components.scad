@@ -91,14 +91,14 @@ module HigherLevelComponents(level_height, height) {
     %translate([0,0,3.5]) {
         // SKR1.3 board
         // 0 height would be -5
-        translate(MAINBOARD_POSITION + [0, 0, level_height]) {
+        translate(MAINBOARD_POSITION + [0, 0, level_height+WALL_THICKNESS]) {
                 rotate([0, 0, REVERSED ? 180 : 0])
                     translate([-MAINBOARD_SIZE.x/2, -MAINBOARD_SIZE.y/2, 0])
                         SKR13();
         }
         if (BLOWER_COOLING) {
             // 5015 Fan for the TMC steppers.
-            translate([80,160,70.6]) {
+            translate([80,160,70.6+WALL_THICKNESS]) {
                 rotate([0, 0, 180]) {
                     5015Fan();
                 }

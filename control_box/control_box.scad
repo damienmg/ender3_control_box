@@ -836,8 +836,8 @@ module ScreenBoxBack(front_length=FRONT_LENGTH) {
             translate([REVERSED ? 41.8 : 21.8, -10, 0]) cube([WALL_THICKNESS, 10, 40]);
             translate([REVERSED ? 84.2 : 64.2, -10, 0]) cube([WALL_THICKNESS, 10, 40]);
             // Mounting hole for the fan
-            Foot(pos=[REVERSED ? 48 : 28, WALL_THICKNESS, 6.5], d1=5.4, d2=select_insert(3)[3], h=3+WALL_THICKNESS, direction=[0,-1,0])
-            Foot(pos=[REVERSED ? 80 : 60, WALL_THICKNESS, 38.5], d1=5.4, d2=select_insert(3)[3], h=3+WALL_THICKNESS, direction=[0,-1,0])
+            Foot(pos=[REVERSED ? 48 : 28, WALL_THICKNESS, 6.5], d1=5.4, d2=screwin_diameter(3), h=3+WALL_THICKNESS, direction=[0,-1,0])
+            Foot(pos=[REVERSED ? 80 : 60, WALL_THICKNESS, 38.5], d1=5.4, d2=screwin_diameter(3), h=3+WALL_THICKNESS, direction=[0,-1,0])
                 difference() {
                     // Back panel
                     translate([REVERSED ? 0 : WALL_THICKNESS,0,WALL_THICKNESS]) cube([BOX_WIDTH-WALL_THICKNESS, WALL_THICKNESS, LEVEL_HEIGHT-2*WALL_THICKNESS]);

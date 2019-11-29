@@ -897,7 +897,7 @@ module ScreenBoxTopFrame() {
             translate([-WALL_THICKNESS, 0, 0]) cube([WALL_THICKNESS, 3, BOX_WIDTH-25]);
         }
     }
-    translate([WALL_THICKNESS+0.25, FRONT_LENGTH-LCD_LENGTH+10, 0]) cube([BOX_WIDTH-2*WALL_THICKNESS-0.5, BOX_LENGTH-FRONT_LENGTH-10, WALL_THICKNESS]);
+    translate([WALL_THICKNESS+0.25, FRONT_LENGTH-LCD_LENGTH+30, 0]) cube([BOX_WIDTH-2*WALL_THICKNESS-0.5, BOX_LENGTH-FRONT_LENGTH-30, WALL_THICKNESS]);
 }
 
 module ScreenBoxTop(logo=0) {
@@ -931,7 +931,10 @@ module ScreenBoxTop(logo=0) {
                         if (BLOWER_COOLING) {
                             // Cooling: tunnel for the 5015 fan
                             translate([55, 30, -BOX_HEIGHT+LEVEL_HEIGHT+WALL_THICKNESS+33]) difference() {
-                                cylinder(d=40+2*WALL_THICKNESS, h=BOX_HEIGHT-LEVEL_HEIGHT-WALL_THICKNESS-33);
+                                difference() {
+                                    cylinder(d=40+2*WALL_THICKNESS, h=BOX_HEIGHT-LEVEL_HEIGHT-WALL_THICKNESS-33);
+                                    cube([25,25,2]);
+                                }
                                 cylinder(d=40, h=18);
                             }
                         }

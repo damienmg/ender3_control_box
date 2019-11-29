@@ -15,7 +15,7 @@
  */
  
  module FanTunnel(level_height) {
-    translate([52, 300, level_height+31])
+    translate([52, 300, level_height+33])
         rotate([180, 0, 90])
             import("./files/Bigtreetech_Stepper_cooler_fan_up.stl");
 }

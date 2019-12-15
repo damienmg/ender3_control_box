@@ -105,8 +105,8 @@ module HigherLevelComponents(level_height, height) {
         }
         if (BLOWER_COOLING) {
             // 5015 Fan for the TMC steppers.
-            translate([80,160,70.6+WALL_THICKNESS]) {
-                rotate([0, 0, 180]) {
+            translate([REVERSED ? 22 : 80, 160,(REVERSED ? 55.6 : 70.6)+WALL_THICKNESS]) {
+                rotate([REVERSED ? 180 : 0, 0, REVERSED ? 0 : 180]) {
                     5015Fan();
                 }
             }

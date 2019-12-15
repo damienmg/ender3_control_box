@@ -14,8 +14,8 @@
  * limitations under the License.
  */
  
- module FanTunnel(level_height) {
-    translate([52, 300, level_height+33])
+ module FanTunnel(level_height, up=true) {
+    translate([up ? 52 : -86, 300, level_height+33])
         rotate([180, 0, 90])
-            import("./files/Bigtreetech_Stepper_cooler_fan_up.stl");
+            import(up ? "./files/Bigtreetech_Stepper_cooler_fan_up.stl" : "./files/Bigtreetech_Stepper_cooler_fan_down.stl");
 }

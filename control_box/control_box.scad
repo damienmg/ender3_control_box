@@ -313,14 +313,14 @@ module UpperLevel() {
                 translate([0, 0, -WALL_THICKNESS])
                     linear_extrude(WALL_THICKNESS)
                         polygon(BLOWER_COOLING ? [
-                            [WALL_THICKNESS, -offset],
-                            [10+offset, -offset],
-                            [BOX_WIDTH-31, -55],
-                            [BOX_WIDTH-WALL_THICKNESS-0.5, -55],
-                            [BOX_WIDTH-WALL_THICKNESS-0.5, -offset],
-                            [BOX_WIDTH-WALL_THICKNESS, -offset],
-                            [BOX_WIDTH-WALL_THICKNESS, length],
-                            [WALL_THICKNESS, length],
+                            [REVERSED ? BOX_WIDTH - WALL_THICKNESS : WALL_THICKNESS, -offset],
+                            [REVERSED ? BOX_WIDTH - 10 - offset : 10 + offset, -offset],
+                            [REVERSED ? 31 : BOX_WIDTH-31, -55],
+                            [REVERSED ? WALL_THICKNESS + 0.5 : BOX_WIDTH-WALL_THICKNESS-0.5, -55],
+                            [REVERSED ? WALL_THICKNESS + 0.5 : BOX_WIDTH-WALL_THICKNESS-0.5, -offset],
+                            [REVERSED ? WALL_THICKNESS : BOX_WIDTH-WALL_THICKNESS, -offset],
+                            [REVERSED ? WALL_THICKNESS : BOX_WIDTH-WALL_THICKNESS, length],
+                            [REVERSED ? BOX_WIDTH-WALL_THICKNESS : WALL_THICKNESS, length],
                         ] : [
                             [WALL_THICKNESS, 0],
                             [BOX_WIDTH-WALL_THICKNESS, 0],
@@ -352,11 +352,30 @@ module UpperLevel() {
                             ]);
                 // Support for 5015 fan
                 if (BLOWER_COOLING) {
-                    translate([60, -20, 0]) cylinder(d=10, h=14+WALL_THICKNESS);
-                    translate([33.1, -12.1, 0]) MFoot(3, h=14+WALL_THICKNESS);
-                    translate([75.8, -49.7, 0]) MFoot(3, h=14+WALL_THICKNESS);
+                    if (REVERSED){
+                        translate([69, -12.1, 0]) MFoot(3, h=14+WALL_THICKNESS);
+                        translate([26.3, -49.7, 0]) MFoot(3, h=14+WALL_THICKNESS);
+                        // Cooling: tunnel for the 5015 fan
+                        translate([47.15, -30.9, 0]) difference() {
+                            translate([0,0,-WALL_THICKNESS]) {
+                                cylinder(d=40+2*WALL_THICKNESS, h=14+2*WALL_THICKNESS, $fn=50);
+                                translate([-43.5, -12.5, 0]) cube([27.5,25,14+2*WALL_THICKNESS]);
+                            }
+                            translate([0,0,2.5]) minkowski() {
+                                union() {
+                                    cylinder(d=35, h=14+WALL_THICKNESS);
+                                    translate([-50, -8, 0]) cube([40,16,10]);
+                                }
+                                sphere(d=5);
+                            }
+                        }
+                    } else {
+                        translate([60, -20, 0]) cylinder(d=10, h=14+WALL_THICKNESS);
+                        translate([33.1, -12.1, 0]) MFoot(3, h=14+WALL_THICKNESS);
+                        translate([75.8, -49.7, 0]) MFoot(3, h=14+WALL_THICKNESS);
+                    }
                     // Insert for air tunnel for stepper motor cooling
-                    translate([59.3,115.2,WALL_THICKNESS]) {
+                    translate([REVERSED ? 19 : 59.3,115.2,WALL_THICKNESS]) {
                         cube([22.6,12.8,13.5]);
                         translate([0,0,13.5]) {
                             cube([WALL_THICKNESS, 12.8, 17.6]);
@@ -406,7 +425,7 @@ module UpperLevel() {
             }
             // Air vent for the stepper motor cooling.
             if (BLOWER_COOLING)
-                Orientate(direction=[0,1,0], position=[59.3+WALL_THICKNESS, length-WALL_THICKNESS, 13.5+WALL_THICKNESS], rotation=-90)
+                Orientate(direction=[0,1,0], position=[(REVERSED ? 19 : 59.3)+WALL_THICKNESS, length-WALL_THICKNESS, 13.5+WALL_THICKNESS], rotation=-90)
                     SquareAirVentPattern();
             // Cable management: cable out
             Orientate(direction=[0,1,0], position=[REVERSED ? -5 : BOX_WIDTH-5, length-WALL_THICKNESS, 13.5], rotation=-90) {
@@ -440,8 +459,8 @@ module UpperLevel() {
             translate([BOX_WIDTH, length,-2]) mirror([1,0,0]) rotate([90,0,0]) UpperLevelRail(length+offset);
             // A little chamfer to make sliding this level easier.
             if (BLOWER_COOLING) {
-                translate([BOX_WIDTH-WALL_THICKNESS-0.5, -offset, 0])
-                    rotate([-90,0, 180]) linear_extrude(BOX_LENGTH) polygon([[0,0],[0,1], [1,0]]);
+                translate([REVERSED ? WALL_THICKNESS+0.5 : BOX_WIDTH-WALL_THICKNESS-0.5, REVERSED ? -BOX_LENGTH-offset : -offset, 0])
+                    rotate([-90,0, REVERSED ? 0 : 180]) linear_extrude(BOX_LENGTH) polygon([[0,0],[0,1], [1,0]]);
             }
         }
 }
@@ -591,14 +610,14 @@ module ScreenBoxFront(length=FRONT_LENGTH) {
 
             if (BLOWER_COOLING) {
                 // Assembly: Support for upper level
-                translate([BOX_WIDTH-WALL_THICKNESS, length-WALL_THICKNESS, LEVEL_HEIGHT-WALL_THICKNESS]) {
-                    rotate([0,0,180]) LevelSupport(55);
+                translate([REVERSED ? WALL_THICKNESS : BOX_WIDTH-WALL_THICKNESS, length-WALL_THICKNESS-(REVERSED ? 55 : 0), LEVEL_HEIGHT-WALL_THICKNESS]) {
+                    rotate([0,0,REVERSED ? 0 : 180]) LevelSupport(55);
                     // Stop for the upper level
-                    translate([-10, -55, 0]) cube([10,5,10]);
+                    translate([REVERSED ? 0 : -10, REVERSED ? 0 : -55, 0]) cube([10,5,10]);
                 }
                 // Assembly: slider for upper level (one side only)
-                translate([BOX_WIDTH-WALL_THICKNESS, 120, LEVEL_HEIGHT])
-                    mirror([1,0,0]) UpperLevelBlocker(depth=7, height=18);
+                translate([REVERSED ? WALL_THICKNESS : BOX_WIDTH-WALL_THICKNESS, 120, LEVEL_HEIGHT])
+                    mirror([REVERSED ? 0 : 1,0,0]) UpperLevelBlocker(depth=7, height=18);
             }
             if (ENDER3_FIXATION) {
                 // Assembly: Slider for 40x40 aluminium extrusion.
@@ -666,22 +685,29 @@ module ScreenBoxFront(length=FRONT_LENGTH) {
             }
 
         }
-        // Clearance for the upper level.
-        if (BLOWER_COOLING)
-            translate([BOX_WIDTH-WALL_THICKNESS, length-55, LEVEL_HEIGHT-WALL_THICKNESS]) cube([0.4, 55, WALL_THICKNESS]);
+        if (BLOWER_COOLING) {
+            if (REVERSED) {
+                // Air intake for the stepper motor cooling.
+                Orientate(direction=[1,0,0], position=[0, length-13.5, LEVEL_HEIGHT + 16.5], rotation=-90)
+                    SquareAirVentPattern(l=18, w=25);
+            }
+            // Clearance for the upper level.
+            translate([REVERSED ? WALL_THICKNESS-0.4 : BOX_WIDTH-WALL_THICKNESS, length-55, LEVEL_HEIGHT-WALL_THICKNESS])
+                cube([0.4, 55, WALL_THICKNESS]);
+        }
         if (AIY_KIT) {
             if (BLOWER_COOLING) translate([0.5, BOX_LENGTH-130, LEVEL_HEIGHT-WALL_THICKNESS]) {
                 linear_extrude(30)
                     polygon([
-                        [8, 0],
-                        [BOX_WIDTH-33, -55],
-                        [BOX_WIDTH-33, 0],
+                        [REVERSED ? BOX_WIDTH-8 : 8, 0],
+                        [REVERSED ? 33 : BOX_WIDTH-33, -55],
+                        [REVERSED ? 33 : BOX_WIDTH-33, 0],
                     ]);
                 translate([0,0,-20]) linear_extrude(50)
                     polygon([
-                        [13, 0],
-                        [BOX_WIDTH-33, -50],
-                        [BOX_WIDTH-33, 0],
+                        [REVERSED ? BOX_WIDTH - 13 : 13, 0],
+                        [REVERSED ? 33 : BOX_WIDTH-33, -50],
+                        [REVERSED ? 33 : BOX_WIDTH-33, 0],
                     ]);
             }
             // Speaker holes
@@ -938,7 +964,7 @@ module ScreenBoxTop(logo=0) {
                                 translate([0, 5.1, 0]) PCBSnapFit();
                             }
                         }
-                        if (BLOWER_COOLING) {
+                        if (BLOWER_COOLING && !REVERSED) {
                             // Cooling: tunnel for the 5015 fan
                             translate([55, 30, -BOX_HEIGHT+LEVEL_HEIGHT+WALL_THICKNESS+33]) difference() {
                                 difference() {
@@ -964,7 +990,7 @@ module ScreenBoxTop(logo=0) {
                     }
                     if (BLOWER_COOLING) {
                         // Cooling: exhaust for the 5015 fan
-                        translate([55, 30, 0]) CircleAirVentPattern(h=2*WALL_THICKNESS, d=40);
+                        if (!REVERSED) translate([55, 30, 0]) CircleAirVentPattern(h=2*WALL_THICKNESS, d=40);
                     } else {
                         // Cooling: exhaust for 2 4010 fan
                         translate([BOX_WIDTH/2,MAINBOARD_POSITION.y-LCD_LENGTH,0]) {
@@ -991,13 +1017,19 @@ module ScreenBoxTopLogo() {
     ScreenBoxTop(logo=1);
 }
 
+module FanTunnelPositioned() {
+    color(FANTUNNEL_COLOR) {
+        FanTunnel(LEVEL_HEIGHT, !REVERSED);
+    }
+}
+
 module ScreenBox() {
     ScreenBoxFront();
     ScreenBoxBack();
     UpperLevel();
     ScreenBoxTop();
     ScreenBoxTopLogo();
-    color(FANTUNNEL_COLOR) FanTunnel(LEVEL_HEIGHT);
+    FanTunnelPositioned();
 }
 
 module RaspberryPiStandoffs() {
@@ -1026,10 +1058,12 @@ module AllComponents() {
 }
 
 module WithEnder3() {
-    translate([-BOX_WIDTH,0,0]) {
-        children();
+    translate([REVERSED ? 433 : 0, 0, 0]) {
+        translate([-BOX_WIDTH,0,0]) {
+            children();
+        }
+        Ender3Screen();
     }
-    Ender3Screen();
     Ender3WithoutScreen();
 }
 

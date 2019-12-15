@@ -26,7 +26,7 @@ REVERSED = false;
 
 // 2 4010 cooling is used in the case of reversed direction. This will force to use
 // 2x4010 cooling even without normal direction.
-FORCE_4010_COOLING = false;
+4010_COOLING = false;
 
 // Add feature to have room for the Google AIY Kit v1.
 AIY_KIT = true;
@@ -87,7 +87,7 @@ LEVEL_HEIGHT = 45;
 FRONT_LENGTH = RASPBERRY_PI_POSITION[1]-34;
 WALL_THICKNESS=2;
 
-BLOWER_COOLING = !REVERSED && !FORCE_4010_COOLING;
+BLOWER_COOLING = !4010_COOLING;
 
 // A 1 mm offset is added when mounting on the left of the printer
 // to make room for the z stepper motor.

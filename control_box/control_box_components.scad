@@ -18,6 +18,7 @@ use <../3rdparty/SKR1.3/skr13.scad>
 use <../3rdparty/RaspberryPi_3B_Plus/rpi.scad>
 use <../3rdparty/Fan/fan.scad>
 use <../3rdparty/BuckConverter/buck_converter.scad>
+use <../3rdparty/BTT-UPS-24V/btt_ups_24v.scad>
 use <../3rdparty/RelaySwitch/relay_switch.scad>
 use <../3rdparty/AIYVoiceKit/aiy_voice_kit.scad>
 include <colors.scad>
@@ -64,8 +65,8 @@ module LowerLevelComponents() {
                 BuckConverter();
         }
         // Relay for the LEDs driving 12V
-        translate([70, 125, 0]) {
-            rotate([0,0,90]) RelaySwitch();
+        translate([REVERSED ? 5.5 : 70, REVERSED ? 150 : 125, 2.5]) {
+            rotate([0,0,REVERSED ? -90 : 90]) RelaySwitch();
         }
         // Buck converter 24V -> 12V for the LEDs
         translate([REVERSED ? 30 : 10, 255.5, 0]) {
@@ -73,16 +74,22 @@ module LowerLevelComponents() {
                 BuckConverter();
         }
         // Relay for the fan, connected on the Rpi 24V input
-        translate([70, 95, 0]) {
-            rotate([0,0,90]) RelaySwitch();
+        translate([REVERSED ? 5.5 : 70, REVERSED ? 123 : 98, 2.5]) {
+            rotate([0,0,REVERSED ? -90 : 90]) RelaySwitch();
         }
         // Electronic Fan
         translate([REVERSED ? 52 : 32, 288, 17]) {
             rotate([90, -90, 0]) 4010Fan();
         }
         // Printer relay.
-        translate([70, 65, 0]) {
-            rotate([0,0,90]) RelaySwitch();
+        if (USE_MINI_UPS) {
+            translate([REVERSED ? -1 : 76, REVERSED ? 96 : 46, 2.5]) {
+                rotate([0,0,REVERSED ? -90 : 90]) BttUps24V();
+            }
+        } else {
+            translate([REVERSED ? 5.5 : 70, REVERSED ? 95 : 70, 2.5]) {
+                rotate([0,0,REVERSED ? -90 : 90]) RelaySwitch();
+            }
         }
     }
 }

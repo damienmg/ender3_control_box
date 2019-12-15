@@ -122,12 +122,27 @@ module BuckConverterFeet(direction=[0,0,1], pos=[0,0,0], angle=0) {
 
 module RelaySwitchFeet(direction=[0,0,1], pos=[0,0,0], angle=0) {
     m=rotation_matrix(direction, angle);
+    h=screw_insert_depth(3)+WALL_THICKNESS;
     // 2 feet with M2 insert & 2 feet.
-    MFoot(pos=[2.2,2.2,-WALL_THICKNESS]*m+pos, h=screw_insert_depth(2)+WALL_THICKNESS)
-        MFoot(pos=[23.2,31.2,-WALL_THICKNESS]*m+pos, h=screw_insert_depth(2)+WALL_THICKNESS) {
+    MFoot(pos=[2.2,2.2,-WALL_THICKNESS]*m+pos, h=h)
+        MFoot(pos=[23.2,31.2,-WALL_THICKNESS]*m+pos, h=h) {
             Orientate(position=pos, rotation=-angle, direction=direction) {
-                translate([2.2,31.2,0]) Foot(d2=0);
-                translate([23.2,2.2,0]) Foot(d2=0);
+                translate([2.2,31.2,0]) Foot(d2=0, h=h-WALL_THICKNESS);
+                translate([23.2,2.2,0]) Foot(d2=0, h=h-WALL_THICKNESS);
+            }
+            children();
+        }
+}
+
+module MiniUps24VFeet(direction=[0,0,1], pos=[0,0,0], angle=0) {
+    m=rotation_matrix(direction, angle);
+    h=screw_insert_depth(3)+WALL_THICKNESS;
+    // 2 feet with M3 insert & 2 feet.
+    MFoot(d=3, pos=[2.71,2.71,-WALL_THICKNESS]*m+pos, h=h)
+        MFoot(d=3, pos=[47.29,42.09,-WALL_THICKNESS]*m+pos, h=h) {
+            Orientate(position=pos, rotation=-angle, direction=direction) {
+                translate([2.71,42.09,0]) Foot(d2=0, h=h-WALL_THICKNESS);
+                translate([47.29,2.71,0]) Foot(d2=0, h=h-WALL_THICKNESS);
             }
             children();
         }

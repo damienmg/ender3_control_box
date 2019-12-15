@@ -41,6 +41,7 @@ openscad_library(
         ":feet",
         "//3rdparty/AIYVoiceKit",
         "//3rdparty/BuckConverter",
+        "//3rdparty/BTT-UPS-24V",
         "//3rdparty/Fan",
         "//3rdparty/RaspberryPi_3B_Plus",
         "//3rdparty/RelaySwitch",

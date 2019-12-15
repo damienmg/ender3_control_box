@@ -532,13 +532,23 @@ module 40ExtrusionEndcap(clearance=0.4, offset=EXTRUSION_OFFSET) {
     }
 }
 
+module RelayOrUpsFeet(foot_x) {
+    if (USE_MINI_UPS) {
+        foot_x = REVERSED ? 55.95: 87.25;
+        MiniUps24VFeet(pos=[foot_x, 46, WALL_THICKNESS], angle=-90)
+            children();
+    } else {
+        RelaySwitchFeet(pos=[foot_x, 69.5, WALL_THICKNESS], angle=-90)
+            children();
+    }
+}
 module ScreenBoxFront(length=FRONT_LENGTH) {
     difference() {
         foot_x = REVERSED ? 50.95: 82.25;
         // Relay switch feet (x3)
         RelaySwitchFeet(pos=[foot_x, 124.5, WALL_THICKNESS], angle=-90)
-        RelaySwitchFeet(pos=[foot_x, 94.5, WALL_THICKNESS], angle=-90)
-        RelaySwitchFeet(pos=[foot_x, 64.5, WALL_THICKNESS], angle=-90) {
+        RelaySwitchFeet(pos=[foot_x, 97.5, WALL_THICKNESS], angle=-90)
+        RelayOrUpsFeet(foot_x) {
             // Left
             ScreenBorder(length);
             // Right

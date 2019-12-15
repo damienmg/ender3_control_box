@@ -41,6 +41,10 @@ EXTRUSION_WIDTH = 0.48;
 // plastic will be added and the screw will screw in the plastic directly. 
 USE_INSERT = 1;
 
+// Rather than having 3 Relay Switch module, have only 2 and have room
+// for a BTT Mini UPS 24V
+USE_MINI_UPS = true;
+
 // List of M screw diameters. Those are taken from a set of brass insert
 // I bought on AliExpress. The insert diameter is the actual diameter of
 // my brass minus 1 mm.

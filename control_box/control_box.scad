@@ -705,7 +705,7 @@ module ScreenBoxFront(length=FRONT_LENGTH) {
                     ]);
                 translate([0,0,-20]) linear_extrude(50)
                     polygon([
-                        [REVERSED ? BOX_WIDTH - 13 : 13, 0],
+                        [REVERSED ? BOX_WIDTH - 15 : 14, 0],
                         [REVERSED ? 33 : BOX_WIDTH-33, -50],
                         [REVERSED ? 33 : BOX_WIDTH-33, 0],
                     ]);

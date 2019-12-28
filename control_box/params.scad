@@ -24,8 +24,7 @@ ENDER3_FIXATION = true;
 // Reverse the orientation, for example to mount it on the left of the printer.
 REVERSED = false;
 
-// 2 4010 cooling is used in the case of reversed direction. This will force to use
-// 2x4010 cooling even without normal direction.
+// 2x4010 cooling.
 4010_COOLING = false;
 
 // Add feature to have room for the Google AIY Kit v1.

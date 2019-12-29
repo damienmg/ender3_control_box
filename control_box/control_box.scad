@@ -144,8 +144,7 @@ module GroundSupport(length, height=20, distance=10, width=2, ground_width=4, th
             rotate([0, -90, -90]) linear_extrude(length) {
                 polygon([
                     // Diagonal support
-                    [height-SUPPORT_OFFSET-width+(-distance-ground_width/2+thickness/2), -distance-ground_width+thickness/2],
-                    [height-SUPPORT_OFFSET-width+ground_width/2, 0],
+                    [height-SUPPORT_OFFSET-width+(-distance-ground_width/2+thickness/2), -distance-ground_width/2-thickness/2],
                     [height-SUPPORT_OFFSET, 0],
                     [height-SUPPORT_OFFSET, width],
                     [height-SUPPORT_OFFSET-width+(-distance-ground_width/2+thickness/2), -distance-ground_width/2+thickness/2],
@@ -538,8 +537,8 @@ module 40ExtrusionEndcap(clearance=0.4, offset=EXTRUSION_OFFSET) {
     if (ENDER3_FIXATION) {
         Endcap(clearance=clearance, offset=offset);
         // Endcap support
-        translate([offset+24.6-clearance, -6, 0])
-            rotate([0, 0, 90]) GroundSupport(7.2-2*clearance, height=3.4+clearance, distance=-4, width=2*WALL_THICKNESS);
+        translate([offset+38.6-clearance, -6, 0])
+            rotate([0, 0, 90]) GroundSupport(34.1+clearance, height=3.4+clearance, distance=-3, width=2*WALL_THICKNESS);
         translate([offset+32.5, -6, 0])
             rotate([0, 0, 90]) GroundSupport(5.4+clearance, height=15.4+clearance, distance=-3, width=2*WALL_THICKNESS);
         translate([offset+14.9+clearance, -6, 0])
@@ -891,7 +890,7 @@ module ScreenBoxBack(front_length=FRONT_LENGTH) {
         }
         // Supports
         // RPi ports
-        translate([REVERSED ? BOX_WIDTH : 0, RASPBERRY_PI_POSITION[1]+(REVERSED ? -9 : 10), 0]) rotate([0,0,REVERSED ? 180 : 0]) GroundSupport(10, height=6.5+15, distance=2, width=WALL_THICKNESS+2);
+        translate([REVERSED ? BOX_WIDTH : 0, RASPBERRY_PI_POSITION[1]+(REVERSED ? -9 : 10), 0]) rotate([0,0,REVERSED ? 180 : 0]) GroundSupport(10, height=6.5+15, distance=2, width=WALL_THICKNESS, ground_width=8);
         if (ENDER3_FIXATION) {
             translate([EXTRUSION_OFFSET + (REVERSED ? -5 : BOX_WIDTH+5), BOX_LENGTH-WALL_THICKNESS-(REVERSED ? 130 : 10), 0]) {
                 // Extrusion slides.

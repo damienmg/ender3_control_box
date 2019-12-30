@@ -427,7 +427,7 @@ module UpperLevel() {
                 Orientate(direction=[0,1,0], position=[(REVERSED ? 19 : 59.3)+WALL_THICKNESS, length-WALL_THICKNESS, 13.5+WALL_THICKNESS], rotation=-90)
                     SquareAirVentPattern();
             // Cable management: cable out
-            Orientate(direction=[0,1,0], position=[REVERSED ? -5 : BOX_WIDTH-5, length-WALL_THICKNESS, 13.5], rotation=-90) {
+            Orientate(direction=[0,1,0], position=[REVERSED ? 5 : BOX_WIDTH-5, length-WALL_THICKNESS, REVERSED ? 23.5 : 13.5], rotation=REVERSED ? 90 : -90) {
                 intersection() {
                     hull() {
                         cylinder(d=20, h=WALL_THICKNESS);

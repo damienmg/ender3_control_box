@@ -116,10 +116,14 @@ module HigherLevelComponents(level_height, height) {
                 }
             }
         } else {
-            // 2*4010 to cool stepper driver.
+            // 4010 to cool stepper driver.
             translate([BOX_WIDTH/2, MAINBOARD_POSITION.y - (CREALITY_MELZI_BOARD ? 10 : 0), height-10]) {
-                translate([0,22,0]) 4010Fan();
-                translate([0,-22,0]) 4010Fan();
+                if (TWO_4010) {
+                    translate([0,22,0]) 4010Fan();
+                    translate([0,-22,0]) 4010Fan();
+                } else {
+                    4010Fan();
+                }
             }
         }
     }

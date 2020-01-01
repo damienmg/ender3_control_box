@@ -963,12 +963,17 @@ module ScreenBoxTop(logo=0) {
                         // Frame
                         if (BLOWER_COOLING) {
                             ScreenBoxTopFrame();
-                        } else {
+                        } else if (TWO_4010) {
                             // Mounting hole for the cooling fans when using double 4010.
                             Foot(pos=[BOX_WIDTH/2-16,6+MAINBOARD_POSITION.y-LCD_LENGTH-(CREALITY_MELZI_BOARD ? 10 : 0),0], d1=5.4, d2=select_insert(3)[3], h=3+WALL_THICKNESS, direction=[0,0,-1])
                             Foot(pos=[BOX_WIDTH/2+16,38+MAINBOARD_POSITION.y-LCD_LENGTH-(CREALITY_MELZI_BOARD ? 10 : 0),0], d1=5.4, d2=select_insert(3)[3], h=3+WALL_THICKNESS, direction=[0,0,-1])
                             Foot(pos=[BOX_WIDTH/2-16,-38+MAINBOARD_POSITION.y-LCD_LENGTH-(CREALITY_MELZI_BOARD ? 10 : 0),0], d1=5.4, d2=select_insert(3)[3], h=3+WALL_THICKNESS, direction=[0,0,-1])
                             Foot(pos=[BOX_WIDTH/2+16,-6+MAINBOARD_POSITION.y-LCD_LENGTH-(CREALITY_MELZI_BOARD ? 10 : 0),0], d1=5.4, d2=select_insert(3)[3], h=3+WALL_THICKNESS, direction=[0,0,-1])
+                            ScreenBoxTopFrame();
+                        } else {
+                            // Mounting hole for the cooling fans when using single 4010.
+                            Foot(pos=[BOX_WIDTH/2-16,-16+MAINBOARD_POSITION.y-LCD_LENGTH-(CREALITY_MELZI_BOARD ? 10 : 0),0], d1=5.4, d2=select_insert(3)[3], h=3+WALL_THICKNESS, direction=[0,0,-1])
+                            Foot(pos=[BOX_WIDTH/2+16,16+MAINBOARD_POSITION.y-LCD_LENGTH-(CREALITY_MELZI_BOARD ? 10 : 0),0], d1=5.4, d2=select_insert(3)[3], h=3+WALL_THICKNESS, direction=[0,0,-1])
                             ScreenBoxTopFrame();
                         }
                         if (AIY_KIT) {
@@ -1010,8 +1015,12 @@ module ScreenBoxTop(logo=0) {
                     } else {
                         // Cooling: exhaust for 2 4010 fan
                         translate([BOX_WIDTH/2,MAINBOARD_POSITION.y-LCD_LENGTH-(CREALITY_MELZI_BOARD ? 10 : 0),0]) {
-                            translate([0, 22, 0]) CircleAirVentPattern(h=2*WALL_THICKNESS, d=39);
-                            translate([0, -22, 0]) CircleAirVentPattern(h=2*WALL_THICKNESS, d=39);
+                            if (TWO_4010) {
+                                translate([0, 22, 0]) CircleAirVentPattern(h=2*WALL_THICKNESS, d=39);
+                                translate([0, -22, 0]) CircleAirVentPattern(h=2*WALL_THICKNESS, d=39);
+                            } else {
+                                 CircleAirVentPattern(h=2*WALL_THICKNESS, d=39);
+                            }
                         }
                     }
                     // Assembly: screw hole for the bottom

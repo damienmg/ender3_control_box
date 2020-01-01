@@ -24,7 +24,10 @@ ENDER3_FIXATION = true;
 // Reverse the orientation, for example to mount it on the left of the printer.
 REVERSED = false;
 
-// 2x4010 cooling.
+// Use a Creality Melzi main board footprint instead of a SKR 1.3
+CREALITY_MELZI_BOARD = false;
+
+// 2x4010 cooling, even with a SKR 1.3
 4010_COOLING = false;
 
 // Add feature to have room for the Google AIY Kit v1.
@@ -70,9 +73,9 @@ SUPPORT_OFFSET = (INTERFACE_LAYERS+GAP_LAYERS)*LAYER_HEIGHT;
 // the Creality Ender-3.
 
 RASPBERRY_PI_POSITION = REVERSED ? [45,194,0] : [33,194,0];
-MAINBOARD_SIZE = [84.30, 109.67, 0];
+MAINBOARD_SIZE = CREALITY_MELZI_BOARD ? [70.25, 100, 0] : [84.30, 109.67, 0];
 MAINBOARD_POSITION = MAINBOARD_SIZE/2 + (
-    REVERSED ? [15.7,170,0] : [2,170,0]);
+    REVERSED ? [15.7,0,0] : [2,0,0]) + (CREALITY_MELZI_BOARD ? [REVERSED ? 6 : 7,193,0] : [0,170,0]);
 
 BOX_WIDTH = 102;
 BOX_HEIGHT = 90;
@@ -86,7 +89,7 @@ LEVEL_HEIGHT = 45;
 FRONT_LENGTH = RASPBERRY_PI_POSITION[1]-34;
 WALL_THICKNESS=2;
 
-BLOWER_COOLING = !4010_COOLING;
+BLOWER_COOLING = !4010_COOLING && !CREALITY_MELZI_BOARD;
 
 // A 1 mm offset is added when mounting on the left of the printer
 // to make room for the z stepper motor.

@@ -147,3 +147,24 @@ module MiniUps24VFeet(direction=[0,0,1], pos=[0,0,0], angle=0) {
             children();
         }
 }
+
+module MainboardFeet(zero_position=[0,0,0]) {
+    MAINBOARD_CENTER=MAINBOARD_POSITION+zero_position;
+    if (CREALITY_MELZI_BOARD) {
+        MAINBOARD_ZERO=MAINBOARD_CENTER-MAINBOARD_SIZE/2;
+        MFoot(pos=MAINBOARD_ZERO+MAINBOARD_SIZE-[2.54,2.54,0], d=3, h=3.5+2*WALL_THICKNESS)
+        MFoot(pos=MAINBOARD_ZERO+[38.2, 2.54, 0], d=3, h=3.5+2*WALL_THICKNESS)
+        MFoot(pos=MAINBOARD_ZERO+[2.54, 20.40, 0], d=3, h=3.5+2*WALL_THICKNESS)
+        MFoot(pos=MAINBOARD_ZERO+[2.54, 82.55, 0], d=3, h=3.5+2*WALL_THICKNESS) {
+            children();
+        }
+    } else {
+        SKR13_HOLE_DISTANCE=[76.1, 101.85, 0];
+        MFoot(pos=MAINBOARD_CENTER-SKR13_HOLE_DISTANCE/2, d=3, h=3.5+2*WALL_THICKNESS)
+        MFoot(pos=MAINBOARD_CENTER+[SKR13_HOLE_DISTANCE.x/2, -SKR13_HOLE_DISTANCE.y/2, 0], d=3, h=3.5+2*WALL_THICKNESS)
+        MFoot(pos=MAINBOARD_CENTER+SKR13_HOLE_DISTANCE/2, d=3, h=3.5+2*WALL_THICKNESS)
+        MFoot(pos=MAINBOARD_CENTER+[-SKR13_HOLE_DISTANCE.x/2, SKR13_HOLE_DISTANCE.y/2, 0], d=3, h=3.5+2*WALL_THICKNESS) {
+            children();
+        }
+    }
+}

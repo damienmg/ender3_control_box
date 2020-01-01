@@ -21,6 +21,7 @@ use <../3rdparty/BuckConverter/buck_converter.scad>
 use <../3rdparty/BTT-UPS-24V/btt_ups_24v.scad>
 use <../3rdparty/RelaySwitch/relay_switch.scad>
 use <../3rdparty/AIYVoiceKit/aiy_voice_kit.scad>
+use <../3rdparty/Ender3/ender3.scad>
 include <colors.scad>
 include <params.scad>
 
@@ -99,9 +100,13 @@ module HigherLevelComponents(level_height, height) {
         // SKR1.3 board
         // 0 height would be -5
         translate(MAINBOARD_POSITION + [0, 0, level_height+WALL_THICKNESS]) {
-                rotate([0, 0, REVERSED ? 180 : 0])
+                rotate([0, 0, REVERSED && !CREALITY_MELZI_BOARD ? 180 : 0])
                     translate([-MAINBOARD_SIZE.x/2, -MAINBOARD_SIZE.y/2, 0])
-                        SKR13();
+                        if(CREALITY_MELZI_BOARD) {
+                            Ender3MelziBoard();
+                        } else {
+                            SKR13();
+                        }
         }
         if (BLOWER_COOLING) {
             // 5015 Fan for the TMC steppers.
@@ -112,7 +117,7 @@ module HigherLevelComponents(level_height, height) {
             }
         } else {
             // 2*4010 to cool stepper driver.
-            translate([BOX_WIDTH/2, MAINBOARD_POSITION.y, height-10]) {
+            translate([BOX_WIDTH/2, MAINBOARD_POSITION.y - (CREALITY_MELZI_BOARD ? 10 : 0), height-10]) {
                 translate([0,22,0]) 4010Fan();
                 translate([0,-22,0]) 4010Fan();
             }

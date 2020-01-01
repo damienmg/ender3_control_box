@@ -301,32 +301,33 @@ module UpperLevel() {
     length = BOX_LENGTH-FRONT_LENGTH-offset;
     translate([0, BOX_LENGTH-length, LEVEL_HEIGHT])
         difference() {
-            // Feet for SKR13
-            SKR13_HOLE_DISTANCE=[76.1, 101.85, 0];
-            SKR13_OFFSET=MAINBOARD_POSITION+[0, -BOX_LENGTH+length, -WALL_THICKNESS];
-            MFoot(pos=SKR13_OFFSET-SKR13_HOLE_DISTANCE/2, d=3, h=3.5+2*WALL_THICKNESS)
-            MFoot(pos=SKR13_OFFSET+[SKR13_HOLE_DISTANCE.x/2, -SKR13_HOLE_DISTANCE.y/2, 0], d=3, h=3.5+2*WALL_THICKNESS)
-            MFoot(pos=SKR13_OFFSET+SKR13_HOLE_DISTANCE/2, d=3, h=3.5+2*WALL_THICKNESS)
-            MFoot(pos=SKR13_OFFSET+[-SKR13_HOLE_DISTANCE.x/2, SKR13_HOLE_DISTANCE.y/2, 0], d=3, h=3.5+2*WALL_THICKNESS) {
-                // Bottom
-                translate([0, 0, -WALL_THICKNESS])
-                    linear_extrude(WALL_THICKNESS)
-                        polygon(BLOWER_COOLING ? [
-                            [REVERSED ? BOX_WIDTH - WALL_THICKNESS : WALL_THICKNESS, -offset],
-                            [REVERSED ? BOX_WIDTH - 10 - offset : 10 + offset, -offset],
-                            [REVERSED ? 31 : BOX_WIDTH-31, -55],
-                            [REVERSED ? WALL_THICKNESS + 0.5 : BOX_WIDTH-WALL_THICKNESS-0.5, -55],
-                            [REVERSED ? WALL_THICKNESS + 0.5 : BOX_WIDTH-WALL_THICKNESS-0.5, -offset],
-                            [REVERSED ? WALL_THICKNESS : BOX_WIDTH-WALL_THICKNESS, -offset],
-                            [REVERSED ? WALL_THICKNESS : BOX_WIDTH-WALL_THICKNESS, length],
-                            [REVERSED ? BOX_WIDTH-WALL_THICKNESS : WALL_THICKNESS, length],
-                        ] : [
-                            [WALL_THICKNESS, 0],
-                            [BOX_WIDTH-WALL_THICKNESS, 0],
-                            [BOX_WIDTH-WALL_THICKNESS, length],
-                            [WALL_THICKNESS, length],
-                        ]);
-                translate([WALL_THICKNESS, -offset, 0]) cube([BOX_WIDTH-2*WALL_THICKNESS, BOX_LENGTH-FRONT_LENGTH-WALL_THICKNESS, WALL_THICKNESS]);
+            union() {
+                difference() {
+                    MainboardFeet([0, -BOX_LENGTH+length, -WALL_THICKNESS]) {
+                        // Bottom
+                        translate([0, 0, -WALL_THICKNESS])
+                            linear_extrude(WALL_THICKNESS)
+                                polygon(BLOWER_COOLING ? [
+                                    [REVERSED ? BOX_WIDTH - WALL_THICKNESS : WALL_THICKNESS, -offset],
+                                    [REVERSED ? BOX_WIDTH - 10 - offset : 10 + offset, -offset],
+                                    [REVERSED ? 31 : BOX_WIDTH-31, -55],
+                                    [REVERSED ? WALL_THICKNESS + 0.5 : BOX_WIDTH-WALL_THICKNESS-0.5, -55],
+                                    [REVERSED ? WALL_THICKNESS + 0.5 : BOX_WIDTH-WALL_THICKNESS-0.5, -offset],
+                                    [REVERSED ? WALL_THICKNESS : BOX_WIDTH-WALL_THICKNESS, -offset],
+                                    [REVERSED ? WALL_THICKNESS : BOX_WIDTH-WALL_THICKNESS, length],
+                                    [REVERSED ? BOX_WIDTH-WALL_THICKNESS : WALL_THICKNESS, length],
+                                ] : [
+                                    [WALL_THICKNESS, 0],
+                                    [BOX_WIDTH-WALL_THICKNESS, 0],
+                                    [BOX_WIDTH-WALL_THICKNESS, length],
+                                    [WALL_THICKNESS, length],
+                                ]);
+                        translate([WALL_THICKNESS, -offset, 0]) cube([BOX_WIDTH-2*WALL_THICKNESS, BOX_LENGTH-FRONT_LENGTH-WALL_THICKNESS, WALL_THICKNESS]);
+                    }
+
+                    // cut out extra  piece
+                    translate([0, length-1, -WALL_THICKNESS]) cube([BOX_WIDTH, BOX_LENGTH, BOX_HEIGHT]);
+                }
                 // Left
                 translate([0, -offset, -WALL_THICKNESS]) hull() {
                     translate([WALL_THICKNESS/2, 0, 0]) cube([WALL_THICKNESS/2, length+offset, BOX_HEIGHT-LEVEL_HEIGHT+WALL_THICKNESS]);
@@ -386,7 +387,12 @@ module UpperLevel() {
                     }
                 } else {
                     // Support for the screw insert for the cover.
-                    translate([REVERSED ? 19 : 59.3,115.2,0]) cube([22.6,12.8,31+WALL_THICKNESS]);
+                    translate([REVERSED ? 19 : 80,115.2,0]) cube([1.9,12.8,31+WALL_THICKNESS]);
+                    translate([REVERSED ? 19 : 59.3,115.2,33]) rotate([0,90,0]) linear_extrude(22.6) polygon([
+                        [0,0],
+                        [12.8, 12.8],
+                        [0, 12.8]
+                    ]);
                 }
                 // Cable management: attach for zipties next to the cable exit.
                 translate([REVERSED ? 19 : 81.9,115.2,0]) {
@@ -440,15 +446,26 @@ module UpperLevel() {
             }
 
             // Main board ports
-            translate([REVERSED ? BOX_WIDTH - WALL_THICKNESS : 0, MAINBOARD_POSITION[1]-BOX_LENGTH+length, 5.5+WALL_THICKNESS]) {
-                // SD-card slot
-                translate([0, REVERSED ? -12.8 : -2.8, 0]) cube([WALL_THICKNESS, 15.5, 3]);
-                // USB port
-                translate([0, REVERSED ? -30.8 : 18.2, 0]) cube([WALL_THICKNESS, 12.5, 11]);
+            if (CREALITY_MELZI_BOARD) {
+                translate([0, 0, 4.5+WALL_THICKNESS]) {
+                    // SD-card slot
+                    translate([MAINBOARD_POSITION.x-MAINBOARD_SIZE.x/2+2, length-WALL_THICKNESS, 0])
+                        cube([15.5, WALL_THICKNESS, 3]);
+                    // USB port
+                    translate([MAINBOARD_POSITION.x-MAINBOARD_SIZE.x/2+22, length-WALL_THICKNESS, 0])
+                        cube([8.5, WALL_THICKNESS, 4.5]);
+                }
+            } else {
+                translate([REVERSED ? BOX_WIDTH - WALL_THICKNESS : 0, MAINBOARD_POSITION[1]-BOX_LENGTH+length, 5.5+WALL_THICKNESS]) {
+                    // SD-card slot
+                    translate([0, REVERSED ? -12.8 : -2.8, 0]) cube([WALL_THICKNESS, 15.5, 3]);
+                    // USB port
+                    translate([0, REVERSED ? -30.8 : 18.2, 0]) cube([WALL_THICKNESS, 12.5, 11]);
+                }
             }
 
             // Cooling for the MOSFET under the board (place for heat sink)
-            translate([20, 88, -WALL_THICKNESS]) {
+            if (!CREALITY_MELZI_BOARD) translate([20, 88, -WALL_THICKNESS]) {
                 cube([38.5, 16, 2*WALL_THICKNESS]);
             }
             // Frame assembly part: 1 hole for screwing to the bottom
@@ -948,10 +965,10 @@ module ScreenBoxTop(logo=0) {
                             ScreenBoxTopFrame();
                         } else {
                             // Mounting hole for the cooling fans when using double 4010.
-                            Foot(pos=[BOX_WIDTH/2-16,6+MAINBOARD_POSITION.y-LCD_LENGTH,0], d1=5.4, d2=select_insert(3)[3], h=3+WALL_THICKNESS, direction=[0,0,-1])
-                            Foot(pos=[BOX_WIDTH/2+16,38+MAINBOARD_POSITION.y-LCD_LENGTH,0], d1=5.4, d2=select_insert(3)[3], h=3+WALL_THICKNESS, direction=[0,0,-1])
-                            Foot(pos=[BOX_WIDTH/2-16,-38+MAINBOARD_POSITION.y-LCD_LENGTH,0], d1=5.4, d2=select_insert(3)[3], h=3+WALL_THICKNESS, direction=[0,0,-1])
-                            Foot(pos=[BOX_WIDTH/2+16,-6+MAINBOARD_POSITION.y-LCD_LENGTH,0], d1=5.4, d2=select_insert(3)[3], h=3+WALL_THICKNESS, direction=[0,0,-1])
+                            Foot(pos=[BOX_WIDTH/2-16,6+MAINBOARD_POSITION.y-LCD_LENGTH-(CREALITY_MELZI_BOARD ? 10 : 0),0], d1=5.4, d2=select_insert(3)[3], h=3+WALL_THICKNESS, direction=[0,0,-1])
+                            Foot(pos=[BOX_WIDTH/2+16,38+MAINBOARD_POSITION.y-LCD_LENGTH-(CREALITY_MELZI_BOARD ? 10 : 0),0], d1=5.4, d2=select_insert(3)[3], h=3+WALL_THICKNESS, direction=[0,0,-1])
+                            Foot(pos=[BOX_WIDTH/2-16,-38+MAINBOARD_POSITION.y-LCD_LENGTH-(CREALITY_MELZI_BOARD ? 10 : 0),0], d1=5.4, d2=select_insert(3)[3], h=3+WALL_THICKNESS, direction=[0,0,-1])
+                            Foot(pos=[BOX_WIDTH/2+16,-6+MAINBOARD_POSITION.y-LCD_LENGTH-(CREALITY_MELZI_BOARD ? 10 : 0),0], d1=5.4, d2=select_insert(3)[3], h=3+WALL_THICKNESS, direction=[0,0,-1])
                             ScreenBoxTopFrame();
                         }
                         if (AIY_KIT) {
@@ -992,7 +1009,7 @@ module ScreenBoxTop(logo=0) {
                         if (!REVERSED) translate([55, 30, 0]) CircleAirVentPattern(h=2*WALL_THICKNESS, d=40);
                     } else {
                         // Cooling: exhaust for 2 4010 fan
-                        translate([BOX_WIDTH/2,MAINBOARD_POSITION.y-LCD_LENGTH,0]) {
+                        translate([BOX_WIDTH/2,MAINBOARD_POSITION.y-LCD_LENGTH-(CREALITY_MELZI_BOARD ? 10 : 0),0]) {
                             translate([0, 22, 0]) CircleAirVentPattern(h=2*WALL_THICKNESS, d=39);
                             translate([0, -22, 0]) CircleAirVentPattern(h=2*WALL_THICKNESS, d=39);
                         }

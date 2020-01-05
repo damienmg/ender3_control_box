@@ -317,8 +317,8 @@ module UpperLevel() {
                                     [REVERSED ? WALL_THICKNESS : BOX_WIDTH-WALL_THICKNESS, length],
                                     [REVERSED ? BOX_WIDTH-WALL_THICKNESS : WALL_THICKNESS, length],
                                 ] : [
-                                    [WALL_THICKNESS, 0],
-                                    [BOX_WIDTH-WALL_THICKNESS, 0],
+                                    [WALL_THICKNESS, -offset],
+                                    [BOX_WIDTH-WALL_THICKNESS, -offset],
                                     [BOX_WIDTH-WALL_THICKNESS, length],
                                     [WALL_THICKNESS, length],
                                 ]);

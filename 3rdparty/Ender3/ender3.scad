@@ -42,3 +42,7 @@ module Ender3Relief() {
 module Ender34040Endcap() {
     import("4040Endcap.stl");
 }
+
+module Ender3MelziBoard() {
+    translate([18.75,-61.75,-38.35]) rotate([180,0,0]) import("Control_panel.stl");
+}

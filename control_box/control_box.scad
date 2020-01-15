@@ -970,6 +970,13 @@ module ScreenBoxTop(logo=0) {
                             Foot(pos=[BOX_WIDTH/2-16,-38+MAINBOARD_POSITION.y-LCD_LENGTH-(CREALITY_MELZI_BOARD ? 10 : 0),0], d1=5.4, d2=select_insert(3)[3], h=3+WALL_THICKNESS, direction=[0,0,-1])
                             Foot(pos=[BOX_WIDTH/2+16,-6+MAINBOARD_POSITION.y-LCD_LENGTH-(CREALITY_MELZI_BOARD ? 10 : 0),0], d1=5.4, d2=select_insert(3)[3], h=3+WALL_THICKNESS, direction=[0,0,-1])
                             ScreenBoxTopFrame();
+                        } else if(8010_COOLING) {
+                            // Mounting hole for the cooling fans when using single 4010.
+                            Foot(pos=[BOX_WIDTH/2-36,-36+MAINBOARD_POSITION.y-LCD_LENGTH-(CREALITY_MELZI_BOARD ? 10 : 0),0], d1=4, d2=select_insert(3)[3], h=3+WALL_THICKNESS, direction=[0,0,-1])
+                            Foot(pos=[BOX_WIDTH/2+36,36+MAINBOARD_POSITION.y-LCD_LENGTH-(CREALITY_MELZI_BOARD ? 10 : 0),0], d1=4, d2=select_insert(3)[3], h=3+WALL_THICKNESS, direction=[0,0,-1])
+                            Foot(pos=[BOX_WIDTH/2-36,36+MAINBOARD_POSITION.y-LCD_LENGTH-(CREALITY_MELZI_BOARD ? 10 : 0),0], d1=4, d2=select_insert(3)[3], h=3+WALL_THICKNESS, direction=[0,0,-1])
+                            Foot(pos=[BOX_WIDTH/2+36,-36+MAINBOARD_POSITION.y-LCD_LENGTH-(CREALITY_MELZI_BOARD ? 10 : 0),0], d1=4, d2=select_insert(3)[3], h=3+WALL_THICKNESS, direction=[0,0,-1])
+                            ScreenBoxTopFrame();
                         } else {
                             // Mounting hole for the cooling fans when using single 4010.
                             Foot(pos=[BOX_WIDTH/2-16,-16+MAINBOARD_POSITION.y-LCD_LENGTH-(CREALITY_MELZI_BOARD ? 10 : 0),0], d1=5.4, d2=select_insert(3)[3], h=3+WALL_THICKNESS, direction=[0,0,-1])
@@ -1018,8 +1025,10 @@ module ScreenBoxTop(logo=0) {
                             if (TWO_4010) {
                                 translate([0, 22, 0]) CircleAirVentPattern(h=2*WALL_THICKNESS, d=39);
                                 translate([0, -22, 0]) CircleAirVentPattern(h=2*WALL_THICKNESS, d=39);
+                            } else if(8010_COOLING) {
+                                CircleAirVentPattern(h=2*WALL_THICKNESS, d=80);
                             } else {
-                                 CircleAirVentPattern(h=2*WALL_THICKNESS, d=39);
+                                CircleAirVentPattern(h=2*WALL_THICKNESS, d=39);
                             }
                         }
                     }

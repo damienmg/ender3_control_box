@@ -28,7 +28,7 @@ REVERSED = false;
 CREALITY_MELZI_BOARD = false;
 
 // 2x4010 cooling, even with a SKR 1.3
-// One of [2x4010, 4010, Blower]
+// One of [2x4010, 4010, Blower, 8010]
 COOLING = "Blower";
 
 // Add feature to have room for the Google AIY Kit v1.
@@ -91,7 +91,8 @@ FRONT_LENGTH = RASPBERRY_PI_POSITION[1]-34;
 WALL_THICKNESS=2;
 
 BLOWER_COOLING = (COOLING == "Blower" && !CREALITY_MELZI_BOARD);
-TWO_4010 = COOLING != "4010";
+TWO_4010 = (COOLING == "2x4010" || (COOLING == "Blower" && CREALITY_MELZI_BOARD));
+8010_COOLING = COOLING == "8010";
 
 // A 1 mm offset is added when mounting on the left of the printer
 // to make room for the z stepper motor.

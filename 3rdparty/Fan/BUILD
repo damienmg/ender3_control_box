@@ -24,6 +24,7 @@ openscad_library(
     srcs = [
         "4010/40x40x10 PC Fan.stl",
         "5015/files/5015_Blower_Fan.stl",
+        "80MM_FAN.stl",
         "fan.scad",
     ],
 )

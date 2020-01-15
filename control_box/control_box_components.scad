@@ -121,6 +121,8 @@ module HigherLevelComponents(level_height, height) {
                 if (TWO_4010) {
                     translate([0,22,0]) 4010Fan();
                     translate([0,-22,0]) 4010Fan();
+                } else if (8010_COOLING) {
+                    8010Fan();
                 } else {
                     4010Fan();
                 }

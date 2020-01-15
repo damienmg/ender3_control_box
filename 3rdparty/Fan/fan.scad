@@ -21,3 +21,7 @@ module 5015Fan() {
 module 4010Fan() {
     import("4010/40x40x10 PC Fan.stl");
 }
+
+module 8010Fan() {
+    translate([0,0,-5]) rotate([90,0,0]) scale([1,0.4,1]) import("80MM_FAN.stl");
+}

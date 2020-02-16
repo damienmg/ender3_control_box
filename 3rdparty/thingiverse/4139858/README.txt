@@ -1,0 +1,1 @@
+Prusa MK3S R3 style part cooler for Ender 3 - E3D V6 + BMG + "The Tank" style mounts. by Scope6666 on Thingiverse: https://www.thingiverse.com/thing:4139858

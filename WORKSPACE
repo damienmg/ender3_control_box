@@ -16,3 +16,13 @@ workspace(name = "com_github_damienmg_ender3_control_box")
 
 load("//3rdparty/openscad:repo.bzl", "openscad")
 openscad()
+
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+
+http_archive(
+    name = "NopSCADlib",
+    urls = ["https://github.com/nophead/NopSCADlib/archive/6f93b6af9ae66e35d3a901fc7404460150c78127.zip"],
+    sha256 = "794aa653ec3bc00c7d8bede3793801339600ba348052250203d1773a853ce487",
+    build_file = "@//tools:nopscadlib.BUILD",
+    strip_prefix = "NopSCADlib-6f93b6af9ae66e35d3a901fc7404460150c78127"
+)

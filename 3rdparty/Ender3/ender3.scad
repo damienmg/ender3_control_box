@@ -46,3 +46,21 @@ module Ender34040Endcap() {
 module Ender3MelziBoard() {
     translate([18.75,-61.75,-38.35]) rotate([180,0,0]) import("Control_panel.stl");
 }
+
+module Ender3XCarriageWheel() {
+    import("625pillow.stl");
+    translate([5,0,0]) import("625pillow.stl");
+    translate([16,35.5,15.5]) rotate([0,90,0]) import("Rollers.stl");
+    translate([8,0,0]) rotate([0,90,0]) import("Spacers_for_rollers.stl");
+    translate([22,0,0]) rotate([0,0,180]) import("M5X30_Pan_Head_Screw.stl");
+    translate([-3.5,0,0]) rotate([0,90,0]) import("M5_Self-locking_nut.stl");
+}
+
+module Ender3XCarriage() {
+    rotate([90,0,0]) rotate([0,90,0]) import("E_plate.stl");
+    translate([-16.5,0,0]) {
+        translate([0,0,-20]) Ender3XCarriageWheel();
+        translate([0,20,20]) Ender3XCarriageWheel();
+        translate([0,-20,20]) Ender3XCarriageWheel();
+    }
+}

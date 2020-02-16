@@ -1,0 +1,1 @@
+BLTOUCH_OFFSET = [32,0,0];

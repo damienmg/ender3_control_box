@@ -153,7 +153,7 @@ module BackHousing() {
     }
     // BlTouch Support's support
     translate([68.19,35,20.5]) difference() {
-        rotate([90,0,0]) linear_extrude(5) {
+        rotate([90,0,0]) linear_extrude(7.5) {
             polygon([
                 [0,-5.5],
                 [0,5.5],
@@ -161,7 +161,6 @@ module BackHousing() {
                 [5.6,-2.1],
             ]);
         }
-        translate([0,-5,0]) cube([0.4,10,10]);
         translate([1,-2.5,0]) rotate([0,90,0]) cylinder(d=2.5, h=5);
     }
 }

@@ -14,7 +14,7 @@ module HousingFrame() {
                 }
                 hull() {
                     translate([56,2,0]) cylinder(r=2, h=45.2);
-                    translate([65,0,0]) cylinder(r=2, h=45.2);
+                    translate([66.5,-1.5,0]) cylinder(r=2, h=45.2);
                     translate([66.5,36.5,0]) cylinder(r=2, h=45.2);
                 }
             }
@@ -86,19 +86,19 @@ module HousingFrame() {
         // Screw hole for fixing to the X-carriage
         translate([23.5, 33.65, 0]) {
             cylinder(d=3.5, h=10);
-            translate([0,0,6]) cylinder(d=5, h=14.5);
+            translate([0,0,5]) cylinder(d=6, h=15.5);
         }
 
         // 2 screw way to attach both part
         translate([16, 33, 0]) {
             cylinder(d=2.5, h=20.5);
             translate([0,0,20.5]) cylinder(d=3.5, h=26);
-            translate([0,0,24]) cylinder(d=5, h=22);
+            translate([0,0,24]) cylinder(d=6, h=22);
         }
         translate([63.5, 0, 0]) {
             cylinder(d=2.5, h=20.5);
             translate([0,0,20.5]) cylinder(d=3.5, h=26);
-            translate([0,0,24]) cylinder(d=5, h=22);
+            translate([0,0,24]) cylinder(d=6, h=22);
         }
 
         // Clearance for the fan shroud
@@ -165,6 +165,8 @@ module BackHousing() {
             ]);
         }
         translate([1,-2.5,0]) rotate([0,90,0]) cylinder(d=2.5, h=5);
+        // Clearance for the Front Housing
+        translate([0,-7.5,0]) cube([0.5, 7.5, 5.6]);
     }
 }
 module PositionedBackHousing() {

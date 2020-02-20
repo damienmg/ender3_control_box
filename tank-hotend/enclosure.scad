@@ -35,7 +35,11 @@ module HousingFrame() {
         }
         // Place for X carriage wheel screw
         translate([45, 36, -2.2]) sphere(d=13, $fn=50);
-        translate([5, 36, -2.2]) sphere(d=13, $fn=50);
+        translate([5, 36, -2.2]) hull() {
+            sphere(d=13, $fn=50);
+            translate([-7,1.25,7.5]) rotate([90,0,0]) rounded_rectangle([2,2,6], r=0.5, center=false, xy_center=false);
+            translate([5,1,1.75]) rotate([90,0,0]) rounded_rectangle([2,2,2], r=0.5, center=false, xy_center=false);
+        }
         translate([25, -4, 0]) {
             cylinder(d=10, h=6, $fn=50);
             translate([0,0,6]) cylinder(d1=10, d2=5, h=3, $fn=50);

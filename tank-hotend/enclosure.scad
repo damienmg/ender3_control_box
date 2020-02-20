@@ -113,7 +113,7 @@ module HousingFrame() {
         // Blower arm screw hole
         translate([45,21,40]) cylinder(d=2.5, h=5.5);
         // Attach for the wire guide
-        translate([63,31.5,0])
+        translate([63.5,30.5,0])
           cylinder(d=2.5, h=3);
      }
     // Attach for the fan shroud
@@ -244,46 +244,44 @@ module PositionedPartCoolingSupport() {
     }
 }
 
-module WireGuide(h=40, space=20) {
+module WireGuide(l=60, w=12, h=14, space=20) {
     rotate([0,180,0]) {
         difference() {
             union() {
                 difference() {
-                    rotate([90,0,0]) rounded_rectangle([10,10,h], r=2, center=false, xy_center=false);
-                    translate([0,-h,6.5]) cube([10,h,10]);
-                    translate([1.5,0,1.5]) rotate([90,0,0]) rounded_rectangle([7,7,h], r=2, center=false, xy_center=false);
+                    rotate([90,0,0]) rounded_rectangle([w,h,l], r=2, center=false, xy_center=false);
+                    translate([0,-l,h-2.5]) cube([w,l,2.5]);
+                    translate([1.5,0,1.5]) rotate([90,0,0]) rounded_rectangle([w-3,h,l], r=2, center=false, xy_center=false);
                 }
-                translate([0,0,5]) rotate([90,0,0]) rounded_rectangle([1.5,3,h], r=0.7, center=false, xy_center=false);
-                translate([8.5,0,5]) rotate([90,0,0]) rounded_rectangle([1.5,3,h], r=0.7, center=false, xy_center=false);
             }
-            for(i=[space/2:space:h-space/2]) {
-                translate([0,-i,0]) cube([10,2.5, 10]);
+            for(i=[space/2:space:l-space/2]) {
+                translate([0,-i,0]) cube([w, 2.5, h]);
             }
         }
-        translate([1,0,0]) rotate([90,0,0]) rounded_rectangle([8,1.5,h], r=0.7, center=false, xy_center=false);
+        translate([1,0,0]) rotate([90,0,0]) rounded_rectangle([w-2,1.5,l], r=0.7, center=false, xy_center=false);
         translate([-1.5, 0, 2]) {
             difference() {
-                rounded_rectangle([6,6,5.5], r=2, center=false);
-                translate([-1.5,-2,0]) rounded_rectangle([6,6,5.5], r=1, center=false);
+                rounded_rectangle([6,6,h-4.5], r=2, center=false);
+                translate([-1.5,-2,0]) rounded_rectangle([6,6,h-4.5], r=1, center=false);
             }
         }
-        translate([11.5, 0, 2]) {
+        translate([w+1.5, 0, 2]) {
             difference() {
-                rounded_rectangle([6,6,5.5], r=2, center=false);
-                translate([1.5,-2,0]) rounded_rectangle([6,6,5.5], r=1, center=false);
+                rounded_rectangle([6,6,h-4.5], r=2, center=false);
+                translate([1.5,-2,0]) rounded_rectangle([6,6,h-4.5], r=1, center=false);
             }
         }
         difference() {
-            translate([0,0,-8.5]) rotate([90,0,0]) rounded_rectangle([10,10,2], r=1, center=false, xy_center=false);
-            translate([5,0,-3.5]) rotate([90,0,0]) cylinder(d=3.5, h=3);
+            translate([0,0,-w+1.5]) rotate([90,0,0]) rounded_rectangle([w,w,2], r=1, center=false, xy_center=false);
+            translate([w/2,0,-w/2+1.5]) rotate([90,0,0]) cylinder(d=3.5, h=3);
         }
         translate([0,-2,0]) cube([2,2,2]);
-        translate([8,-2,0]) cube([2,2,2]);
+        translate([w-2,-2,0]) cube([2,2,2]);
     }
 }
 
 module PositionedWireGuide() {
-    translate([43,45.5,-14])
+    translate([44.5,45.5,-14])
         rotate([0,180,180])
             WireGuide();
 }

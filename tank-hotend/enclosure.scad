@@ -244,45 +244,50 @@ module PositionedPartCoolingSupport() {
     }
 }
 
+function WireGuideAngle(l=60, w=12) = acos((w-2)/l);
+
 module WireGuide(l=60, w=12, h=14, space=20) {
-    rotate([0,180,0]) {
+    angle = WireGuideAngle(l, w);
+    rotate([90-angle,0,0]) {
         difference() {
             union() {
-                difference() {
-                    rotate([90,0,0]) rounded_rectangle([w,h,l], r=2, center=false, xy_center=false);
-                    translate([0,-l,h-2.5]) cube([w,l,2.5]);
-                    translate([1.5,0,1.5]) rotate([90,0,0]) rounded_rectangle([w-3,h,l], r=2, center=false, xy_center=false);
-                }
+                translate([0,-l,0]) cube([w,l-0.75,h]);
+                translate([0.75,-0.75,0]) cylinder(d=1.5, h=h);
+                translate([w-0.75,-0.75,0]) cylinder(d=1.5, h=h);
+                translate([0.75, -0.75, 0]) cube([w-1.5, 0.3, h]);
             }
+            translate([0,-l,h-2.5]) cube([w,l,2.5]);
+            translate([1.5,0,1.5]) rotate([90,0,0]) rounded_rectangle([w-3,h,l], r=2, center=false, xy_center=false);
             for(i=[space/2:space:l-space/2]) {
-                translate([0,-i,0]) cube([w, 2.5, h]);
-            }
-        }
-        translate([1,0,0]) rotate([90,0,0]) rounded_rectangle([w-2,1.5,l], r=0.7, center=false, xy_center=false);
-        translate([-1.5, 0, 2]) {
-            difference() {
-                rounded_rectangle([6,6,h-4.5], r=2, center=false);
-                translate([-1.5,-2,0]) rounded_rectangle([6,6,h-4.5], r=1, center=false);
-            }
-        }
-        translate([w+1.5, 0, 2]) {
-            difference() {
-                rounded_rectangle([6,6,h-4.5], r=2, center=false);
-                translate([1.5,-2,0]) rounded_rectangle([6,6,h-4.5], r=1, center=false);
+                translate([0,-i,0]) {
+                    cube([w, 2.5, h]);
+                }
             }
         }
         difference() {
-            translate([0,0,-w+1.5]) rotate([90,0,0]) rounded_rectangle([w,w,2], r=1, center=false, xy_center=false);
-            translate([w/2,0,-w/2+1.5]) rotate([90,0,0]) cylinder(d=3.5, h=3);
+            translate([0,0,-w+1.5]) rotate([angle,0,0]) rounded_rectangle([w,w,sqrt(l*l+w*w)], r=1, center=false, xy_center=false);
+            translate([0,-l,1.5]) cube([w,l,h]);
+            translate([0,-l-1.5,-h/2]) cube([w, 1.5, h]);
+            translate([0,0,-h+2]) cube([w, 4, h]);
+            translate([w/2,0,-w/2+1.5]) rotate([90,0,0]) cylinder(d=3.5, h=l);
+            translate([w/2,-5,-w/2+1.5]) rotate([90,0,0]) cylinder(d=6, h=l);
+            for(i=[space/2:space:l-space/2]) {
+                translate([w/2,2.5-i,-12]) rotate([90,0,0]) difference() {
+                    cylinder(d=34, h=2.5);
+                    cylinder(d=28, h=2.5);
+                }
+                translate([w/2,2.5-i,16-w+i*tan(90-angle)]) rotate([90,0,0]) difference() {
+                    cylinder(d=34, h=2.5);
+                    cylinder(d=28, h=2.5);
+                }
+            }
         }
-        translate([0,-2,0]) cube([2,2,2]);
-        translate([w-2,-2,0]) cube([2,2,2]);
     }
 }
 
 module PositionedWireGuide() {
     translate([44.5,45.5,-14])
-        rotate([0,180,180])
+        rotate([WireGuideAngle()-90,0,180])
             WireGuide();
 }
 

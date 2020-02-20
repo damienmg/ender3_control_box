@@ -15,7 +15,7 @@ module Extruder() {
 }
 
 module HotEndExtruder() {
-    translate([21,0,0]) rotate([0,-90,-90])
+    translate([21,0,1]) rotate([0,-90,-90])
             Extruder();
     %translate([16.6,25,-8]) rotate([180,0,-90]) E3DV6();
     %translate([-20,25,-38]) rotate([90,0,90]) 4010Fan();

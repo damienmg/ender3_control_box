@@ -22,7 +22,7 @@ module HousingFrame() {
                 translate([30,14, 22.6]) rotate([0,-90,0]) rounded_rectangle([45.2,31,2], r=2);
                 translate([12,-12,0]) rotate([0,-90,0]) rounded_rectangle([45.2,42, 12], r=2, xy_center=false, center=false);
             }
-            translate([24.5,27.9,42.2]) rounded_rectangle([41.5,42,3], r=6, xy_center=false, center=false);
+            translate([24.5,28.9,42.2]) rounded_rectangle([41.5,42,3], r=6, xy_center=false, center=false);
         }
         // Screw
         translate([34.5, 23.5, 0]) {
@@ -62,10 +62,11 @@ module HousingFrame() {
                 translate([42,26,20.5]) rotate([90,0,0]) rounded_rectangle([12,26,26], r=3, xy_center=true, center=false);
                 translate([70,4.5,6]) rotate([0,-90,0]) rounded_rectangle([34,23,2], r=3, xy_center=false, center=false);
             }
-            translate([42,28,20.5]) rotate([90,0,0]) cylinder(d=22,h=32);
+            translate([41.5,30,20.5]) rotate([90,0,0]) cylinder(d=17,h=28);
+            translate([41.5,25,20.5]) rotate([90,0,0]) cylinder(d=22,h=28);
         }
         // Space for the BMG
-        translate([45.3,32.375,20.4]) union() {
+        translate([45.3,33.375,20.2]) union() {
             translate([0,0,4.5]) rotate([90,0,0]) rounded_rectangle([38,30,9.25], $fn=2);
             translate([0,0,17]) cube([42,9.25,10], center=true);
         }
@@ -77,12 +78,12 @@ module HousingFrame() {
             translate([0,36,36]) rotate([0,90,0]) cylinder(h=10, d=2.5);
         }
         // Hole for the stepper motor
-        translate([24.2,27.5,42.2]) {
-            translate([21.15, 21.15, 0]) cylinder(d=22.4, h=3);
-            translate([21.15-15.5, 21.15-15.5, 0]) cylinder(d=3.5, h=3);
-            translate([21.15-15.5, 21.15+15.5, 0]) cylinder(d=3.5, h=3);
-            translate([21.15+15.5, 21.15+15.5, 0]) cylinder(d=3.5, h=3);
-            translate([21.15+15.5, 21.15-15.5, 0]) cylinder(d=3.5, h=3);
+        translate([24.2,28.5,42.1]) {
+            translate([21.15, 21.15, 0]) cylinder(d=22.4, h=3.2);
+            translate([21.15-15.5, 21.15-15.5, 0]) cylinder(d=3.5, h=3.2);
+            translate([21.15-15.5, 21.15+15.5, 0]) cylinder(d=3.5, h=3.2);
+            translate([21.15+15.5, 21.15+15.5, 0]) cylinder(d=3.5, h=3.2);
+            translate([21.15+15.5, 21.15-15.5, 0]) cylinder(d=3.5, h=3.2);
         }
         // Passage for the 4010 fan wire
         translate([6, 18.5, 0.5])

@@ -36,7 +36,10 @@ module HousingFrame() {
         // Place for X carriage wheel screw
         translate([45, 36, -2.2]) sphere(d=13, $fn=50);
         translate([5, 36, -2.2]) sphere(d=13, $fn=50);
-        translate([25, -4, -2.2]) sphere(d=13, $fn=50);
+        translate([25, -4, 0]) {
+            cylinder(d=10, h=6, $fn=50);
+            translate([0,0,6]) cylinder(d1=10, d2=5, h=3, $fn=50);
+        }
         // Heatsink air vent
         union() {
             hull() {
@@ -45,10 +48,10 @@ module HousingFrame() {
             }
             hull() {
                 translate([13,10.5,20.5]) rotate([0,-90,0]) cylinder(d=40, h=3);
-                translate([30,12.5,20.5]) rotate([0,-90,0]) rotate([0,0,0]) rounded_rectangle([26,26,3], r=3, xy_center=true, center=false);
+                translate([30,12.5,20.5]) rotate([0,-90,0]) rotate([0,0,0]) rounded_rectangle([23,23,3], r=3, xy_center=true, center=false);
             }
             hull() {
-                translate([30,12.5,20.5]) rotate([0,-90,0]) rotate([0,0,0]) rounded_rectangle([26,26,3], r=3, xy_center=true, center=false);
+                translate([30,12.5,20.5]) rotate([0,-90,0]) rotate([0,0,0]) rounded_rectangle([23,23,3], r=3, xy_center=true, center=false);
                 translate([42,26,20.5]) rotate([90,0,0]) rounded_rectangle([12,26,26], r=3, xy_center=true, center=false);
             }
             hull() {

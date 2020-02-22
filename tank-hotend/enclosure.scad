@@ -120,7 +120,7 @@ module HousingFrame() {
             translate([0,-8,-10]) sphere(d=1);
         }
         // Blower arm screw hole
-        translate([45,21,40]) cylinder(d=2.5, h=5.5);
+        translate([45,22.5,40]) cylinder(d=2.5, h=5.5);
         // Attach for the wire guide
         translate([63.5,30.5,0])
           cylinder(d=2.5, h=3);
@@ -201,15 +201,16 @@ module PartCoolingSupport() {
     rotate([0,-90,0]) difference() {
         union() {
             difference() {
-                rotate([90,0,0]) rounded_rectangle([10,8,22], r=1, center=false, xy_center=false);
-                translate([0,-37.1,-15]) cube([20,20,20]);
+                rotate([90,0,0]) rounded_rectangle([10,11,22], r=1, center=false, xy_center=false);
+                translate([0,-36.9,-15]) cube([20,20,20]);
                 translate([0,-40.1,-12]) cube([20,20,20]);
             }
             translate([0,-17.1,0]) rotate([40,0,0]) rounded_rectangle([10,4,20], r=1, center=false, xy_center=false);
-            rotate([90,0,0]) rounded_rectangle([18,8,3], r=1, center=false, xy_center=false);
+            rotate([90,0,0]) rounded_rectangle([18,11,10], r=1, center=false, xy_center=false);
         }
         rotate([-50,0,0]) translate([5.2,-27.2,-20]) cylinder(d=2.5, h=20);
-        translate([14,-18,4]) rotate([-90,0,0]) cylinder(d=3.5, h=20);
+        translate([14,-18,5.5]) rotate([-90,0,0]) cylinder(d=3.5, h=20);
+        translate([14,-26,5.5]) rotate([-90,0,0]) cylinder(d=6, h=20);
     }
 }
 

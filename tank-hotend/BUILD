@@ -41,7 +41,6 @@ openscad_library(
         "WireGuide",
         "BackHousing",
         "FrontHousing",
-        "BLTouchSupport",
         "PartCoolingSupport",
     ]
 ]

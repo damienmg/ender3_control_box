@@ -1,5 +1,6 @@
 use <components.scad>
 include <external/NopSCADlib/lib.scad>
+use <3rdparty/thingiverse/thingiverse.scad>
 include <params.scad>
 
 module HousingFrame() {
@@ -190,45 +191,9 @@ module PositionedFrontHousing() {
         FrontHousing();
 }
 
-module BLTouchSupport() {
-    difference() {
-        hull() {
-            translate([0, -9,0]) cylinder(d=8, h=2.5);
-            cylinder(d=12, h=2.5);
-            translate([0,9,0]) cylinder(d=8, h=2.5);
-        }
-        translate([0,-9,0]) cylinder(d=3.2, h=2.5);
-        translate([0,9,0]) cylinder(d=3.2, h=2.5);
-    }
-    difference() {
-        linear_extrude(20.5) {
-            polygon([
-                [0.3,-2.125],
-                [-4.5,-5],
-                [-4.5,-6.25],
-                [2.3,-6.25],
-                [3.3, -5.25],
-                [3.3, 5.25],
-                [2.3,6.25],
-                [-4.5,6.25],
-                [-4.5,5],
-                [0.3,2.125],
-            ]);
-        }
-        hull() {
-            translate([0.3,0,7.1]) rotate([0,90,0]) cylinder(h=1.5, d=3.12);
-            translate([0.3,0,16]) rotate([0,90,0]) cylinder(h=1.5, d=3.12);
-        }
-        hull() {
-            translate([1.8,0,7.1]) rotate([0,90,0]) cylinder(h=1.5, d2=6, d1=3.12);
-            translate([1.8,0,16]) rotate([0,90,0]) cylinder(h=1.5, d2=6, d1=3.12);
-        }
-    }
-}
-
 module PositionedBLTouchSupport() {
-    translate([16.5,25,-25] + BLTOUCH_OFFSET) {
-        BLTouchSupport();
+    translate([5.2,-132.5,-71.5] + BLTOUCH_OFFSET) {
+        rotate([90,0,90]) BLTouchSupport();
     }
 }
 

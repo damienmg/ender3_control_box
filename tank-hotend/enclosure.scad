@@ -3,6 +3,11 @@ include <external/NopSCADlib/lib.scad>
 use <3rdparty/thingiverse/thingiverse.scad>
 include <params.scad>
 
+module M3_screw_in(h=3) {
+    cylinder(h=h, d=2.5, $fn=50);
+    translate([0,0,-0.5]) cylinder(h=2, d1=3.5, d2=2.5, $fn=50);
+}
+
 module HousingFrame() {
     difference() {
         union() {
@@ -28,11 +33,11 @@ module HousingFrame() {
         // Screw
         translate([34.5, 23.5, 0]) {
             cylinder(d=6, h=5, $fn=30);
-            translate([0,0,5]) cylinder(d=10, h=3, $fn=30);
+            translate([0,0,5]) cylinder(d=9, h=15.5, $fn=30);
         }
         translate([48.5, 23.5, 0]) {
             cylinder(d=6, h=5, $fn=30);
-            translate([0,0,5]) cylinder(d=10, h=3, $fn=30);
+            translate([0,0,5]) cylinder(d=9, h=15.5, $fn=30);
         }
         // Place for X carriage wheel screw
         translate([45, 36, -2.2]) sphere(d=13, $fn=50);
@@ -72,11 +77,11 @@ module HousingFrame() {
             translate([0,0,17]) cube([42,9.25,10], center=true);
         }
         // 4 screw hole (M3 so 2.5 diameter, h=15) to attach the 4010 fan
-        translate([10,-9,0.5]) {
-            translate([0,4,4]) rotate([0,90,0]) cylinder(h=10, d=2.5);
-            translate([0,36,4]) rotate([0,90,0]) cylinder(h=10, d=2.5);
-            translate([0,4,36]) rotate([0,90,0]) cylinder(h=10, d=2.5);
-            translate([0,36,36]) rotate([0,90,0]) cylinder(h=10, d=2.5);
+        translate([11.3,-9,0.5]) {
+            translate([0,4,4]) rotate([0,90,0]) M3_screw_in(10);
+            translate([0,36,4]) rotate([0,90,0]) M3_screw_in(10);
+            translate([0,4,36]) rotate([0,90,0]) M3_screw_in(10);
+            translate([0,36,36]) rotate([0,90,0]) M3_screw_in(10);
         }
         // Hole for the stepper motor
         translate([24.2,28.5,42.1]) {
@@ -97,12 +102,12 @@ module HousingFrame() {
 
         // 2 screw way to attach both part
         translate([16, 33, 0]) {
-            cylinder(d=2.5, h=20.5);
+            translate([0,0,20.5]) rotate([0,180,0]) M3_screw_in(20.5);
             translate([0,0,20.5]) cylinder(d=3.5, h=26);
             translate([0,0,24]) cylinder(d=6, h=22);
         }
-        translate([63.5, 0, 0]) {
-            cylinder(d=2.5, h=20.5);
+        translate([63.5, 0, 0]) {            
+            translate([0,0,20.5]) rotate([0,180,0]) M3_screw_in(20.5);
             translate([0,0,20.5]) cylinder(d=3.5, h=26);
             translate([0,0,24]) cylinder(d=6, h=22);
         }
@@ -120,10 +125,9 @@ module HousingFrame() {
             translate([0,-8,-10]) sphere(d=1);
         }
         // Blower arm screw hole
-        translate([45,22.5,40]) cylinder(d=2.5, h=5.5);
+        translate([45,22.5,45.5]) rotate([0,180,0]) M3_screw_in(5.5);
         // Attach for the wire guide
-        translate([63.5,30.5,0])
-          cylinder(d=2.5, h=3);
+        translate([63.5,30.5,0]) M3_screw_in(3);
      }
     // Attach for the fan shroud
     translate([32,-2,37]) difference() {
@@ -150,7 +154,7 @@ module HousingFrame() {
                 translate([0,0.5,7.25]) sphere(d=1.5);
             }
         }
-        translate([-4.55,-4.65,-5]) cylinder(d=2.5, h=10);
+        translate([-4.55,-4.65,1]) rotate([0,180,0]) M3_screw_in(10);
     }
     // TODO: path for the wires?
 }
@@ -170,7 +174,7 @@ module BackHousing() {
                 [5.6,-2.1],
             ]);
         }
-        translate([1,-2.5,0]) rotate([0,90,0]) cylinder(d=2.5, h=5);
+        translate([6,-2.5,0]) rotate([0,-90,0]) M3_screw_in(5);
         // Clearance for the Front Housing
         translate([0,-7.5,0]) cube([0.5, 7.5, 5.6]);
     }
@@ -208,7 +212,7 @@ module PartCoolingSupport() {
             translate([0,-17.1,0]) rotate([40,0,0]) rounded_rectangle([10,4,20], r=1, center=false, xy_center=false);
             rotate([90,0,0]) rounded_rectangle([18,11,10], r=1, center=false, xy_center=false);
         }
-        rotate([-50,0,0]) translate([5.2,-27.2,-20]) cylinder(d=2.5, h=20);
+        rotate([-50,0,0]) translate([5.2,-27.2,-13]) M3_screw_in(h=20);
         translate([14,-18,5.5]) rotate([-90,0,0]) cylinder(d=3.5, h=20);
         translate([14,-26,5.5]) rotate([-90,0,0]) cylinder(d=6, h=20);
     }

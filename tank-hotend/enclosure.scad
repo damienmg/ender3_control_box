@@ -226,7 +226,7 @@ module PositionedPartCoolingSupport() {
 
 function WireGuideAngle(l=60, w=12) = acos((w-2)/l);
 
-module WireGuide(l=60, w=12, h=14, space=20) {
+module WireGuide(l=60, w=12, h=12, space=20) {
     angle = WireGuideAngle(l, w);
     rotate([90-angle,0,0]) {
         difference() {
@@ -250,7 +250,7 @@ module WireGuide(l=60, w=12, h=14, space=20) {
             translate([0,-l-1.5,-h/2]) cube([w, 1.5, h]);
             translate([0,0,-h+2]) cube([w, 4, h]);
             translate([w/2,0,-w/2+1.5]) rotate([90,0,0]) cylinder(d=3.5, h=l);
-            translate([w/2,-5,-w/2+1.5]) rotate([90,0,0]) cylinder(d=6, h=l);
+            translate([w/2,-5,-w/2+1.5]) rotate([90,0,0]) cylinder(d=7, h=l);
             for(i=[space/2:space:l-space/2]) {
                 translate([w/2,2.5-i,-12]) rotate([90,0,0]) difference() {
                     cylinder(d=34, h=2.5);

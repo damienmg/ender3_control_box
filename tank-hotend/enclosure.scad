@@ -128,6 +128,8 @@ module HousingFrame() {
         translate([45,22.5,45.5]) rotate([0,180,0]) M3_screw_in(5.5);
         // Attach for the wire guide
         translate([63.5,30.5,0]) M3_screw_in(3);
+        // Bl-Touch support screw in
+        translate([74.19,32.5,20.5]) rotate([0,-90,0]) M3_screw_in(8);
      }
     // Attach for the fan shroud
     translate([32,-2,37]) difference() {
@@ -165,18 +167,18 @@ module BackHousing() {
         translate([0,-20,20.5]) cube([100,100,100]);
     }
     // BlTouch Support's support
-    translate([68.19,35,20.5]) difference() {
-        rotate([90,0,0]) linear_extrude(7.5) {
+    translate([68.19,37,20.5]) difference() {
+        rotate([90,0,0]) linear_extrude(9.5) {
             polygon([
-                [0,-5.5],
-                [0,5.5],
+                [-1.8,-5.5],
+                [-1.8,5.5],
                 [5.6,2.1],
                 [5.6,-2.1],
             ]);
         }
-        translate([6,-2.5,0]) rotate([0,-90,0]) M3_screw_in(5);
+        translate([6,-4.5,0]) rotate([0,-90,0]) M3_screw_in(8);
         // Clearance for the Front Housing
-        translate([0,-7.5,0]) cube([0.5, 7.5, 5.6]);
+        translate([-1.8,-8.5,0]) cube([2.3, 8.5, 5.6]);
     }
 }
 module PositionedBackHousing() {

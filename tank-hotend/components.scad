@@ -28,7 +28,7 @@ module PartCooling() {
 }
 
 module PositionedPartCooling() {
-    translate([7,-10,-63.5]) rotate([0,0,180]) PartCooling();
+    translate([7,-12,-63.5]) rotate([0,0,180]) PartCooling();
 }
 
 module PositionedXCarriage() {

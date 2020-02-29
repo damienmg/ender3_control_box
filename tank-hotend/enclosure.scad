@@ -207,14 +207,17 @@ module PartCoolingSupport() {
     rotate([0,-90,0]) difference() {
         union() {
             difference() {
-                rotate([90,0,0]) rounded_rectangle([10,11,22], r=1, center=false, xy_center=false);
-                translate([0,-36.9,-15]) cube([20,20,20]);
-                translate([0,-40.1,-12]) cube([20,20,20]);
+                rotate([90,0,0]) rounded_rectangle([10,11,24], r=1, center=false, xy_center=false);
+                translate([0,-38.9,-15]) cube([20,20,20]);
+                translate([0,-42.1,-12]) cube([20,20,20]);
             }
-            translate([0,-17.1,0]) rotate([40,0,0]) rounded_rectangle([10,4,20], r=1, center=false, xy_center=false);
+            translate([0,-19.1,0]) rotate([40,0,0]) rounded_rectangle([10,6,20], r=1, center=false, xy_center=false);
             rotate([90,0,0]) rounded_rectangle([18,11,10], r=1, center=false, xy_center=false);
         }
-        rotate([-50,0,0]) translate([5.2,-27.2,-13]) M3_screw_in(h=20);
+        rotate([-50,0,0]) translate([5.2,-28.2,-15]) {
+            M3_screw_in(h=20);
+            translate([0,0,4.1]) cylinder(d=6, h=2.3, $fn=6);
+        }
         translate([14,-18,5.5]) rotate([-90,0,0]) cylinder(d=3.5, h=20);
         translate([14,-26,5.5]) rotate([-90,0,0]) cylinder(d=6, h=20);
     }

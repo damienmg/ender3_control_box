@@ -16,6 +16,7 @@ openscad_library(
         "//3rdparty/Ender3",
         "//3rdparty/E3DV6",
         "//3rdparty/thingiverse",
+        "//3rdparty/MP1584EN-DC-DC-Converter",
     ],
 )
 
@@ -42,5 +43,6 @@ openscad_library(
         "BackHousing",
         "FrontHousing",
         "PartCoolingSupport",
+        "WireGuideCover",
     ]
 ]

@@ -231,7 +231,32 @@ module PositionedPartCoolingSupport() {
 
 function WireGuideAngle(l=60, w=12) = acos((w-2)/l);
 
-module WireGuide(l=60, w=12, h=12, space=20) {
+module CantileverSupport(length) {
+    linear_extrude(length) polygon([
+        [0, 0],
+        [1.6, 2],
+        [1.9, 4.2],
+        [0, 4.2]
+    ]);
+}
+
+module Cantilever(length) {
+    linear_extrude(length) difference() {
+        polygon([
+            [1, 0],
+            [1.5, 0.4],
+            [2.25, 4.5],
+            [0.5, 4.5],
+            [0.5, 4.75],
+            [2.25, 6],
+            [3, 6],
+            [3, 0]
+        ]);
+        translate([1, 0.5]) circle(r=0.5, $fn=30);
+    };
+}
+
+module WireGuide(l=60, w=12, h=12, space=20, w2 = 23, len2 = 27) {
     angle = WireGuideAngle(l, w);
     rotate([90-angle,0,0]) {
         difference() {
@@ -249,22 +274,46 @@ module WireGuide(l=60, w=12, h=12, space=20) {
                 }
             }
         }
+        len1 = sqrt(l*l+w*w);
         difference() {
-            translate([0,0,-w+1.5]) rotate([angle,0,0]) rounded_rectangle([w,w,sqrt(l*l+w*w)], r=1, center=false, xy_center=false);
-            translate([0,-l,1.5]) cube([w,l,h]);
-            translate([0,-l-1.5,-h/2]) cube([w, 1.5, h]);
+            translate([0,0,-w+1.5]) rotate([angle,0,0]) {
+                rounded_rectangle([w,w,len1], r=1, center=false, xy_center=false);
+                translate([0,0,len1-len2]) rounded_rectangle([w+w2,w,len2], r=1, center=false, xy_center=false);
+            }
+            translate([0,-l,1.5]) cube([w+w2,l,h]);
+            translate([0,-l-1.5,-h/2]) cube([w+w2, 1.5, h]);
             translate([0,0,-h+2]) cube([w, 4, h]);
             translate([w/2,0,-w/2+1.5]) rotate([90,0,0]) cylinder(d=3.5, h=l);
             translate([w/2,-5,-w/2+1.5]) rotate([90,0,0]) cylinder(d=7, h=l);
-            for(i=[space/2:space:l-space/2]) {
-                translate([w/2,2.5-i,-12]) rotate([90,0,0]) difference() {
-                    cylinder(d=34, h=2.5);
-                    cylinder(d=28, h=2.5);
+            difference() {
+                union() {
+                    for(i=[space/2:space:l-space/2]) {
+                        translate([w/2,2.5-i,-12]) rotate([90,0,0]) difference() {
+                            cylinder(d=34, h=2.5);
+                            cylinder(d=28, h=2.5);
+                        }
+                        translate([w/2,2.5-i,16-w+i*tan(90-angle)]) rotate([90,0,0]) difference() {
+                            cylinder(d=34, h=2.5);
+                            cylinder(d=28, h=2.5);
+                        }
+                    }
                 }
-                translate([w/2,2.5-i,16-w+i*tan(90-angle)]) rotate([90,0,0]) difference() {
-                    cylinder(d=34, h=2.5);
-                    cylinder(d=28, h=2.5);
-                }
+                translate([w+2.5,-l,-h/2]) cube([w,l,h]);
+            }
+        }
+        // Enclosure for the Buck converter.
+        translate([w,len2-len1, 1.5]) {
+            cube([w2, 1.5, h-5.7]);
+            translate([2,-len2+1.2, 0]) cube([w2-2, 1.5, h-5.7]);
+            translate([w2,0,0]) {
+                translate([-2,-len2+1.2, 0]) cube([2, len2, 2]);
+                translate([-3,-len2/2+4.3,h-10]) rotate([90,0,0]) Cantilever(6);
+                translate([-2,-len2+2.7, 0]) cube([2, len2/2-5, h-7.3]);
+                translate([-2,-len2/2+5, 0]) cube([2, len2/2-5, h-7.3]);
+            }
+            translate([2,-len2/2+1,h-10]) difference() {
+                rotate([90,0,180]) Cantilever(6);
+                translate([-5, 0, 0]) cube([5,6,3.5]);
             }
         }
     }
@@ -276,6 +325,26 @@ module PositionedWireGuide() {
             WireGuide();
 }
 
+module WireGuideCover(w2 = 23, len2 = 27) {
+    difference() {
+        union() {
+            cube([w2, len2, 1.4]);
+            translate([0,2,1.4]) cube([w2, len2-4, 1.6]);
+        }
+        translate([0,len2/2-6.45,0]) cube([3, 7.3, 1.4]);
+        translate([w2-3,len2/2-3.8,0]) cube([3, 7.3, 1.4]);
+        translate([w2-1,len2/2-3.8,1.4]) cube([1, 7.3, 1.6]);
+        // JST XH dimensions: 5.7 x 7.5
+        translate([4,2,0]) cube([8, 6, 3]);
+    }
+}
+
+module PositionedWireGuideCover() {
+    translate([32.5,78.5,-4.7])
+        rotate([0,180,0])
+            WireGuideCover();
+}
+
 module TankHotEnd() {
     PositionedWireGuide();
     HotEndAssembly();
@@ -283,6 +352,7 @@ module TankHotEnd() {
     PositionedFrontHousing();
     PositionedBLTouchSupport();
     PositionedPartCoolingSupport();
+    PositionedWireGuideCover();
 }
 
 TankHotEnd();

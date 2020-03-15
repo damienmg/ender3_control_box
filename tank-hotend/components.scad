@@ -4,7 +4,6 @@ use <3rdparty/E3DV6/e3dv6.scad>
 use <3rdparty/BMG/bmg.scad>
 use <3rdparty/bltouch/bltouch.scad>
 use <3rdparty/thingiverse/thingiverse.scad>
-use <3rdparty/MP1584EN-DC-DC-Converter/converter.scad>
 include <external/NopSCADlib/lib.scad>
 include <params.scad>
 
@@ -40,16 +39,11 @@ module PositionedBLTouch() {
     translate(BLTOUCH_OFFSET+[16.5,34,-25]) rotate([-90,0,-90]) %BLTouch();
 }
 
-module PositionedDCDCConverter() {
-    translate([30,87,-12]) rotate([0,0,90]) %DCDCConverter();
-}
-
 module HotEndAssembly() {
     PositionedPartCooling();
     HotEndExtruder();
     PositionedBLTouch();
     PositionedXCarriage();
-    PositionedDCDCConverter();
 }
 
 HotEndAssembly();

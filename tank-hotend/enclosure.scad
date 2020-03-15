@@ -127,7 +127,7 @@ module HousingFrame() {
         // Blower arm screw hole
         translate([45,22.5,45.5]) rotate([0,180,0]) M3_screw_in(5.5);
         // Attach for the wire guide
-        translate([63.5,30.5,0]) M3_screw_in(3);
+        translate([63.5,30.5,0]) M3_screw_in(6);
         // Bl-Touch support screw in
         translate([74.19,32.5,20.5]) rotate([0,-90,0]) M3_screw_in(8);
      }
@@ -158,7 +158,6 @@ module HousingFrame() {
         }
         translate([-4.55,-4.65,1]) rotate([0,180,0]) M3_screw_in(10);
     }
-    // TODO: path for the wires?
 }
 
 module BackHousing() {
@@ -229,8 +228,6 @@ module PositionedPartCoolingSupport() {
     }
 }
 
-function WireGuideAngle(l=60, w=12) = acos((w-2)/l);
-
 module CantileverSupport(length) {
     linear_extrude(length) polygon([
         [0, 0],
@@ -257,92 +254,30 @@ module Cantilever(length) {
 }
 
 module WireGuide(l=60, w=12, h=12, space=20, w2 = 23, len2 = 27) {
-    angle = WireGuideAngle(l, w);
-    rotate([90-angle,0,0]) {
-        difference() {
-            union() {
-                translate([0,-l,0]) cube([w,l-0.75,h]);
-                translate([0.75,-0.75,0]) cylinder(d=1.5, h=h);
-                translate([w-0.75,-0.75,0]) cylinder(d=1.5, h=h);
-                translate([0.75, -0.75, 0]) cube([w-1.5, 0.3, h]);
-            }
-            translate([0,-l,h-2.5]) cube([w,l,2.5]);
-            translate([1.5,0,1.5]) rotate([90,0,0]) rounded_rectangle([w-3,h,l], r=2, center=false, xy_center=false);
-            for(i=[space/2:space:l-space/2]) {
-                translate([0,-i,0]) {
-                    cube([w, 2.5, h]);
+    difference() {
+        union() {
+            translate([0,20,-2]) rotate([90,0,0]) rounded_rectangle([w,h+2, l+20], r=3, center=false, xy_center=false);
+        }
+        translate([0,-l,h-2.5]) cube([w,l,2.5]);
+        translate([1.5,0,1.5]) rotate([90,0,0]) rounded_rectangle([w-3,h,l], r=2, center=false, xy_center=false);
+        for(i=[space/2:space:l-space/2]) {
+            translate([w/2,-i,w/2+4]) {
+                rotate([90,0,0]) cylinder(d=w+4, h=2.5);
+                rotate([90,0,0]) difference() {
+                    cylinder(d=w+14, h=2.5);
+                    cylinder(d=w+11, h=2.5);
                 }
             }
         }
-        len1 = sqrt(l*l+w*w);
-        difference() {
-            translate([0,0,-w+1.5]) rotate([angle,0,0]) {
-                rounded_rectangle([w,w,len1], r=1, center=false, xy_center=false);
-                translate([0,0,len1-len2]) rounded_rectangle([w+w2,w,len2], r=1, center=false, xy_center=false);
-            }
-            translate([0,-l,1.5]) cube([w+w2,l,h]);
-            translate([0,-l-1.5,-h/2]) cube([w+w2, 1.5, h]);
-            translate([0,0,-h+2]) cube([w, 4, h]);
-            translate([w/2,0,-w/2+1.5]) rotate([90,0,0]) cylinder(d=3.5, h=l);
-            translate([w/2,-5,-w/2+1.5]) rotate([90,0,0]) cylinder(d=7, h=l);
-            difference() {
-                union() {
-                    for(i=[space/2:space:l-space/2]) {
-                        translate([w/2,2.5-i,-12]) rotate([90,0,0]) difference() {
-                            cylinder(d=34, h=2.5);
-                            cylinder(d=28, h=2.5);
-                        }
-                        translate([w/2,2.5-i,16-w+i*tan(90-angle)]) rotate([90,0,0]) difference() {
-                            cylinder(d=34, h=2.5);
-                            cylinder(d=28, h=2.5);
-                        }
-                    }
-                }
-                translate([w+2.5,-l,-h/2]) cube([w,l,h]);
-            }
-        }
-        // Enclosure for the Buck converter.
-        translate([w,len2-len1, 1.5]) {
-            cube([w2, 1.5, h-5.7]);
-            translate([2,-len2+1.2, 0]) cube([w2-2, 1.5, h-5.7]);
-            translate([w2,0,0]) {
-                translate([-2,-len2+1.2, 0]) cube([2, len2, 2]);
-                translate([-3,-len2/2+4.3,h-10]) rotate([90,0,0]) Cantilever(6);
-                translate([-2,-len2+2.7, 0]) cube([2, len2/2-5, h-7.3]);
-                translate([-2,-len2/2+5, 0]) cube([2, len2/2-5, h-7.3]);
-            }
-            translate([2,-len2/2+1,h-10]) difference() {
-                rotate([90,0,180]) Cantilever(6);
-                translate([-5, 0, 0]) cube([5,6,3.5]);
-            }
-        }
+        translate([0,-4,w+1.5]) rotate([0,90,0]) rounded_rectangle([w,14+w,w], r=3, center=false, xy_center=false);
+        translate([5.5,14.5,-5]) cylinder(d=3.5, 10);
     }
 }
 
 module PositionedWireGuide() {
-    translate([44.5,45.5,-14])
-        rotate([WireGuideAngle()-90,0,180])
+    translate([44,47.5,-4])
+        rotate([-90,0,180])
             WireGuide();
-}
-
-module WireGuideCover(w2 = 23, len2 = 27) {
-    difference() {
-        union() {
-            cube([w2, len2, 1.4]);
-            translate([0,2,1.4]) cube([w2, len2-4, 1.6]);
-        }
-        translate([0,len2/2-6.45,0]) cube([3, 7.3, 1.4]);
-        translate([w2-3,len2/2-3.8,0]) cube([3, 7.3, 1.4]);
-        translate([w2-1,len2/2-3.8,1.4]) cube([1, 7.3, 1.6]);
-        // JST XH dimensions: 5.7 x 7.5
-        translate([4,2,0]) cube([8, 6, 3]);
-    }
-}
-
-module PositionedWireGuideCover() {
-    translate([32.5,78.5,-4.7])
-        rotate([0,180,0])
-            WireGuideCover();
 }
 
 module TankHotEnd() {
@@ -352,7 +287,6 @@ module TankHotEnd() {
     PositionedFrontHousing();
     PositionedBLTouchSupport();
     PositionedPartCoolingSupport();
-    PositionedWireGuideCover();
 }
 
 TankHotEnd();

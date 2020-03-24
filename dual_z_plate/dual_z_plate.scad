@@ -1,7 +1,7 @@
 use <components.scad>
 use <3rdparty/thingiverse/thingiverse.scad>
 
-module CableTieHole(d=13, h=3, thickness=2) {
+module CableTieHole(d=13, h=4, thickness=3) {
     difference() {
         cylinder(d=d, h=h);
         cylinder(d=d-thickness, h=h);
@@ -62,9 +62,9 @@ module SecondZPlate() {
         }
         // Cable ties hole
         translate(pos) {
-            rotate([0,90,0]) translate([-5,5,w/2-1.5]) {
-                CableTieHole();
-                translate([0,0,-24]) CableTieHole();
+            rotate([0,90,0]) translate([-5.5,4,w/2-1.5]) {
+                CableTieHole(d=13);
+                translate([0,0,-24]) CableTieHole(d=13);
             }
             translate([-w2+w+3.5,0.5,h2-w/2-1.5]) {
                 CableTieHole(d=17);

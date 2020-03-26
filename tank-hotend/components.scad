@@ -36,7 +36,7 @@ module PositionedXCarriage() {
 }
 
 module PositionedBLTouch() {
-    translate(BLTOUCH_OFFSET+[16.5,34,-25]) rotate([-90,0,-90]) %BLTouch();
+    translate(BLTOUCH_OFFSET+[16.5,34,-24.5]) rotate([-90,0,-90]) %BLTouch();
 }
 
 module HotEndAssembly() {

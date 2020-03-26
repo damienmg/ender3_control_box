@@ -38,7 +38,6 @@ openscad_library(
         deps = [":tank-hotend"],
     )
     for name in [
-        "WireGuide",
         "BackHousing",
         "FrontHousing",
         "PartCoolingSupport",

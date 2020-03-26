@@ -1,6 +1,5 @@
 use <components.scad>
 include <external/NopSCADlib/lib.scad>
-use <3rdparty/thingiverse/thingiverse.scad>
 include <params.scad>
 
 module M3_screw_in(h=3) {
@@ -126,10 +125,6 @@ module HousingFrame() {
         }
         // Blower arm screw hole
         translate([45,22.5,45.5]) rotate([0,180,0]) M3_screw_in(5.5);
-        // Attach for the wire guide
-        translate([63.5,30.5,0]) M3_screw_in(6);
-        // Bl-Touch support screw in
-        translate([74.19,32.5,20.5]) rotate([0,-90,0]) M3_screw_in(8);
      }
     // Attach for the fan shroud
     translate([32,-2,37]) difference() {
@@ -165,20 +160,39 @@ module BackHousing() {
         HousingFrame();
         translate([0,-20,20.5]) cube([100,100,100]);
     }
-    // BlTouch Support's support
-    translate([68.19,37,20.5]) difference() {
-        rotate([90,0,0]) linear_extrude(9.5) {
-            polygon([
-                [-1.8,-5.5],
-                [-1.8,5.5],
-                [5.6,2.1],
-                [5.6,-2.1],
-            ]);
+    // BlTouch Support
+    h=13;
+    translate([81.5,22.5+h,0]) {
+        translate([0,2,20.5]) rotate([90,0,0]) difference() {
+            union() {
+                hull() {
+                    translate([0, -17.5,3]) sphere(d=6);
+                    translate([0, -17.5,h-6]) cylinder(d=6, h=6);
+                    translate([0,0,h-6]) cylinder(d=12, h=6);
+                    translate([0,9,h-6]) cylinder(d=8, h=6);
+                }
+                hull() {
+                    translate([0, -17.5,3]) sphere(d=6);
+                    translate([0, -17.5,3]) cylinder(d=6, h=h-3);
+                    translate([-16, -17.5,0]) cylinder(d=6, h=h);
+                    translate([-13.5,-20.5,-8]) difference() {
+                        rounded_rectangle([12, 8, 8], r=3, center=false, xy_center=false);
+                        translate([0,3.5,0]) cube([12,5,10]);
+                    }
+
+                }
+            }
+            translate([0,-9,0]) cylinder(d=3.2, h=h);
+            translate([0,-9,0]) cylinder(d=7, h=h-3, $fn=6);
+            translate([0,9,0]) cylinder(d=3.2, h=h);
+            translate([0,9,0]) cylinder(d=7, h=h-3, $fn=6);
         }
-        translate([6,-4.5,0]) rotate([0,-90,0]) M3_screw_in(8);
-        // Clearance for the Front Housing
-        translate([-1.8,-8.5,0]) cube([2.3, 8.5, 5.6]);
     }
+    // Wire Guide
+    translate([80,47.5,2])
+        rotate([0,0,180])
+            WireGuide();
+
 }
 module PositionedBackHousing() {
     translate([-25,45.5,-49]) rotate([90,0,0]) 
@@ -194,12 +208,6 @@ module FrontHousing() {
 module PositionedFrontHousing() {
     translate([-25,45.5,-49]) rotate([-90,0,0]) 
         FrontHousing();
-}
-
-module PositionedBLTouchSupport() {
-    translate([5.2,-132.5,-71.5] + BLTOUCH_OFFSET) {
-        rotate([90,0,90]) %BLTouchSupport();
-    }
 }
 
 module PartCoolingSupport() {
@@ -253,11 +261,10 @@ module Cantilever(length) {
     };
 }
 
-module WireGuide(l=60, w=12, h=12, space=20, w2 = 23, len2 = 27) {
+module WireGuide(l=40, w=12, h=12, space=20, w2 = 23, len2 = 27) {
+    leg = 17;
     difference() {
-        union() {
-            translate([0,20,-2]) rotate([90,0,0]) rounded_rectangle([w,h+2, l+20], r=3, center=false, xy_center=false);
-        }
+        translate([0,6+leg,-2]) rotate([90,0,0]) rounded_rectangle([w,h+2, l+6+leg], r=3, center=false, xy_center=false);
         translate([0,-l,h-2.5]) cube([w,l,2.5]);
         translate([1.5,0,1.5]) rotate([90,0,0]) rounded_rectangle([w-3,h,l], r=2, center=false, xy_center=false);
         for(i=[space/2:space:l-space/2]) {
@@ -269,23 +276,14 @@ module WireGuide(l=60, w=12, h=12, space=20, w2 = 23, len2 = 27) {
                 }
             }
         }
-        translate([0,-4,w+1.5]) rotate([0,90,0]) rounded_rectangle([w,14+w,w], r=3, center=false, xy_center=false);
-        translate([5.5,14.5,-5]) cylinder(d=3.5, 10);
+        translate([0,-4,w+1.5]) rotate([0,90,0]) rounded_rectangle([w,leg+w,w], r=3, center=false, xy_center=false);
     }
 }
 
-module PositionedWireGuide() {
-    translate([44,47.5,-4])
-        rotate([-90,0,180])
-            WireGuide();
-}
-
 module TankHotEnd() {
-    PositionedWireGuide();
     HotEndAssembly();
     PositionedBackHousing();
     PositionedFrontHousing();
-    PositionedBLTouchSupport();
     PositionedPartCoolingSupport();
 }
 

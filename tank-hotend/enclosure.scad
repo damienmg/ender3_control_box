@@ -161,8 +161,8 @@ module BackHousing() {
         translate([0,-20,20.5]) cube([100,100,100]);
     }
     // BlTouch Support
-    h=13;
-    translate([81.5,22.5+h,0]) {
+    h=13.5;
+    translate([81.5,22+h,0]) {
         translate([0,2,20.5]) rotate([90,0,0]) difference() {
             union() {
                 hull() {

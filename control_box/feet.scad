@@ -18,11 +18,10 @@ include <params.scad>
 
 // Note: this function will crash if searching for a non existant diameter.
 function select_insert(d, x=0) = M_DIAMETERS[x][0] == d ? M_DIAMETERS[x] : select_insert(d, x+1);
-function insert_diameter(d) = select_insert(d)[USE_INSERT == 1 ? 1 : 2];
+function insert_diameter(d) = select_insert(d)[USE_INSERT == 1 ? 1 : 3];
 function screw_insert_depth(d) = select_insert(d)[2];
 function screwin_diameter(d) = select_insert(d)[3];
 function screw_hole_diameter(d) = screwin_diameter(d)+1;
-
 
 function dot(v1, v2) = v1.x*v2.x + v1.y*v2.y + v1.z*v2.z;
 
